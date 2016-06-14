@@ -184,6 +184,6 @@ namespace JoshuaKearney.Measurements {
 
         public static VolumeDefinitionCollection Units { get; } = new VolumeDefinitionCollection();
 
-        protected override UnitDefinitionCollection<Volume> UnitDefinitions { get; } = Volume.Units;
+        public override UnitDefinitionCollection<Volume> UnitDefinitions { get; } = Volume.Units;
     }
 }

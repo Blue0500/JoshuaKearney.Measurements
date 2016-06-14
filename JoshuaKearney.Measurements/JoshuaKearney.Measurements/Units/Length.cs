@@ -63,7 +63,7 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        protected override UnitDefinitionCollection<Length> UnitDefinitions { get; } = Length.Units;
+        public override UnitDefinitionCollection<Length> UnitDefinitions { get; } = Length.Units;
 
         public static LengthDefinitionCollection Units { get; } = new LengthDefinitionCollection();
 

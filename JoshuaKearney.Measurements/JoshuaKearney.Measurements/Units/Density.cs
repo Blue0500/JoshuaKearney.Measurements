@@ -9,7 +9,7 @@ namespace JoshuaKearney.Measurements {
     public class Density : Measurement<Density>, IMeasurementRatio<Mass, Volume> {
         public static DensityDefinitionCollection Units { get; } = new DensityDefinitionCollection();
 
-        protected override UnitDefinitionCollection<Density> UnitDefinitions { get; } = Density.Units;
+        public override UnitDefinitionCollection<Density> UnitDefinitions { get; } = Density.Units;
 
         Measurement IMeasurementRatio<Mass, Volume>.ToMeasurement() {
             return this;

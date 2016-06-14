@@ -55,7 +55,7 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        protected override UnitDefinitionCollection<Mass> UnitDefinitions { get; } = Mass.Units;
+        public override UnitDefinitionCollection<Mass> UnitDefinitions { get; } = Mass.Units;
 
         public static MassDefinitionCollection Units { get; } = new MassDefinitionCollection();
 

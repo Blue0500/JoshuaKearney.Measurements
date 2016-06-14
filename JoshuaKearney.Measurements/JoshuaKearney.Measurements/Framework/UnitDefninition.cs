@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace JoshuaKearney.Measurements {
 
     public class UnitDefinition<T> where T : Measurement<T>, new() {
-        public string Symbol { get; set; }
         public Func<double, T> ToStandardUnits { get; set; }
         public Func<T, double> FromStandardUnits { get; set; }
         public MeasurementSystem MeasurementSystem { get; set; }
+
+        public string Symbol { get; set; }
 
         public UnitDefinition(string symbol, Func<double, T> toSiUnits, Func<T, double> fromSiUnits, MeasurementSystem system) {
             this.Symbol = symbol;

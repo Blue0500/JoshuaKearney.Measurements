@@ -12,7 +12,7 @@ namespace JoshuaKearney.Measurements {
         private static TNumerator numRef = new TNumerator();
         private static TDenominator denomRef = new TDenominator();
 
-        protected override UnitDefinitionCollection<MeasurementRatio<TNumerator, TDenominator>> UnitDefinitions { get; } = MeasurementRatio<TNumerator, TDenominator>.Units;
+        public override UnitDefinitionCollection<MeasurementRatio<TNumerator, TDenominator>> UnitDefinitions { get; } = MeasurementRatio<TNumerator, TDenominator>.Units;
 
         private static RatioDefinitionCollection<TNumerator, TDenominator> Units { get; } = new RatioDefinitionCollection<TNumerator, TDenominator>();
 

@@ -29,7 +29,7 @@ namespace JoshuaKearney.Measurements {
         public Measurement() {
         }
 
-        protected abstract UnitDefinitionCollection<T> UnitDefinitions { get; }
+        public abstract UnitDefinitionCollection<T> UnitDefinitions { get; }
 
         public UnitDefinition<T> StandardUnitDefinition {
             get {
@@ -101,7 +101,8 @@ namespace JoshuaKearney.Measurements {
             string symbol = reader.GetAttribute("units");
             double value = reader.ReadElementContentAsDouble();
 
-            var def = this.UnitDefinitions.AllUnits.Where(x => x.Symbol == symbol).FirstOrDefault();
+            var list = this.UnitDefinitions.AllUnits.ToList();
+            var def = list.Where(x => x.Symbol == symbol).FirstOrDefault();
             if (def != null) {
                 this.StandardUnits = def.ToStandardUnits(value).StandardUnits;
             }
@@ -114,6 +115,33 @@ namespace JoshuaKearney.Measurements {
             writer.WriteAttributeString("units", this.StandardUnitDefinition.Symbol);
             writer.WriteRaw(this.StandardUnits.ToString());
         }
+
+        //public virtual bool WithParseResult(string toParse) {
+        //    try {
+        //        string[] split = toParse.Split(' ');
+        //        double value = double.Parse(split[0]);
+        //        string symbol = split[1];
+
+        //        var def = this.UnitDefinitions.AllUnits.Where(x => x.Symbol == symbol).FirstOrDefault();
+        //        if (def != null) {
+        //            this.StandardUnits = def.ToStandardUnits(value).StandardUnits;
+        //        }
+        //        else {
+        //            def = this.UnitDefinitions.AllUnits.Where(x => x.Symbol.ToLower() == symbol.ToLower()).FirstOrDefault();
+        //            if (def != null) {
+        //                this.StandardUnits = def.ToStandardUnits(value).StandardUnits;
+        //            }
+        //            else {
+        //                return false;
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch {
+        //        return false;
+        //    }
+        //}
 
         internal T WithStandardUnits(double standardUnits) {
             this.StandardUnits = standardUnits;

@@ -69,7 +69,7 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        protected override UnitDefinitionCollection<Area> UnitDefinitions {
+        public override UnitDefinitionCollection<Area> UnitDefinitions {
             get {
                 return Area.Units;
             }

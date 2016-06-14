@@ -1,18 +1,26 @@
 ﻿using JoshuaKearney.Measurements;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Testing {
 
     public class Program {
 
         public static void Main(string[] args) {
-            MeasurementRatio<Mass, Area> weight = new MeasurementRatio<Mass, Area>(Mass.FromGrams(320), Area.FromCentimetersSquared(1));
+            XmlSerializer serial = new XmlSerializer(typeof(MeasurementTerm<Mass, Area>));
+            MeasurementTerm<Mass, Area> some = new MeasurementTerm<Mass, Area>(Mass.FromGrams(5), Area.FromCentimetersSquared(1));
 
-            Console.WriteLine(weight.ToUnits(Mass.Units.Kilogram, Area.Units.MeterSquared));
+            //File.WriteAllText("some.xml", serial.SerializeToString(some));
+
+            // some = serial.DeserializeFromString<MeasurementTerm<Mass, Area>>(File.ReadAllText("some.xml"));
+
+            Console.WriteLine(serial.SerializeToString<MeasurementTerm<Mass, Area>>(some));
+
             Console.Read();
         }
     }
