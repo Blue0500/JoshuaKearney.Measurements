@@ -8,9 +8,9 @@ namespace JoshuaKearney.Measurements.MeasurementSystems {
 
     public static class EnglishLength {
 
-        public static IEnumerable<IUnit<Length>> AllUnits { get; } = new List<IUnit<Length>>() {
+        private static Lazy<IEnumerable<IUnit<Length>>> allUnits = new Lazy<IEnumerable<IUnit<Length>>>(() => new List<IUnit<Length>>() {
             Thou, Inch, Foot, Yard, Chain, Furlong, Mile, League, Fathom, Cable, NauticalMile, Link, Rod
-        };
+        });
 
         public static IUnit<Length> Cable { get; } = Unit.Create<Length>(
              name: "cable",
@@ -89,5 +89,7 @@ namespace JoshuaKearney.Measurements.MeasurementSystems {
             symbol: "yd",
             unitsPerDefault: 1d / 3d / .3048
         );
+
+        public static IEnumerable<IUnit<Length>> AllUnits => allUnits.Value;
     }
 }

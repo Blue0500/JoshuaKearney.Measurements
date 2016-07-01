@@ -23,20 +23,20 @@ namespace Testing {
         public static void Main(string[] args) {
             // Measurement.Factory.
             // Console.WriteLine(Term.From((Length)null, DigitalSize.From(7, Bit)));
-            Stopwatch w = new Stopwatch();
-            w.Start();
+            //Stopwatch w = new Stopwatch();
+            // w.Start();
 
-            var ret = Length.Parse("45 km");
+            Console.WriteLine(Length.Parse("45 km"));
 
-            w.Stop();
-            Console.WriteLine($"{ret} in {w.ElapsedMilliseconds} ms");
+            //w.Stop();
+            // Console.WriteLine($"{ret} in {w.ElapsedMilliseconds} ms");
 
-            w.Restart();
+            // w.Restart();
 
-            ret = Length.Parse("45 km");
+            // ret = Length.Parse("45 km");
 
-            w.Stop();
-            Console.WriteLine($"{ret} in {w.ElapsedMilliseconds} ms");
+            // w.Stop();
+            //Console.WriteLine($"{ret} in {w.ElapsedMilliseconds} ms");
             ////var x = Volume.Parse("4 m*mi*yd");
             //Console.WriteLine(Volume.Parse("4 m*mi*yd"));
 

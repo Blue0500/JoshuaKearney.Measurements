@@ -55,14 +55,15 @@ namespace JoshuaKearney.Measurements {
         public Area Square() => this.Multiply(this);
 
         public static class CommonUnits {
-            public static IUnit<Length> Centimeter { get; } = Prefix.Centi(Meter);
+            public static IPrefixableUnit<Length> Meter { get; } = MeasurementSystems.Metric.Meter;
+
+            public static IUnit<Length> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
             public static IUnit<Length> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
             public static IUnit<Length> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
-            public static IUnit<Length> Kilometer { get; } = Prefix.Kilo(Meter);
-            public static IPrefixableUnit<Length> Meter { get; } = MeasurementSystems.Metric.Meter;
+            public static IUnit<Length> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
             public static IUnit<Length> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
 
-            public static IUnit<Length> Millimeter { get; } = Prefix.Milli(Meter);
+            public static IUnit<Length> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
 
             public static IUnit<Length> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
         }

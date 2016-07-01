@@ -8,9 +8,11 @@ namespace JoshuaKearney.Measurements.MeasurementSystems {
 
     public static class ImperialVolume {
 
-        public static IEnumerable<IUnit<Volume>> AllUnits { get; } = new List<IUnit<Volume>>() {
-                FluidOunce, Gill, Pint, Quart, Gallon
-            };
+        private static Lazy<IEnumerable<IUnit<Volume>>> allUnits = new Lazy<IEnumerable<IUnit<Volume>>>(() => new List<IUnit<Volume>>() {
+            FluidOunce, Gill, Pint, Quart, Gallon
+        });
+
+        public static IEnumerable<IUnit<Volume>> AllUnits => allUnits.Value;
 
         public static IUnit<Volume> FluidOunce { get; } = Unit.Create<Volume>(
                         name: "imperial fluid ounce",

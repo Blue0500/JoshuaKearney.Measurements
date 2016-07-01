@@ -68,11 +68,7 @@ namespace JoshuaKearney.Measurements {
             return supplier.CreateInstance(amount / definition.UnitsPerDefault);
         }
 
-        public static IUnit<TSelf> DefaultUnit {
-            get {
-                return supplier.DefaultUnit;
-            }
-        }
+        public static IUnit<TSelf> DefaultUnit => supplier.DefaultUnit;
 
         protected Measurement(double defaultUnits) : base(defaultUnits) {
         }

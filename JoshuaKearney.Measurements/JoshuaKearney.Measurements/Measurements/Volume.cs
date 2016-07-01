@@ -66,7 +66,7 @@ namespace JoshuaKearney.Measurements {
             public static IPrefixableUnit<Volume> Liter { get; } = MeasurementSystems.Metric.Liter;
             public static IUnit<Volume> MeterCubed { get; } = MeasurementSystems.Metric.Meter.Cube<Length, Volume>();
             public static IUnit<Volume> MileCubed { get; } = Length.CommonUnits.Mile.Cube<Length, Volume>();
-            public static IUnit<Volume> Milliliter { get; } = Prefix.Milli(Liter);
+            public static IUnit<Volume> Milliliter { get; } = Prefix.Milli(MeasurementSystems.Metric.Liter);
             public static IUnit<Volume> MillimeterCubed { get; } = Length.CommonUnits.Millimeter.Cube<Length, Volume>();
             public static IUnit<Volume> Tablespoon { get; } = MeasurementSystems.CustomaryVolume.Tablespoon;
             public static IUnit<Volume> Teaspoon { get; } = MeasurementSystems.CustomaryVolume.Teaspoon;

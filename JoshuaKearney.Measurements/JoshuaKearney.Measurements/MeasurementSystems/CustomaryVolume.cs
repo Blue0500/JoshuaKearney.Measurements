@@ -8,9 +8,11 @@ namespace JoshuaKearney.Measurements.MeasurementSystems {
 
     public static class CustomaryVolume {
 
-        public static IEnumerable<IUnit<Volume>> AllUnits { get; } = new List<IUnit<Volume>>() {
-                FluidDram, Teaspoon, Tablespoon, FluidOunce, Cup, Pint, Quart, Gallon, Barrel, Hogshead, Peck, Bushel
-            };
+        private static Lazy<IEnumerable<IUnit<Volume>>> allUnits = new Lazy<IEnumerable<IUnit<Volume>>>(() => new List<IUnit<Volume>>() {
+            FluidDram, Teaspoon, Tablespoon, FluidOunce, Cup, Pint, Quart, Gallon, Barrel, Hogshead, Peck, Bushel
+        });
+
+        public static IEnumerable<IUnit<Volume>> AllUnits => allUnits.Value;
 
         public static IUnit<Volume> Barrel { get; } = Unit.Create<Volume>(
             name: "US quart",

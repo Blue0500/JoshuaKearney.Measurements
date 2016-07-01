@@ -8,9 +8,11 @@ namespace JoshuaKearney.Measurements.MeasurementSystems {
 
     public static class AvoirdupoisMass {
 
-        public static IEnumerable<IUnit<Mass>> AllUnits { get; } = new List<IUnit<Mass>>() {
+        private static Lazy<IEnumerable<IUnit<Mass>>> allUnits = new Lazy<IEnumerable<IUnit<Mass>>>(() => new List<IUnit<Mass>>() {
             Dram, Ounce, Pound, Stone, LongHundredWeight, LongTon, ShortHundredWeight, ShortTon
-        };
+        });
+
+        public static IEnumerable<IUnit<Mass>> AllUnits => allUnits.Value;
 
         public static IUnit<Mass> Dram { get; } = Unit.Create<Mass>(
                         name: "dram",

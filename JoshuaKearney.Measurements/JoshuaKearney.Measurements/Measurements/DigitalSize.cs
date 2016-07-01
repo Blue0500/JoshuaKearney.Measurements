@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -18,17 +19,13 @@ namespace JoshuaKearney.Measurements {
 
         public static class CommonUnits {
 
-            public static IPrefixableUnit<DigitalSize> Bit { get; } = Unit.CreatePrefixable<DigitalSize>(
+            private static Lazy<IPrefixableUnit<DigitalSize>> bit = new Lazy<IPrefixableUnit<DigitalSize>>(() => Unit.CreatePrefixable<DigitalSize>(
                 name: "bit",
                 symbol: "bit",
                 unitsPerDefault: 8
-            );
+            ));
 
-            public static IPrefixableUnit<DigitalSize> SizeByte { get; } = Unit.CreatePrefixable<DigitalSize>(
-                name: "byte",
-                symbol: "B",
-                unitsPerDefault: 1
-            );
+            public static IPrefixableUnit<DigitalSize> Bit => bit.Value;
 
             public static IUnit<DigitalSize> Exabyte { get; } = Prefix.Exa(SizeByte);
 
@@ -45,6 +42,14 @@ namespace JoshuaKearney.Measurements {
             );
 
             public static IUnit<DigitalSize> Petabyte { get; } = Prefix.Peta(SizeByte);
+
+            private static Lazy<IPrefixableUnit<DigitalSize>> sizeByte = new Lazy<IPrefixableUnit<DigitalSize>>(() => Unit.CreatePrefixable<DigitalSize>(
+                name: "byte",
+                symbol: "B",
+                unitsPerDefault: 1
+            ));
+
+            public static IPrefixableUnit<DigitalSize> SizeByte => sizeByte.Value;
             public static IUnit<DigitalSize> Terabyte { get; } = Prefix.Tera(SizeByte);
         }
     }

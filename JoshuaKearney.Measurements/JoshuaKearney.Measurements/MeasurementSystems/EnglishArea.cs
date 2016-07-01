@@ -14,7 +14,8 @@ namespace JoshuaKearney.Measurements.MeasurementSystems {
             unitsPerDefault: 1 / 4046.8564224
         );
 
-        public static IEnumerable<IUnit<Area>> AllUnits { get; } = new List<IUnit<Area>>() { Perch, Rood, Acre };
+        private static Lazy<IEnumerable<IUnit<Area>>> allUnits = new Lazy<IEnumerable<IUnit<Area>>>(() => new List<IUnit<Area>>() { Perch, Rood, Acre });
+        public static IEnumerable<IUnit<Area>> AllUnits => allUnits.Value;
 
         public static IUnit<Area> Perch { get; } = Unit.Create<Area>(
                                    name: "perch",

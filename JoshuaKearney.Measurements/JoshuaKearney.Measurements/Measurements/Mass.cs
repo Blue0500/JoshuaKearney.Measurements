@@ -38,9 +38,9 @@ namespace JoshuaKearney.Measurements {
         public static class CommonUnits {
             public static IPrefixableUnit<Mass> Gram { get; } = MeasurementSystems.Metric.Gram;
 
-            public static IUnit<Mass> Kilogram { get; } = Prefix.Kilo(Gram);
+            public static IUnit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
             public static IPrefixableUnit<Mass> MetricTon { get; } = MeasurementSystems.Metric.Tonne;
-            public static IUnit<Mass> Milligram { get; } = Prefix.Milli(Gram);
+            public static IUnit<Mass> Milligram { get; } = Prefix.Milli(MeasurementSystems.Metric.Gram);
 
             public static IUnit<Mass> Ounce { get; } = MeasurementSystems.AvoirdupoisMass.Ounce;
             public static IUnit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
