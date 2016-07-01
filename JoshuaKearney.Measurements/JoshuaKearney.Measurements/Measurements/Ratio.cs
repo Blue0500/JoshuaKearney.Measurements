@@ -57,15 +57,15 @@ namespace JoshuaKearney.Measurements {
             where TDenominator : Measurement, new() {
 
         private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceSupplier: x => new Ratio<TNumerator, TDenominator>(x),
-            storedUnit: GetDefaultUnitDefinition<TNumerator>().DivideToRatio(GetDefaultUnitDefinition<TDenominator>()),
-            uniqueUnits: new Lazy<IEnumerable<IUnit>>(() => new List<IUnit>())
+            instanceCreator: x => new Ratio<TNumerator, TDenominator>(x),
+            defaultUnit: Measurement<TNumerator>.DefaultUnit.DivideToRatio(Measurement<TDenominator>.DefaultUnit),
+            uniqueUnits: new List<IUnit<Ratio<TNumerator, TDenominator>>>()
         );
 
         public Ratio() {
         }
 
-        internal Ratio(double storedUnits) : base(storedUnits) {
+        internal Ratio(double defaultUnits) : base(defaultUnits) {
         }
 
         protected override MeasurementInfo Supplier => propertySupplier;
@@ -77,8 +77,8 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(denomConv, nameof(denomConv));
 
             return Ratio.From(
-                numConv(From<TNumerator>(this.ToDouble(GetDefaultUnitDefinition()))),
-                denomConv(From<TDenominator>(1))
+                numConv(Measurement<TNumerator>.From(this.ToDouble(GetDefaultUnitDefinition()))),
+                denomConv(Measurement<TDenominator>.From(1))
             );
         }
     }

@@ -9,7 +9,7 @@ namespace JoshuaKearney.Measurements {
         public static Volume ToVolume(this Term<Area, Length> term) {
             Validate.NonNull(term, nameof(term));
 
-            return Measurement.From(
+            return Volume.From(
                 term.ToDouble(Term<Area, Length>.GetDefaultUnitDefinition()),
                 Volume.GetDefaultUnitDefinition()
             );
@@ -18,7 +18,7 @@ namespace JoshuaKearney.Measurements {
         public static Volume ToVolume(this Term<Length, Area> term) {
             Validate.NonNull(term, nameof(term));
 
-            return Measurement.From(
+            return Volume.From(
                 term.ToDouble(Term<Length, Area>.GetDefaultUnitDefinition()),
                 Volume.GetDefaultUnitDefinition()
             );
@@ -29,21 +29,17 @@ namespace JoshuaKearney.Measurements {
             IDividableMeasurement<Length, Area> {
 
         private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceSupplier: x => new Volume(x),
-            storedUnit: CommonUnits.MeterCubed,
-            uniqueUnits: new Lazy<IEnumerable<IUnit>>(() => {
-                var ret = MeasurementSystems.CustomaryVolume.AllUnits
-                    .Concat(MeasurementSystems.ImperialVolume.AllUnits)
-                    .Concat(new[] { MeasurementSystems.Metric.Liter });
-
-                return ret;
-            })
+            instanceCreator: x => new Volume(x),
+            defaultUnit: CommonUnits.MeterCubed,
+            uniqueUnits: MeasurementSystems.CustomaryVolume.AllUnits
+                .Concat(MeasurementSystems.ImperialVolume.AllUnits)
+                .Concat(new[] { MeasurementSystems.Metric.Liter })
         );
 
         public Volume() {
         }
 
-        private Volume(double storedUnits) : base(storedUnits) {
+        private Volume(double metersCubed) : base(metersCubed) {
         }
 
         protected override MeasurementInfo Supplier => propertySupplier;

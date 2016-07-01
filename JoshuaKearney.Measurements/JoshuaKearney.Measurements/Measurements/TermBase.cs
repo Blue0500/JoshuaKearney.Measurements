@@ -20,7 +20,7 @@ namespace JoshuaKearney.Measurements {
 
             return From(
                 item1.DefaultUnits * item2.DefaultUnits,
-                GetDefaultUnitDefinition<T1>().MultiplyToTerm(GetDefaultUnitDefinition<T2>()).Cast<TSelf>()
+                Measurement<T1>.DefaultUnit.MultiplyToTerm(Measurement<T2>.DefaultUnit).Cast<TSelf>()
             );
         }
 
@@ -76,18 +76,18 @@ namespace JoshuaKearney.Measurements {
             return this.ToString(unit.Cast<TSelf>());
         }
 
-        public Term<T1, T2> ToTerm() => From<Term<T1, T2>>(this.DefaultUnits);
+        public Term<T1, T2> ToTerm() => Measurement<Term<T1, T2>>.From(this.DefaultUnits);
 
         protected T1 DivideToFirst(T2 that) {
             Validate.NonNull(that, nameof(that));
 
-            return From<T1>(this.DefaultUnits / that.DefaultUnits);
+            return Measurement<T1>.From(this.DefaultUnits / that.DefaultUnits);
         }
 
         protected T2 DivideToSecond(T1 that) {
             Validate.NonNull(that, nameof(that));
 
-            return From<T2>(this.DefaultUnits / that.DefaultUnits);
+            return Measurement<T2>.From(this.DefaultUnits / that.DefaultUnits);
         }
     }
 }

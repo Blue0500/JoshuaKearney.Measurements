@@ -16,7 +16,7 @@ namespace JoshuaKearney.Measurements {
         Type AssociatedMeasurement { get; }
         string Name { get; }
         string Symbol { get; }
-        double UnitsPerStored { get; }
+        double UnitsPerDefault { get; }
     }
 
     public interface IUnit<T> : IUnit where T : Measurement, new() {

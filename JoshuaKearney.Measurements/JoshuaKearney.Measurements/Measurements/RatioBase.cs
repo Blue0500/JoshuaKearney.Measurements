@@ -11,7 +11,7 @@ namespace JoshuaKearney.Measurements {
         public RatioBase() {
         }
 
-        public RatioBase(double storedUnits) : base(storedUnits) {
+        public RatioBase(double defaultUnits) : base(defaultUnits) {
         }
 
         public static TSelf From(TNumerator numerator, TDenominator denominator) {
@@ -20,7 +20,7 @@ namespace JoshuaKearney.Measurements {
 
             return From(
                 numerator.DefaultUnits / denominator.DefaultUnits,
-                GetDefaultUnitDefinition<TNumerator>().DivideToRatio(GetDefaultUnitDefinition<TDenominator>()).Cast<TSelf>()
+                Measurement<TNumerator>.DefaultUnit.DivideToRatio(Measurement<TDenominator>.DefaultUnit).Cast<TSelf>()
             );
         }
 
@@ -42,7 +42,7 @@ namespace JoshuaKearney.Measurements {
         public TNumerator Multiply(TDenominator denominator) {
             Validate.NonNull(denominator, nameof(denominator));
 
-            return From<TNumerator>(this.DefaultUnits * denominator.DefaultUnits);
+            return Measurement<TNumerator>.From(this.DefaultUnits * denominator.DefaultUnits);
         }
 
         public double ToDouble(IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) {
@@ -59,6 +59,6 @@ namespace JoshuaKearney.Measurements {
             return this.ToString(numDef.DivideToRatio(denomDef).Cast<TSelf>());
         }
 
-        public Ratio<TNumerator, TDenominator> ToTerm() => From<Ratio<TNumerator, TDenominator>>(this.DefaultUnits);
+        public Ratio<TNumerator, TDenominator> ToTerm() => Measurement<Ratio<TNumerator, TDenominator>>.From(this.DefaultUnits);
     }
 }

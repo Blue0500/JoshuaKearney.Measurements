@@ -8,7 +8,7 @@ namespace JoshuaKearney.Measurements {
         public static Density ToDensity(this Ratio<Mass, Volume> density) {
             Validate.NonNull(density, nameof(density));
 
-            return Measurement.From(
+            return Density.From(
                 density.ToDouble(Ratio<Mass, Volume>.GetDefaultUnitDefinition()),
                 Density.GetDefaultUnitDefinition()
             );
@@ -24,9 +24,9 @@ namespace JoshuaKearney.Measurements {
         }
 
         protected override MeasurementInfo Supplier => new MeasurementInfo(
-            instanceSupplier: x => new Density(x),
-            storedUnit: CommonUnits.KilogramsPerMeterCubed,
-            uniqueUnits: new Lazy<IEnumerable<IUnit>>(() => new List<IUnit>())
+            instanceCreator: x => new Density(x),
+            defaultUnit: CommonUnits.KilogramsPerMeterCubed,
+            uniqueUnits: new List<IUnit<Density>>()
         );
 
         public static class CommonUnits {

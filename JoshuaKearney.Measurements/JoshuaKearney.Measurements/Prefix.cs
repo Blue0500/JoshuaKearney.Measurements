@@ -146,7 +146,7 @@ namespace JoshuaKearney.Measurements {
             return Unit.Create<T>(
                 name: namePrefix + unit.Name,
                 symbol: symbolPrefix + unit.Symbol,
-                unitsPerStored: unit.UnitsPerStored / multiplier
+                unitsPerDefault: unit.UnitsPerDefault / multiplier
             );
         }
     }

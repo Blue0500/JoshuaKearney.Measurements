@@ -11,11 +11,9 @@ namespace JoshuaKearney.Measurements {
         }
 
         protected override MeasurementInfo Supplier { get; } = new MeasurementInfo(
-            instanceSupplier: x => new DigitalSize(x),
-            storedUnit: CommonUnits.Byte,
-            uniqueUnits: new System.Lazy<IEnumerable<IUnit>>(() => {
-                return new[] { CommonUnits.Bit, CommonUnits.Byte, CommonUnits.Nybble };
-            })
+            instanceCreator: x => new DigitalSize(x),
+            defaultUnit: CommonUnits.SizeByte,
+            uniqueUnits: new[] { CommonUnits.Bit, CommonUnits.SizeByte, CommonUnits.Nybble }
         );
 
         public static class CommonUnits {
@@ -23,31 +21,31 @@ namespace JoshuaKearney.Measurements {
             public static IPrefixableUnit<DigitalSize> Bit { get; } = Unit.CreatePrefixable<DigitalSize>(
                 name: "bit",
                 symbol: "bit",
-                unitsPerStoredUnit: 8
+                unitsPerDefault: 8
             );
 
-            public static IPrefixableUnit<DigitalSize> Byte { get; } = Unit.CreatePrefixable<DigitalSize>(
+            public static IPrefixableUnit<DigitalSize> SizeByte { get; } = Unit.CreatePrefixable<DigitalSize>(
                 name: "byte",
                 symbol: "B",
-                unitsPerStoredUnit: 1
+                unitsPerDefault: 1
             );
 
-            public static IUnit<DigitalSize> Exabyte { get; } = Prefix.Exa(Byte);
+            public static IUnit<DigitalSize> Exabyte { get; } = Prefix.Exa(SizeByte);
 
-            public static IUnit<DigitalSize> Gigabyte { get; } = Prefix.Giga(Byte);
+            public static IUnit<DigitalSize> Gigabyte { get; } = Prefix.Giga(SizeByte);
 
-            public static IUnit<DigitalSize> Kilobyte { get; } = Prefix.Kilo(Byte);
+            public static IUnit<DigitalSize> Kilobyte { get; } = Prefix.Kilo(SizeByte);
 
-            public static IUnit<DigitalSize> Megabyte { get; } = Prefix.Mega(Byte);
+            public static IUnit<DigitalSize> Megabyte { get; } = Prefix.Mega(SizeByte);
 
             public static IUnit<DigitalSize> Nybble { get; } = Unit.Create<DigitalSize>(
-                                                                name: "nybble",
+                name: "nybble",
                 symbol: "Nybble",
-                unitsPerStored: 2d
+                unitsPerDefault: 2d
             );
 
-            public static IUnit<DigitalSize> Petabyte { get; } = Prefix.Peta(Byte);
-            public static IUnit<DigitalSize> Terabyte { get; } = Prefix.Tera(Byte);
+            public static IUnit<DigitalSize> Petabyte { get; } = Prefix.Peta(SizeByte);
+            public static IUnit<DigitalSize> Terabyte { get; } = Prefix.Tera(SizeByte);
         }
     }
 }

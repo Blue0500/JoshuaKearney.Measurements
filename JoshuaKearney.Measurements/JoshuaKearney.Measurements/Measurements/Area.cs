@@ -10,7 +10,7 @@ namespace JoshuaKearney.Measurements {
         public static Area ToArea(this Term<Length, Length> area) {
             Validate.NonNull(area, nameof(area));
 
-            return Measurement.From(
+            return Area.From(
                 area.ToDouble(Term<Length, Length>.GetDefaultUnitDefinition()),
                 Area.GetDefaultUnitDefinition()
             );
@@ -21,14 +21,10 @@ namespace JoshuaKearney.Measurements {
             IMultipliableMeasurement<Length, Volume> {
 
         private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceSupplier: x => new Area(x),
-            storedUnit: CommonUnits.MeterSquared,
-            uniqueUnits: new Lazy<IEnumerable<IUnit>>(() => {
-                var ret = MeasurementSystems.EnglishArea.AllUnits
-                    .Concat(new[] { MeasurementSystems.Metric.Are });
-
-                return ret;
-            })
+            instanceCreator: x => new Area(x),
+            defaultUnit: CommonUnits.MeterSquared,
+            uniqueUnits: MeasurementSystems.EnglishArea.AllUnits
+                .Concat(new[] { MeasurementSystems.Metric.Are })
         );
 
         public Area() {

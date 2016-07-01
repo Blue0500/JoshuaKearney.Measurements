@@ -128,7 +128,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
-    <Compile Include="MeasurementInfo.cs" />
+    <Compile Include="MeasurementSystems\AvoirdupoisMass.cs" />
+    <Compile Include="MeasurementSystems\CustomaryVolume.cs" />
+    <Compile Include="MeasurementSystems\EnglishArea.cs" />
+    <Compile Include="MeasurementSystems\EnglishLength.cs" />
+    <Compile Include="MeasurementSystems\ImperialVolume.cs" />
+    <Compile Include="MeasurementSystems\Metric.cs" />
     <Compile Include="Validate.cs" />
     <Compile Include="Measurements\Measurement.cs" />
     <Compile Include="Parser.cs" />
@@ -137,7 +142,6 @@
     <Compile Include="Measurements\TermBase.cs" />
     <Compile Include="IUnit.cs" />
     <Compile Include="Unit.cs" />
-    <Compile Include="MeasurementSystems.cs" />
     <Compile Include="Measurements\DigitalSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Measurements\Area.cs" />

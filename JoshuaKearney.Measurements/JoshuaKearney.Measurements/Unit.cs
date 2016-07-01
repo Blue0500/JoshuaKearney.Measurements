@@ -14,7 +14,7 @@ namespace JoshuaKearney.Measurements {
             return Unit.Create<TNew>(
                 name: unit.Name,
                 symbol: unit.Symbol,
-                unitsPerStored: unit.UnitsPerStored
+                unitsPerDefault: unit.UnitsPerDefault
             );
         }
 
@@ -26,7 +26,7 @@ namespace JoshuaKearney.Measurements {
             return Unit.Create<TResult>(
                 name: unit.Name + " cubed",
                 symbol: unit.Symbol + "³",
-                unitsPerStored: unit.UnitsPerStored * unit.UnitsPerStored * unit.UnitsPerStored
+                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault * unit.UnitsPerDefault
             );
         }
 
@@ -76,7 +76,7 @@ namespace JoshuaKearney.Measurements {
             return Unit.Create<TResult>(
                 name: unit.Name + " squared",
                 symbol: unit.Symbol + "²",
-                unitsPerStored: unit.UnitsPerStored * unit.UnitsPerStored
+                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault
             );
         }
 
@@ -85,7 +85,7 @@ namespace JoshuaKearney.Measurements {
             return Unit.Create<TResult>(
                 name: unit.Name + " cubed",
                 symbol: $"({unit.Symbol}^3)",
-                unitsPerStored: unit.UnitsPerStored * unit.UnitsPerStored * unit.UnitsPerStored
+                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault * unit.UnitsPerDefault
             );
         }
 
@@ -94,7 +94,7 @@ namespace JoshuaKearney.Measurements {
             return Unit.Create<TResult>(
                 name: $"{unit.Name} per {that.Name}",
                 symbol: $"({unit.Symbol}/({that.Symbol}))",
-                unitsPerStored: unit.UnitsPerStored / that.UnitsPerStored
+                unitsPerDefault: unit.UnitsPerDefault / that.UnitsPerDefault
             );
         }
 
@@ -107,7 +107,7 @@ namespace JoshuaKearney.Measurements {
                 return Unit.Create<TResult>(
                     name: $"{unit.Name} {that.Name}",
                     symbol: $"({unit.Symbol}*{that.Symbol})",
-                    unitsPerStored: unit.UnitsPerStored * that.UnitsPerStored
+                    unitsPerDefault: unit.UnitsPerDefault * that.UnitsPerDefault
                 );
             }
         }
@@ -117,41 +117,41 @@ namespace JoshuaKearney.Measurements {
             return Unit.Create<TResult>(
                 name: unit.Name + " squared",
                 symbol: $"({unit.Symbol}^2)",
-                unitsPerStored: unit.UnitsPerStored * unit.UnitsPerStored
+                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault
             );
         }
     }
 
     public static class Unit {
 
-        public static IUnit<T> Create<T>(string name, string symbol, double unitsPerStored)
+        public static IUnit<T> Create<T>(string name, string symbol, double unitsPerDefault)
                 where T : Measurement, new() {
             Validate.NonNull(name, nameof(name));
             Validate.NonNull(symbol, nameof(symbol));
 
-            return new UnitImpl<T>(name, symbol, unitsPerStored);
+            return new UnitImpl<T>(name, symbol, unitsPerDefault);
         }
 
-        public static IPrefixableUnit<T> CreatePrefixable<T>(string name, string symbol, double unitsPerStoredUnit)
+        public static IPrefixableUnit<T> CreatePrefixable<T>(string name, string symbol, double unitsPerDefault)
                 where T : Measurement, new() {
             Validate.NonNull(name, nameof(name));
             Validate.NonNull(symbol, nameof(symbol));
 
-            return new PrefixableUnitImpl<T>(name, symbol, unitsPerStoredUnit);
+            return new PrefixableUnitImpl<T>(name, symbol, unitsPerDefault);
         }
 
         private class PrefixableUnitImpl<T> : UnitImpl<T>, IPrefixableUnit, IPrefixableUnit<T> where T : Measurement, new() {
 
-            public PrefixableUnitImpl(string name, string symbol, double unitsPerStored) : base(name, symbol, unitsPerStored) {
+            public PrefixableUnitImpl(string name, string symbol, double unitsPerDefault) : base(name, symbol, unitsPerDefault) {
             }
         }
 
         private class UnitImpl<T> : IUnit, IUnit<T> where T : Measurement, new() {
 
-            public UnitImpl(string name, string symbol, double unitsPerStored) {
+            public UnitImpl(string name, string symbol, double unitsPerDefault) {
                 this.Name = name;
                 this.Symbol = symbol;
-                this.UnitsPerStored = unitsPerStored;
+                this.UnitsPerDefault = unitsPerDefault;
                 this.AssociatedMeasurement = typeof(T);
             }
 
@@ -160,7 +160,7 @@ namespace JoshuaKearney.Measurements {
             public string Name { get; }
 
             public string Symbol { get; }
-            public double UnitsPerStored { get; }
+            public double UnitsPerDefault { get; }
 
             public override string ToString() {
                 if (this.Symbol.Length > 2 && this.Symbol.StartsWith("(") && this.Symbol.EndsWith(")")) {

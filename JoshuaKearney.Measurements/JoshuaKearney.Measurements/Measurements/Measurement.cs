@@ -6,69 +6,88 @@ using System.Reflection;
 namespace JoshuaKearney.Measurements {
 
     public abstract class Measurement {
-        private static Dictionary<Type, MeasurementInfo> suppliers = new Dictionary<Type, MeasurementInfo>();
         private readonly double defaultUnits;
 
-        internal Measurement(double storedUnits) {
-            this.defaultUnits = storedUnits;
+        internal Measurement(double defaultUnits) {
+            this.defaultUnits = defaultUnits;
         }
 
         internal Measurement() : this(0) {
         }
 
-        internal double DefaultUnits => this.defaultUnits;
-        protected abstract MeasurementInfo Supplier { get; }
+        protected internal double DefaultUnits => this.defaultUnits;
 
-        public static T From<T>(double amount, IUnit<T> definition) where T : Measurement, new() {
-            Validate.NonNull(definition, nameof(definition));
+        internal interface IMeasurementInfo {
 
-            EnsureTypeIsCached(typeof(T));
-            return (T)suppliers[typeof(T)].CreateInstance(amount / definition.UnitsPerStored);
+            Measurement CreateInstance(double defaultUnits);
+
+            IEnumerable<IUnit> UniqueUnits { get; }
         }
 
-        internal static Measurement From(Type tMeasurement, double defaultUnits) {
-            EnsureTypeIsCached(tMeasurement);
-            return suppliers[tMeasurement].CreateInstance(defaultUnits);
-        }
-
-        internal static IUnit<T> GetDefaultUnitDefinition<T>() where T : Measurement, new() {
-            EnsureTypeIsCached(typeof(T));
-            return (IUnit<T>)suppliers[typeof(T)].StoredUnitDefinition;
-        }
-
-        internal static IEnumerable<IUnit> GetUnits(Type measurementType) {
-            EnsureTypeIsCached(measurementType);
-            return suppliers[measurementType].UniqueUnits.Value;
-        }
-
-        protected static T From<T>(double defaultUnits) where T : Measurement, new() {
-            return From<T>(defaultUnits);
-        }
-
-        private static void EnsureTypeIsCached(Type measurementType) {
-            if (!suppliers.ContainsKey(measurementType)) {
-                suppliers.Add(measurementType, ((Measurement)Activator.CreateInstance(measurementType)).Supplier);
-            }
-        }
+        internal abstract IMeasurementInfo InternalMeasurementInfo { get; }
     }
 
     public abstract class Measurement<TSelf> : Measurement, IEquatable<TSelf>, IComparable<TSelf>, IComparable
         where TSelf : Measurement, new() {
+        private static readonly MeasurementInfo supplier = (new TSelf() as Measurement<TSelf>).Supplier;
 
-        protected Measurement(double storedUnits) : base(storedUnits) {
+        protected abstract MeasurementInfo Supplier { get; }
+
+        internal override IMeasurementInfo InternalMeasurementInfo => supplier;
+
+        protected class MeasurementInfo : IMeasurementInfo {
+
+            public MeasurementInfo(IUnit<TSelf> defaultUnit, InstanceCreator instanceCreator, IEnumerable<IUnit<TSelf>> uniqueUnits) {
+                Validate.NonNull(instanceCreator, nameof(instanceCreator));
+                Validate.NonNull(defaultUnit, nameof(defaultUnit));
+                Validate.NonNull(uniqueUnits, nameof(uniqueUnits));
+
+                this.CreateInstance = instanceCreator;
+                this.DefaultUnit = defaultUnit;
+                this.UniqueUnits = uniqueUnits;
+            }
+
+            public delegate TSelf InstanceCreator(double defaultUnits);
+
+            public InstanceCreator CreateInstance { get; }
+            public IUnit<TSelf> DefaultUnit { get; }
+            public IEnumerable<IUnit<TSelf>> UniqueUnits { get; }
+
+            IEnumerable<IUnit> IMeasurementInfo.UniqueUnits => this.UniqueUnits;
+
+            Measurement IMeasurementInfo.CreateInstance(double defaultUnits) => this.CreateInstance(defaultUnits);
+        }
+
+        protected static TSelf From(double defaultUnits) {
+            return supplier.CreateInstance(defaultUnits);
+        }
+
+        public static TSelf From(double amount, IUnit<TSelf> definition) {
+            Validate.NonNull(definition, nameof(definition));
+
+            return supplier.CreateInstance(amount / definition.UnitsPerDefault);
+        }
+
+        public static IUnit<TSelf> DefaultUnit {
+            get {
+                return supplier.DefaultUnit;
+            }
+        }
+
+        protected Measurement(double defaultUnits) : base(defaultUnits) {
         }
 
         protected Measurement() {
         }
 
-        public static TSelf MaxValue { get; } = From<TSelf>(double.MaxValue);
+        public static TSelf MaxValue { get; } = From(double.MaxValue);
 
-        public static TSelf MinValue { get; } = From<TSelf>(double.MinValue);
+        public static TSelf MinValue { get; } = From(double.MinValue);
 
         public static TSelf Zero { get; } = new TSelf();
 
         public static IUnit<TSelf> GetDefaultUnitDefinition() {
-            return Measurement.GetDefaultUnitDefinition<TSelf>();
+            return DefaultUnit;
         }
 
         public static TSelf operator -(Measurement<TSelf> measurement) {
@@ -137,7 +156,7 @@ namespace JoshuaKearney.Measurements {
                 return null;
             }
 
-            return (measurement as TSelf) ?? From<TSelf>(measurement.DefaultUnits);
+            return (measurement as TSelf) ?? From(measurement.DefaultUnits);
         }
 
         public static bool operator <(Measurement<TSelf> measurement, TSelf measurement2) {
@@ -207,7 +226,7 @@ namespace JoshuaKearney.Measurements {
 
         public TSelf Add(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
-            return From<TSelf>(this.DefaultUnits + that.DefaultUnits);
+            return From(this.DefaultUnits + that.DefaultUnits);
         }
 
         public int CompareTo(TSelf that) {
@@ -218,13 +237,24 @@ namespace JoshuaKearney.Measurements {
             return this.DefaultUnits.CompareTo(that.DefaultUnits);
         }
 
+        public int CompareTo(object obj) {
+            TSelf measurement = obj as TSelf;
+
+            if (measurement == null) {
+                return 1;
+            }
+            else {
+                return this.CompareTo(measurement);
+            }
+        }
+
         public double Divide(TSelf that) {
             Validate.NonNull(that, nameof(that));
             return this.DefaultUnits / that.DefaultUnits;
         }
 
         public TSelf Divide(double factor) {
-            return From<TSelf>(this.DefaultUnits / factor);
+            return From(this.DefaultUnits / factor);
         }
 
         public Ratio<TSelf, E> DivideToRatio<E>(E that)
@@ -232,7 +262,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             return Ratio.From(
-                (this as TSelf) ?? From<TSelf>(this.DefaultUnits),
+                (this as TSelf) ?? From(this.DefaultUnits),
                 that
             );
         }
@@ -260,36 +290,36 @@ namespace JoshuaKearney.Measurements {
         public override int GetHashCode() => this.DefaultUnits.GetHashCode();
 
         public TSelf Multiply(double factor) {
-            return From<TSelf>(this.DefaultUnits * factor);
+            return From(this.DefaultUnits * factor);
         }
 
         public Term<TSelf, E> MultiplyToTerm<E>(E that) where E : Measurement, new() {
             Validate.NonNull(that, nameof(that));
 
             return Term.From((this as TSelf) ??
-                From<TSelf>(this.DefaultUnits),
+                From(this.DefaultUnits),
                 that
             );
         }
 
-        public TSelf Negate() => From<TSelf>(-this.DefaultUnits);
+        public TSelf Negate() => From(-this.DefaultUnits);
 
         public TSelf Subtract(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
 
-            return From<TSelf>(this.DefaultUnits - that.DefaultUnits);
+            return From(this.DefaultUnits - that.DefaultUnits);
         }
 
         public double ToDouble(IUnit<TSelf> unit) {
             Validate.NonNull(unit, nameof(unit));
 
-            return this.DefaultUnits * unit.UnitsPerStored;
+            return this.DefaultUnits * unit.UnitsPerDefault;
         }
 
         public override string ToString() {
             return this.ToString(
-                this.Supplier.StoredUnitDefinition as IUnit<TSelf> ??
-                this.Supplier.StoredUnitDefinition.Cast<TSelf>()
+                this.Supplier.DefaultUnit as IUnit<TSelf> ??
+                this.Supplier.DefaultUnit.Cast<TSelf>()
             );
         }
 
@@ -297,17 +327,6 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(unit, nameof(unit));
 
             return this.ToDouble(unit) + " " + unit.ToString();
-        }
-
-        public int CompareTo(object obj) {
-            TSelf measurement = obj as TSelf;
-
-            if (measurement == null) {
-                return 1;
-            }
-            else {
-                return this.CompareTo(measurement);
-            }
         }
     }
 }

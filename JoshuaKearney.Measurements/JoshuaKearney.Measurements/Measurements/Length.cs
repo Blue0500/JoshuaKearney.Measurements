@@ -11,12 +11,9 @@ namespace JoshuaKearney.Measurements {
         ICubableMeasurement<Volume> {
 
         private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceSupplier: x => new Length(x),
-            storedUnit: CommonUnits.Meter,
-            uniqueUnits: new Lazy<IEnumerable<IUnit>>(() =>
-                MeasurementSystems.EnglishLength.AllUnits
-                    .Concat(new[] { MeasurementSystems.Metric.Meter })
-            )
+            instanceCreator: x => new Length(x),
+            defaultUnit: CommonUnits.Meter,
+            uniqueUnits: MeasurementSystems.EnglishLength.AllUnits.Concat(new[] { MeasurementSystems.Metric.Meter })
         );
 
         public Length() {

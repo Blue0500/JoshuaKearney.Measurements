@@ -8,12 +8,10 @@ namespace JoshuaKearney.Measurements {
         IDividableMeasurement<Volume, Density> {
 
         private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceSupplier: x => new Mass(x),
-            storedUnit: CommonUnits.Kilogram,
-            uniqueUnits: new Lazy<IEnumerable<IUnit>>(() => {
-                return MeasurementSystems.AvoirdupoisMass.AllUnits
-                    .Concat(new[] { MeasurementSystems.Metric.Tonne, MeasurementSystems.Metric.Gram });
-            })
+            instanceCreator: x => new Mass(x),
+            defaultUnit: CommonUnits.Kilogram,
+            uniqueUnits: MeasurementSystems.AvoirdupoisMass.AllUnits
+                .Concat(new[] { MeasurementSystems.Metric.Tonne, MeasurementSystems.Metric.Gram })
         );
 
         public Mass() {

@@ -51,8 +51,6 @@ namespace JoshuaKearney.Measurements {
                 return (Measurement)mathMethod.Invoke(x, new[] { y });
             }
             else {
-                // TODO - Term.From here
-
                 MethodInfo info = tBackup
                     .GetTypeInfo()
                     .GetDeclaredMethods("From")
@@ -89,7 +87,7 @@ namespace JoshuaKearney.Measurements {
 
         private static IEnumerable<IUnit> ComposableUnits(Type m) {
             try {
-                IEnumerable<IUnit> ret = Measurement.GetUnits(m);
+                IEnumerable<IUnit> ret = GetMeasurementUnits(m);
 
                 bool isComplex = IsSubclassOfRawGeneric(typeof(TermBase<,,>), m) || IsSubclassOfRawGeneric(typeof(RatioBase<,,>), m);
                 if (isComplex) {
@@ -181,9 +179,9 @@ namespace JoshuaKearney.Measurements {
                 return false;
             }
 
-            result = Measurement.From(
+            result = Measurement<T>.From(
                 final.DefaultUnits * value,
-                Measurement.GetDefaultUnitDefinition<T>()
+                Measurement<T>.GetDefaultUnitDefinition()
             );
 
             return true;
@@ -254,12 +252,12 @@ namespace JoshuaKearney.Measurements {
                                 return false;
                             }
 
-                            if (u.UnitsPerStored == 0) {
+                            if (u.UnitsPerDefault == 0) {
                                 result = null;
                                 return false;
                             }
 
-                            ret.Add(new MeasurementToken(Measurement.From(u.AssociatedMeasurement, 1 / u.UnitsPerStored)));
+                            ret.Add(new MeasurementToken(CreateMeasurement(u.AssociatedMeasurement, 1 / u.UnitsPerDefault)));
                             current = "";
                         }
 
@@ -281,11 +279,19 @@ namespace JoshuaKearney.Measurements {
                         return false;
                     }
 
-                    ret.Add(new MeasurementToken(Measurement.From(u.AssociatedMeasurement, 1 / u.UnitsPerStored)));
+                    ret.Add(new MeasurementToken(CreateMeasurement(u.AssociatedMeasurement, 1 / u.UnitsPerDefault)));
                 }
 
                 return ToPostfix(ret, out result);
             }
+        }
+
+        private static Measurement CreateMeasurement(Type t, double units) {
+            return ((Measurement)Activator.CreateInstance(t)).InternalMeasurementInfo.CreateInstance(units);
+        }
+
+        private static IEnumerable<IUnit> GetMeasurementUnits(Type t) {
+            return ((Measurement)Activator.CreateInstance(t)).InternalMeasurementInfo.UniqueUnits;
         }
 
         private static bool ToPostfix<T>(IEnumerable<Token> input, out T result) where T : Measurement, new() {

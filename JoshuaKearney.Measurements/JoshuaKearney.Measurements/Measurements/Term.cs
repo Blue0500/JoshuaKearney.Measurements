@@ -55,9 +55,9 @@ namespace JoshuaKearney.Measurements {
             where T2 : Measurement, new() {
 
         private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceSupplier: x => new Term<T1, T2>(x),
-            storedUnit: GetDefaultUnitDefinition<T1>().MultiplyToTerm(GetDefaultUnitDefinition<T2>()),
-            uniqueUnits: new Lazy<IEnumerable<IUnit>>(() => new List<IUnit>())
+            instanceCreator: x => new Term<T1, T2>(x),
+            defaultUnit: Measurement<T1>.DefaultUnit.MultiplyToTerm(Measurement<T2>.DefaultUnit),
+            uniqueUnits: new List<IUnit<Term<T1, T2>>>()
         );
 
         public Term() {
@@ -87,8 +87,8 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(t2Conv, nameof(t2Conv));
 
             return Term.From(
-                t1Conv(From<T1>(this.ToDouble(Term<T1, T2>.GetDefaultUnitDefinition()))),
-                t2Conv(From<T2>(1))
+                t1Conv(Measurement<T1>.From(this.ToDouble(GetDefaultUnitDefinition()))),
+                t2Conv(Measurement<T2>.From(1))
             );
         }
     }
