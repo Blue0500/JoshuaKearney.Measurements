@@ -37,6 +37,7 @@ namespace JoshuaKearney.Measurements {
                 .GetTypeInfo()
                 .ImplementedInterfaces
                 .Where(z =>
+                    z.IsConstructedGenericType &&
                     z.GetGenericTypeDefinition() == tInterface &&
                     z.GenericTypeArguments.Count() == 2 &&
                     z.GenericTypeArguments[0] == tSecond)
@@ -68,6 +69,8 @@ namespace JoshuaKearney.Measurements {
                 .GetTypeInfo()
                 .ImplementedInterfaces
                 .Where(z =>
+                    z.IsConstructedGenericType &&
+                    z.IsConstructedGenericType &&
                     z.GetGenericTypeDefinition() == tInterface &&
                     z.GenericTypeArguments.Count() == 1)
                 .FirstOrDefault();

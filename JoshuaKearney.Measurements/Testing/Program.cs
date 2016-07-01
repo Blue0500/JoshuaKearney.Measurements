@@ -41,7 +41,7 @@ namespace Testing {
             //Console.WriteLine(Volume.Parse("4 m*mi*yd"));
 
             ////var x = Ratio.Parse<Mass, Area>("45 g/km^2");
-            //Console.WriteLine(Ratio.Parse<Mass, Area>("45 Mg/km^2"));
+            Console.WriteLine(Ratio.Parse<Mass, Area>("45 Mg/km^2"));
             //Console.WriteLine(Term.Parse<Term<Length, DigitalSize>, Mass>("99 (Mm*KiB)*mg"));
             ////var y = 4;
 
