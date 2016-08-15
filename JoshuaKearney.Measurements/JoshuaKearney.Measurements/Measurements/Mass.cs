@@ -5,22 +5,17 @@ using System.Linq;
 namespace JoshuaKearney.Measurements {
 
     public sealed class Mass : Measurement<Mass>,
+        IMultipliableMeasurement<Acceleration, Force>,
         IDividableMeasurement<Volume, Density> {
+        public static IMeasurementProvider<Mass> Provider { get; } = new MassProvider();
 
-        private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceCreator: x => new Mass(x),
-            defaultUnit: CommonUnits.Kilogram,
-            uniqueUnits: MeasurementSystems.AvoirdupoisMass.AllUnits
-                .Concat(new[] { MeasurementSystems.Metric.Tonne, MeasurementSystems.Metric.Gram })
-        );
+        public override IMeasurementProvider<Mass> MeasurementProvider => Provider;
 
         public Mass() {
         }
 
-        private Mass(double kilograms) : base(kilograms) {
+        public Mass(double amount, IUnit<Mass> unit) : base(amount, unit) {
         }
-
-        protected override MeasurementInfo Supplier => propertySupplier;
 
         public static Density operator /(Mass mass, Volume volume) {
             if (mass == null || volume == null) {
@@ -30,12 +25,24 @@ namespace JoshuaKearney.Measurements {
             return mass.Divide(volume);
         }
 
-        public Density Divide(Volume volume) {
-            Validate.NonNull(volume, nameof(volume));
-            return Density.From(this, volume);
+        public static Force operator *(Mass mass, Acceleration accel) {
+            if (mass == null || accel == null) {
+                return null;
+            }
+
+            return mass.Multiply(accel);
         }
 
-        public static class CommonUnits {
+        public Density Divide(Volume volume) {
+            Validate.NonNull(volume, nameof(volume));
+            return new Density(this, volume);
+        }
+
+        public Force Multiply(Acceleration accel) {
+            return new Force(this, accel);
+        }
+
+        public static class Units {
             public static IPrefixableUnit<Mass> Gram { get; } = MeasurementSystems.Metric.Gram;
 
             public static IUnit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
@@ -45,6 +52,12 @@ namespace JoshuaKearney.Measurements {
             public static IUnit<Mass> Ounce { get; } = MeasurementSystems.AvoirdupoisMass.Ounce;
             public static IUnit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
             public static IUnit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
+        }
+
+        private class MassProvider : IMeasurementProvider<Mass> {
+            public IUnit<Mass> DefaultUnit => Units.Kilogram;
+
+            public Mass CreateMeasurement(double value, IUnit<Mass> unit) => new Mass(value, unit);
         }
     }
 }

@@ -13,5 +13,11 @@ namespace JoshuaKearney.Measurements {
                 throw new ArgumentNullException(paramName, $"Argument '{paramName}' cannot be null. ");
             }
         }
+
+        public static void NonEmpty<T>(IEnumerable<T> list, string paramName) {
+            if (list == null) {
+                throw new ArgumentException($"Argument '{paramName}' cannot be empty. ", paramName);
+            }
+        }
     }
 }

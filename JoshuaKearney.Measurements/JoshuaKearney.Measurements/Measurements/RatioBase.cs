@@ -1,35 +1,35 @@
-﻿using System;
+﻿using JoshuaKearney.Measurements;
+using System;
 using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public abstract class RatioBase<TSelf, TNumerator, TDenominator> : Measurement<TSelf>, IMultipliableMeasurement<TDenominator, TNumerator>
-        where TSelf : Measurement<TSelf>, new()
-        where TNumerator : Measurement, new()
-        where TDenominator : Measurement, new() {
+    public abstract class RatioBase<TSelf, TNumerator, TDenominator> :
+        Measurement<TSelf>,
+        IMultipliableMeasurement<TDenominator, TNumerator>
 
-        public RatioBase() {
+        where TSelf : RatioBase<TSelf, TNumerator, TDenominator>
+        where TNumerator : Measurement<TNumerator>
+        where TDenominator : Measurement<TDenominator> {
+
+        protected RatioBase() {
         }
 
-        public RatioBase(double defaultUnits) : base(defaultUnits) {
+        protected RatioBase(TNumerator numerator, TDenominator denominator) : this(
+            numerator.DefaultUnits / denominator.DefaultUnits,
+            numerator.MeasurementProvider.DefaultUnit.DivideToRatio(denominator.MeasurementProvider.DefaultUnit).Cast<Ratio<TNumerator, TDenominator>, TSelf>()
+        ) { }
+
+        protected RatioBase(double amount, IUnit<TSelf> unit) : base(amount, unit) {
         }
 
-        public static TSelf From(TNumerator numerator, TDenominator denominator) {
-            Validate.NonNull(numerator, nameof(numerator));
-            Validate.NonNull(denominator, nameof(denominator));
+        protected RatioBase(double amount, IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) : this(
+            amount,
+            numDef.DivideToRatio(denomDef).Cast<Ratio<TNumerator, TDenominator>, TSelf>()
+        ) { }
 
-            return From(
-                numerator.DefaultUnits / denominator.DefaultUnits,
-                Measurement<TNumerator>.DefaultUnit.DivideToRatio(Measurement<TDenominator>.DefaultUnit).Cast<TSelf>()
-            );
-        }
-
-        public static TSelf From(double amount, IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) {
-            Validate.NonNull(numDef, nameof(numDef));
-            Validate.NonNull(denomDef, nameof(denomDef));
-
-            return From(amount, numDef.DivideToRatio(denomDef).Cast<TSelf>());
-        }
+        protected abstract IMeasurementProvider<TDenominator> DenominatorProvider { get; }
+        protected abstract IMeasurementProvider<TNumerator> NumeratorProvider { get; }
 
         public static TNumerator operator *(RatioBase<TSelf, TNumerator, TDenominator> ratio, TDenominator denominator) {
             if (ratio == null || denominator == null) {
@@ -39,26 +39,59 @@ namespace JoshuaKearney.Measurements {
             return ratio.Multiply(denominator);
         }
 
+        public TDenominator Divide<E, F>(RatioBase<E, TNumerator, F> that)
+                where F : TermBase<F, TDenominator, TDenominator>
+                where E : RatioBase<E, TNumerator, F> {
+            return this.DenominatorProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits / that.DefaultUnits);
+        }
+
+        public Ratio<TThatDenom, TDenominator> DivideToRatio<TThatDenom, E>(RatioBase<E, TNumerator, TThatDenom> that)
+                                where TThatDenom : Measurement<TThatDenom>
+                where E : RatioBase<E, TNumerator, TThatDenom> {
+            return that.DenominatorProvider.CreateMeasurement(this.DefaultUnits, that.DenominatorProvider.DefaultUnit).DivideToRatio(
+                this.DenominatorProvider.CreateMeasurementWithDefaultUnits(that.DefaultUnits)
+            );
+        }
+
         public TNumerator Multiply(TDenominator denominator) {
             Validate.NonNull(denominator, nameof(denominator));
 
-            return Measurement<TNumerator>.From(this.DefaultUnits * denominator.DefaultUnits);
+            return NumeratorProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits * denominator.DefaultUnits);
+        }
+
+        public double Multiply<E>(RatioBase<E, TDenominator, TNumerator> that)
+                where E : RatioBase<E, TDenominator, TNumerator> {
+            return this.DefaultUnits * that.DefaultUnits;
+        }
+
+        public Ratio<TDenominator, TNumerator> Reciprocal() {
+            return new Ratio<TDenominator, TNumerator>(
+                this.DefaultUnits,
+                this.DenominatorProvider.DefaultUnit.DivideToRatio(this.NumeratorProvider.DefaultUnit),
+                this.DenominatorProvider,
+                this.NumeratorProvider
+            );
         }
 
         public double ToDouble(IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) {
             Validate.NonNull(numDef, nameof(numDef));
             Validate.NonNull(denomDef, nameof(denomDef));
 
-            return this.ToDouble(numDef.DivideToRatio(denomDef).Cast<TSelf>());
+            return this.ToDouble(numDef.DivideToRatio(denomDef).Cast<Ratio<TNumerator, TDenominator>, TSelf>());
         }
+
+        public Ratio<TNumerator, TDenominator> ToRatio() => new Ratio<TNumerator, TDenominator>(
+            this.DefaultUnits,
+            this.MeasurementProvider.DefaultUnit.Cast<TSelf, Ratio<TNumerator, TDenominator>>(),
+            NumeratorProvider,
+            DenominatorProvider
+        );
 
         public string ToString(IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) {
             Validate.NonNull(numDef, nameof(numDef));
             Validate.NonNull(denomDef, nameof(denomDef));
 
-            return this.ToString(numDef.DivideToRatio(denomDef).Cast<TSelf>());
+            return this.ToString(numDef.DivideToRatio(denomDef).Cast<Ratio<TNumerator, TDenominator>, TSelf>());
         }
-
-        public Ratio<TNumerator, TDenominator> ToTerm() => Measurement<Ratio<TNumerator, TDenominator>>.From(this.DefaultUnits);
     }
 }

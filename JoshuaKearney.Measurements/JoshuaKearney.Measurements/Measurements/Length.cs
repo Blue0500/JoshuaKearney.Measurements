@@ -8,21 +8,17 @@ namespace JoshuaKearney.Measurements {
         IMultipliableMeasurement<Length, Area>,
         IMultipliableMeasurement<Area, Volume>,
         ISquareableMeasurement<Area>,
+        IDividableMeasurement<Time, Speed>,
         ICubableMeasurement<Volume> {
+        public static IMeasurementProvider<Length> Provider { get; } = new LengthProvider();
 
-        private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceCreator: x => new Length(x),
-            defaultUnit: CommonUnits.Meter,
-            uniqueUnits: MeasurementSystems.EnglishLength.AllUnits.Concat(new[] { MeasurementSystems.Metric.Meter })
-        );
+        public override IMeasurementProvider<Length> MeasurementProvider => Provider;
 
         public Length() {
         }
 
-        private Length(double meters) : base(meters) {
+        public Length(double amount, IUnit<Length> unit) : base(amount, unit) {
         }
-
-        protected override MeasurementInfo Supplier => propertySupplier;
 
         public static Area operator *(Length length, Length length2) {
             if (length == null || length2 == null) {
@@ -40,21 +36,34 @@ namespace JoshuaKearney.Measurements {
             return length.Multiply(area);
         }
 
+        public static Speed operator /(Length length, Time time) {
+            if (length == null || time == null) {
+                return null;
+            }
+
+            return length.Divide(time);
+        }
+
         public Volume Cube() => this.Multiply(this.Square());
 
         public Area Multiply(Length length) {
             Validate.NonNull(length, nameof(length));
-            return Area.From(this, length);
+            return new Area(this, length);
         }
 
         public Volume Multiply(Area area) {
             Validate.NonNull(area, nameof(area));
-            return Volume.From(this, area);
+            return new Volume(this, area);
         }
 
         public Area Square() => this.Multiply(this);
 
-        public static class CommonUnits {
+        public Speed Divide(Time time) {
+            Validate.NonNull(time, nameof(time));
+            return new Speed(this, time);
+        }
+
+        public static class Units {
             public static IPrefixableUnit<Length> Meter { get; } = MeasurementSystems.Metric.Meter;
 
             public static IUnit<Length> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
@@ -62,10 +71,14 @@ namespace JoshuaKearney.Measurements {
             public static IUnit<Length> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
             public static IUnit<Length> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
             public static IUnit<Length> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
-
             public static IUnit<Length> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
-
             public static IUnit<Length> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
+        }
+
+        private class LengthProvider : IMeasurementProvider<Length> {
+            public IUnit<Length> DefaultUnit => Units.Meter;
+
+            public Length CreateMeasurement(double value, IUnit<Length> unit) => new Length(value, unit);
         }
     }
 }

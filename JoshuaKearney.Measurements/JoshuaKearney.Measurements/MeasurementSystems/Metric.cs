@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace JoshuaKearney.Measurements.MeasurementSystems {
 
     public static class Metric {
-        private static Lazy<IEnumerable<IUnit>> allUnits = new Lazy<IEnumerable<IUnit>>(() => new List<IUnit>() { Meter, Gram, Tonne, Liter, Are });
-        public static IEnumerable<IUnit> AllUnits => allUnits.Value;
+        //private static Lazy<IEnumerable<IUnit>> allUnits = new Lazy<IEnumerable<IUnit>>(() => new List<IUnit>() { Meter, Gram, Tonne, Liter, Are });
+        //public static IEnumerable<IUnit> AllUnits => allUnits.Value;
 
         public static IPrefixableUnit<Area> Are { get; } = Unit.CreatePrefixable<Area>(
             name: "are",

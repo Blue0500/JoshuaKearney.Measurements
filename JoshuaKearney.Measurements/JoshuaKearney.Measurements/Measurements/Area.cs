@@ -10,30 +10,31 @@ namespace JoshuaKearney.Measurements {
         public static Area ToArea(this Term<Length, Length> area) {
             Validate.NonNull(area, nameof(area));
 
-            return Area.From(
-                area.ToDouble(Term<Length, Length>.GetDefaultUnitDefinition()),
-                Area.GetDefaultUnitDefinition()
-            );
+            return new Area(area.ToDouble(area.MeasurementProvider.DefaultUnit), area.MeasurementProvider.DefaultUnit.Cast<Term<Length, Length>, Area>());
         }
     }
 
     public sealed class Area : TermBase<Area, Length, Length>,
             IMultipliableMeasurement<Length, Volume> {
+        public static IMeasurementProvider<Area> Provider { get; } = new AreaProvider();
 
-        private static MeasurementInfo propertySupplier = new MeasurementInfo(
-            instanceCreator: x => new Area(x),
-            defaultUnit: CommonUnits.MeterSquared,
-            uniqueUnits: MeasurementSystems.EnglishArea.AllUnits
-                .Concat(new[] { MeasurementSystems.Metric.Are })
-        );
+        protected override IMeasurementProvider<Length> Item1Provider => Length.Provider;
+
+        protected override IMeasurementProvider<Length> Item2Provider => Length.Provider;
+
+        public override IMeasurementProvider<Area> MeasurementProvider => Provider;
 
         public Area() {
         }
 
-        private Area(double metersSquared) : base(metersSquared) {
+        public Area(double amount, IUnit<Area> unit) : base(amount, unit) {
         }
 
-        protected override MeasurementInfo Supplier => propertySupplier;
+        public Area(Length length1, Length length2) : base(length1, length2) {
+        }
+
+        public Area(double amount, IUnit<Length> length1Def, IUnit<Length> length2Def) : base(amount, length1Def, length2Def) {
+        }
 
         public static Volume operator *(Area area, Length other) {
             if (area == null || other == null) {
@@ -46,21 +47,27 @@ namespace JoshuaKearney.Measurements {
         public Volume Multiply(Length other) {
             Validate.NonNull(other, nameof(other));
 
-            return Volume.From(other, this);
+            return new Volume(other, this);
         }
 
-        public static class CommonUnits {
+        public static class Units {
             public static IUnit<Area> Acre { get; } = MeasurementSystems.EnglishArea.Acre;
-            public static IUnit<Area> CentimeterSquared { get; } = Length.CommonUnits.Centimeter.Square<Length, Area>();
+            public static IUnit<Area> CentimeterSquared { get; } = Length.Units.Centimeter.Square<Length, Area>();
             public static IUnit<Area> FootSquared { get; } = MeasurementSystems.EnglishLength.Foot.Square<Length, Area>();
             public static IUnit<Area> Hectare { get; } = Prefix.Hecto(MeasurementSystems.Metric.Are);
-            public static IUnit<Area> InchSquared { get; } = Length.CommonUnits.Inch.Square<Length, Area>();
-            public static IUnit<Area> KilometerSquared { get; } = Length.CommonUnits.Kilometer.Square<Length, Area>();
+            public static IUnit<Area> InchSquared { get; } = Length.Units.Inch.Square<Length, Area>();
+            public static IUnit<Area> KilometerSquared { get; } = Length.Units.Kilometer.Square<Length, Area>();
 
             public static IUnit<Area> MeterSquared { get; } = MeasurementSystems.Metric.Meter.Square<Length, Area>();
-            public static IUnit<Area> MileSquared { get; } = Length.CommonUnits.Mile.Square<Length, Area>();
-            public static IUnit<Area> MillimeterSquared { get; } = Length.CommonUnits.Millimeter.Square<Length, Area>();
-            public static IUnit<Area> YardSquared { get; } = Length.CommonUnits.Yard.Square<Length, Area>();
+            public static IUnit<Area> MileSquared { get; } = Length.Units.Mile.Square<Length, Area>();
+            public static IUnit<Area> MillimeterSquared { get; } = Length.Units.Millimeter.Square<Length, Area>();
+            public static IUnit<Area> YardSquared { get; } = Length.Units.Yard.Square<Length, Area>();
+        }
+
+        private class AreaProvider : IMeasurementProvider<Area> {
+            public IUnit<Area> DefaultUnit => Units.MeterSquared;
+
+            public Area CreateMeasurement(double value, IUnit<Area> unit) => new Area(value, unit);
         }
     }
 }
