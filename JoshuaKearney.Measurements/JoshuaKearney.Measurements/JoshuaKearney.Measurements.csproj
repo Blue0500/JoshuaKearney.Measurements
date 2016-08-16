@@ -136,10 +136,6 @@
     <Compile Include="MeasurementSystems\EnglishLength.cs" />
     <Compile Include="MeasurementSystems\ImperialVolume.cs" />
     <Compile Include="MeasurementSystems\Metric.cs" />
-    <Compile Include="Measurements\Acceleration.cs" />
-    <Compile Include="Measurements\Force.cs" />
-    <Compile Include="Measurements\Speed.cs" />
-    <Compile Include="Measurements\Time.cs" />
     <Compile Include="Validate.cs" />
     <Compile Include="Measurements\Measurement.cs" />
     <Compile Include="Parser.cs" />

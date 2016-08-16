@@ -5,7 +5,6 @@ using System.Linq;
 namespace JoshuaKearney.Measurements {
 
     public sealed class Mass : Measurement<Mass>,
-        IMultipliableMeasurement<Acceleration, Force>,
         IDividableMeasurement<Volume, Density> {
         public static IMeasurementProvider<Mass> Provider { get; } = new MassProvider();
 
@@ -25,21 +24,9 @@ namespace JoshuaKearney.Measurements {
             return mass.Divide(volume);
         }
 
-        public static Force operator *(Mass mass, Acceleration accel) {
-            if (mass == null || accel == null) {
-                return null;
-            }
-
-            return mass.Multiply(accel);
-        }
-
         public Density Divide(Volume volume) {
             Validate.NonNull(volume, nameof(volume));
             return new Density(this, volume);
-        }
-
-        public Force Multiply(Acceleration accel) {
-            return new Force(this, accel);
         }
 
         public static class Units {

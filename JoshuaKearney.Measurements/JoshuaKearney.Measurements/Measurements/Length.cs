@@ -8,7 +8,6 @@ namespace JoshuaKearney.Measurements {
         IMultipliableMeasurement<Length, Area>,
         IMultipliableMeasurement<Area, Volume>,
         ISquareableMeasurement<Area>,
-        IDividableMeasurement<Time, Speed>,
         ICubableMeasurement<Volume> {
         public static IMeasurementProvider<Length> Provider { get; } = new LengthProvider();
 
@@ -36,14 +35,6 @@ namespace JoshuaKearney.Measurements {
             return length.Multiply(area);
         }
 
-        public static Speed operator /(Length length, Time time) {
-            if (length == null || time == null) {
-                return null;
-            }
-
-            return length.Divide(time);
-        }
-
         public Volume Cube() => this.Multiply(this.Square());
 
         public Area Multiply(Length length) {
@@ -57,11 +48,6 @@ namespace JoshuaKearney.Measurements {
         }
 
         public Area Square() => this.Multiply(this);
-
-        public Speed Divide(Time time) {
-            Validate.NonNull(time, nameof(time));
-            return new Speed(this, time);
-        }
 
         public static class Units {
             public static IPrefixableUnit<Length> Meter { get; } = MeasurementSystems.Metric.Meter;
