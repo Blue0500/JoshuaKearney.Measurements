@@ -136,7 +136,6 @@
     <Compile Include="MeasurementSystems\EnglishLength.cs" />
     <Compile Include="MeasurementSystems\ImperialVolume.cs" />
     <Compile Include="MeasurementSystems\Metric.cs" />
-    <Compile Include="Validate.cs" />
     <Compile Include="Measurements\Measurement.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Prefix.cs" />
