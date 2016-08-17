@@ -21,6 +21,9 @@ namespace Testing {
     public class Program {
 
         public static void Main(string[] args) {
+            Length l = new Length(4, Length.Units.Meter);
+            Console.WriteLine(l.ToString());
+
             //Console.WriteLine(new Force(1, Force.Units.Newton).ToString(Force.Units.PoundForce));
 
             //Math.

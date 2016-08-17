@@ -11,5 +11,9 @@
     <description>$description$</description>
     <copyright>Copyright 2016</copyright>
     <tags>Units Conversion</tags>
+
+    <dependencies>
+      <dependency id="JoshuaKearney.Core" version="1.0.2" />
+    </dependencies>
   </metadata>
 </package>

@@ -4,40 +4,6 @@ using System.Linq;
 using System.Reflection;
 
 namespace JoshuaKearney.Measurements {
-    //public static class Measurement {
-    //    public static T Max<T>(T measurement1, T measurement2) where T : Measurement<T> {
-    //        if (measurement1 >= measurement2) {
-    //            return measurement1;
-    //        }
-    //        else {
-    //            return measurement2;
-    //        }
-    //    }
-
-    //    public static T Max<T>(params T[] measurements) where T : Measurement<T> {
-    //        return measurements.Aggregate((x, y) => Max(x, y));
-    //    }
-
-    //    public static T Min<T>(T measurement1, T measurement2) where T : Measurement<T> {
-    //        if (measurement1 <= measurement2) {
-    //            return measurement1;
-    //        }
-    //        else {
-    //            return measurement2;
-    //        }
-    //    }
-
-    //    public static T Min<T>(params T[] measurments) where T : Measurement<T> {
-    //        return measurments.Aggregate((x, y) => Min(x, y));
-    //    }
-
-    //    //public T Abs() => Map(Math.Abs)(this);
-
-    //    public static Func<T, T> Map<T>(Func<double, double> func) where T : Measurement<T> {
-    //        return (x) => x.MeasurementProvider.CreateMeasurementWithDefaultUnits(func(x.DefaultUnits));
-    //    }
-    //}
-
     public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable
         where TSelf : Measurement<TSelf> {
         protected internal double DefaultUnits { get; }

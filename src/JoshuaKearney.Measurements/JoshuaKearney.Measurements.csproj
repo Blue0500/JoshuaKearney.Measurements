@@ -123,6 +123,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="JoshuaKearney.Measurements.nuspec" />
     <None Include="Releases\JoshuaKearney.Measurements.nuspec" />
     <None Include="project.json" />
   </ItemGroup>
