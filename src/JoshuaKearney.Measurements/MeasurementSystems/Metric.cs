@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JoshuaKearney.Measurements.MeasurementSystems {
+﻿namespace JoshuaKearney.Measurements.MeasurementSystems {
 
     public static class Metric {
         //private static Lazy<IEnumerable<IUnit>> allUnits = new Lazy<IEnumerable<IUnit>>(() => new List<IUnit>() { Meter, Gram, Tonne, Liter, Are });

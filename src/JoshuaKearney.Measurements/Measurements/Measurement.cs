@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace JoshuaKearney.Measurements {
+
     public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable
         where TSelf : Measurement<TSelf> {
         protected internal double DefaultUnits { get; }

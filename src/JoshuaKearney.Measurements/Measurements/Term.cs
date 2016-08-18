@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 
 namespace JoshuaKearney.Measurements {
     //public static class Term {

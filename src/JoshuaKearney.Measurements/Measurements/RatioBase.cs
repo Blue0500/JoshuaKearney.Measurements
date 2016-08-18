@@ -1,8 +1,4 @@
-﻿using JoshuaKearney.Measurements;
-using System;
-using System.Collections.Generic;
-
-namespace JoshuaKearney.Measurements {
+﻿namespace JoshuaKearney.Measurements {
 
     public abstract class RatioBase<TSelf, TNumerator, TDenominator> :
         Measurement<TSelf>,

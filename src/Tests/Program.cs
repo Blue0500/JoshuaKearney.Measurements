@@ -1,20 +1,5 @@
 ﻿using JoshuaKearney.Measurements;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-
-using static JoshuaKearney.Measurements.Area.Units;
-using static JoshuaKearney.Measurements.DigitalSize.Units;
-using static JoshuaKearney.Measurements.Length.Units;
-using static JoshuaKearney.Measurements.Mass.Units;
-using static JoshuaKearney.Measurements.Volume.Units;
 
 namespace Testing {
 
@@ -22,7 +7,7 @@ namespace Testing {
 
         public static void Main(string[] args) {
             Length l = new Length(4, Length.Units.Meter);
-            Console.WriteLine(l.ToString());
+            Console.WriteLine(new DigitalSize(400, DigitalSize.Units.Octet).ToString(DigitalSize.Units.Kilobyte));
 
             //Console.WriteLine(new Force(1, Force.Units.Newton).ToString(Force.Units.PoundForce));
 

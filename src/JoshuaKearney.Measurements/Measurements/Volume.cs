@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace JoshuaKearney.Measurements {
+﻿namespace JoshuaKearney.Measurements {
 
     public partial class Extensions {
 

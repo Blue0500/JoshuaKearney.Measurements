@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JoshuaKearney.Measurements {
+﻿namespace JoshuaKearney.Measurements {
 
     public abstract class TermBase<TSelf, T1, T2> : Measurement<TSelf>, IDividableMeasurement<T2, T1>
         where TSelf : TermBase<TSelf, T1, T2>
