@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace JoshuaKearney.Measurements {
@@ -283,16 +284,27 @@ namespace JoshuaKearney.Measurements {
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(func(this.DefaultUnits));
         }
 
+
         public override string ToString() {
             return this.ToString(
-                this.MeasurementProvider.DefaultUnit as IUnit<TSelf>
+                this.MeasurementProvider.DefaultUnit
             );
         }
 
-        public string ToString(IUnit<TSelf> unit) {
+        public string ToString(IUnit<TSelf> unit, string format) {
             Validate.NonNull(unit, nameof(unit));
+            Validate.NonNull(format, nameof(format));
 
-            return this.ToDouble(unit) + " " + unit.ToString();
+            return this.ToDouble(unit).ToString(format) + " " + unit.ToString();
+        }
+
+        public string ToString(params IUnit<TSelf>[] units) {
+            Validate.NonNull(units, nameof(units));
+
+            units = units.OrderBy(x => this.ToDouble(x)).ToArray();
+            var unit = units.FirstOrDefault(x => this.ToDouble(x) >= 1) ?? units.FirstOrDefault() ?? this.MeasurementProvider.DefaultUnit;
+
+            return this.ToString(unit, "0.##");
         }
     }
 }

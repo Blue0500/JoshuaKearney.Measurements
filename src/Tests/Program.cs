@@ -7,7 +7,12 @@ namespace Testing {
 
         public static void Main(string[] args) {
             Length l = new Length(4, Length.Units.Meter);
-            Console.WriteLine(new DigitalSize(400, DigitalSize.Units.Octet).ToString(DigitalSize.Units.Kilobyte));
+
+            var d = new DigitalSize(45000000000, DigitalSize.Units.Octet);
+
+            Console.WriteLine(
+                d.ToString()
+            );
 
             //Console.WriteLine(new Force(1, Force.Units.Newton).ToString(Force.Units.PoundForce));
 
