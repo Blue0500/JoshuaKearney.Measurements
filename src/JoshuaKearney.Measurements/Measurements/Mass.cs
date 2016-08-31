@@ -9,7 +9,7 @@
         public Mass() {
         }
 
-        public Mass(double amount, IUnit<Mass> unit) : base(amount, unit) {
+        public Mass(double amount, Unit<Mass> unit) : base(amount, unit) {
         }
 
         public static Density operator /(Mass mass, Volume volume) {
@@ -26,21 +26,21 @@
         }
 
         public static class Units {
-            public static IPrefixableUnit<Mass> Gram { get; } = MeasurementSystems.Metric.Gram;
+            public static PrefixableUnit<Mass> Gram { get; } = MeasurementSystems.Metric.Gram;
 
-            public static IUnit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
-            public static IPrefixableUnit<Mass> MetricTon { get; } = MeasurementSystems.Metric.Tonne;
-            public static IUnit<Mass> Milligram { get; } = Prefix.Milli(MeasurementSystems.Metric.Gram);
+            public static Unit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
+            public static PrefixableUnit<Mass> MetricTon { get; } = MeasurementSystems.Metric.Tonne;
+            public static Unit<Mass> Milligram { get; } = Prefix.Milli(MeasurementSystems.Metric.Gram);
 
-            public static IUnit<Mass> Ounce { get; } = MeasurementSystems.AvoirdupoisMass.Ounce;
-            public static IUnit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
-            public static IUnit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
+            public static Unit<Mass> Ounce { get; } = MeasurementSystems.AvoirdupoisMass.Ounce;
+            public static Unit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
+            public static Unit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
         }
 
         private class MassProvider : IMeasurementProvider<Mass> {
-            public IUnit<Mass> DefaultUnit => Units.Kilogram;
+            public Unit<Mass> DefaultUnit => Units.Kilogram;
 
-            public Mass CreateMeasurement(double value, IUnit<Mass> unit) => new Mass(value, unit);
+            public Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
         }
     }
 }

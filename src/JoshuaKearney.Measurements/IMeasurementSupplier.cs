@@ -2,9 +2,9 @@
 
     public interface IMeasurementProvider<T> where T : Measurement<T> {
 
-        T CreateMeasurement(double value, IUnit<T> unit);
+        T CreateMeasurement(double value, Unit<T> unit);
 
-        IUnit<T> DefaultUnit { get; }
+        Unit<T> DefaultUnit { get; }
     }
 
     public static partial class Extensions {

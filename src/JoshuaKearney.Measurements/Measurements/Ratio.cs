@@ -52,7 +52,7 @@ namespace JoshuaKearney.Measurements {
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator> {
 
-        public Ratio(double amount, IUnit<Ratio<TNumerator, TDenominator>> unit, IMeasurementProvider<TNumerator> t1Prov, IMeasurementProvider<TDenominator> t2Prov) : base(amount, unit) {
+        public Ratio(double amount, Unit<Ratio<TNumerator, TDenominator>> unit, IMeasurementProvider<TNumerator> t1Prov, IMeasurementProvider<TDenominator> t2Prov) : base(amount, unit) {
             this.NumeratorProvider = t1Prov;
             this.DenominatorProvider = t2Prov;
             this.MeasurementProvider = new RatioProvider(this.NumeratorProvider, this.DenominatorProvider);
@@ -92,9 +92,9 @@ namespace JoshuaKearney.Measurements {
                 this.DefaultUnit = t1Prov.DefaultUnit.DivideToRatio(t2Prov.DefaultUnit);
             }
 
-            public IUnit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
+            public Unit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
 
-            public Ratio<TNumerator, TDenominator> CreateMeasurement(double value, IUnit<Ratio<TNumerator, TDenominator>> unit) {
+            public Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
                 return new Ratio<TNumerator, TDenominator>(value, unit, numProv, denomProv);
             }
         }

@@ -10,7 +10,7 @@ namespace JoshuaKearney.Measurements {
 
         public abstract IMeasurementProvider<TSelf> MeasurementProvider { get; }
 
-        protected Measurement(double amount, IUnit<TSelf> unit) {
+        protected Measurement(double amount, Unit<TSelf> unit) {
             this.DefaultUnits = amount / unit.UnitsPerDefault;
         }
 
@@ -230,7 +230,7 @@ namespace JoshuaKearney.Measurements {
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits - that.DefaultUnits);
         }
 
-        public double ToDouble(IUnit<TSelf> unit) {
+        public double ToDouble(Unit<TSelf> unit) {
             Validate.NonNull(unit, nameof(unit));
 
             return this.DefaultUnits * unit.UnitsPerDefault;
@@ -291,14 +291,14 @@ namespace JoshuaKearney.Measurements {
             );
         }
 
-        public string ToString(IUnit<TSelf> unit, string format) {
+        public string ToString(Unit<TSelf> unit, string format) {
             Validate.NonNull(unit, nameof(unit));
             Validate.NonNull(format, nameof(format));
 
             return this.ToDouble(unit).ToString(format) + " " + unit.ToString();
         }
 
-        public string ToString(params IUnit<TSelf>[] units) {
+        public string ToString(params Unit<TSelf>[] units) {
             Validate.NonNull(units, nameof(units));
 
             units = units.OrderBy(x => this.ToDouble(x)).ToArray();

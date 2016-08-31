@@ -22,13 +22,13 @@
         public Area() {
         }
 
-        public Area(double amount, IUnit<Area> unit) : base(amount, unit) {
+        public Area(double amount, Unit<Area> unit) : base(amount, unit) {
         }
 
         public Area(Length length1, Length length2) : base(length1, length2) {
         }
 
-        public Area(double amount, IUnit<Length> length1Def, IUnit<Length> length2Def) : base(amount, length1Def, length2Def) {
+        public Area(double amount, Unit<Length> length1Def, Unit<Length> length2Def) : base(amount, length1Def, length2Def) {
         }
 
         public static Volume operator *(Area area, Length other) {
@@ -46,23 +46,23 @@
         }
 
         public static class Units {
-            public static IUnit<Area> Acre { get; } = MeasurementSystems.EnglishArea.Acre;
-            public static IUnit<Area> CentimeterSquared { get; } = Length.Units.Centimeter.Square<Length, Area>();
-            public static IUnit<Area> FootSquared { get; } = MeasurementSystems.EnglishLength.Foot.Square<Length, Area>();
-            public static IUnit<Area> Hectare { get; } = Prefix.Hecto(MeasurementSystems.Metric.Are);
-            public static IUnit<Area> InchSquared { get; } = Length.Units.Inch.Square<Length, Area>();
-            public static IUnit<Area> KilometerSquared { get; } = Length.Units.Kilometer.Square<Length, Area>();
+            public static Unit<Area> Acre { get; } = MeasurementSystems.EnglishArea.Acre;
+            public static Unit<Area> CentimeterSquared { get; } = Length.Units.Centimeter.Square<Length, Area>();
+            public static Unit<Area> FootSquared { get; } = MeasurementSystems.EnglishLength.Foot.Square<Length, Area>();
+            public static Unit<Area> Hectare { get; } = Prefix.Hecto(MeasurementSystems.Metric.Are);
+            public static Unit<Area> InchSquared { get; } = Length.Units.Inch.Square<Length, Area>();
+            public static Unit<Area> KilometerSquared { get; } = Length.Units.Kilometer.Square<Length, Area>();
 
-            public static IUnit<Area> MeterSquared { get; } = MeasurementSystems.Metric.Meter.Square<Length, Area>();
-            public static IUnit<Area> MileSquared { get; } = Length.Units.Mile.Square<Length, Area>();
-            public static IUnit<Area> MillimeterSquared { get; } = Length.Units.Millimeter.Square<Length, Area>();
-            public static IUnit<Area> YardSquared { get; } = Length.Units.Yard.Square<Length, Area>();
+            public static Unit<Area> MeterSquared { get; } = MeasurementSystems.Metric.Meter.Square<Length, Area>();
+            public static Unit<Area> MileSquared { get; } = Length.Units.Mile.Square<Length, Area>();
+            public static Unit<Area> MillimeterSquared { get; } = Length.Units.Millimeter.Square<Length, Area>();
+            public static Unit<Area> YardSquared { get; } = Length.Units.Yard.Square<Length, Area>();
         }
 
         private class AreaProvider : IMeasurementProvider<Area> {
-            public IUnit<Area> DefaultUnit => Units.MeterSquared;
+            public Unit<Area> DefaultUnit => Units.MeterSquared;
 
-            public Area CreateMeasurement(double value, IUnit<Area> unit) => new Area(value, unit);
+            public Area CreateMeasurement(double value, Unit<Area> unit) => new Area(value, unit);
         }
     }
 }

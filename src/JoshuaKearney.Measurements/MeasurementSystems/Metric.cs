@@ -4,31 +4,31 @@
         //private static Lazy<IEnumerable<IUnit>> allUnits = new Lazy<IEnumerable<IUnit>>(() => new List<IUnit>() { Meter, Gram, Tonne, Liter, Are });
         //public static IEnumerable<IUnit> AllUnits => allUnits.Value;
 
-        public static IPrefixableUnit<Area> Are { get; } = Unit.CreatePrefixable<Area>(
+        public static PrefixableUnit<Area> Are { get; } = new PrefixableUnit<Area>(
             name: "are",
             symbol: "a",
             unitsPerDefault: .01
         );
 
-        public static IPrefixableUnit<Mass> Gram { get; } = Unit.CreatePrefixable<Mass>(
+        public static PrefixableUnit<Mass> Gram { get; } = new PrefixableUnit<Mass>(
             name: "gram",
             symbol: "g",
             unitsPerDefault: 1000d
         );
 
-        public static IPrefixableUnit<Volume> Liter { get; } = Unit.CreatePrefixable<Volume>(
+        public static PrefixableUnit<Volume> Liter { get; } = new PrefixableUnit<Volume>(
             name: "liter",
             symbol: "L",
             unitsPerDefault: 1000
         );
 
-        public static IPrefixableUnit<Length> Meter { get; } = Unit.CreatePrefixable<Length>(
+        public static PrefixableUnit<Length> Meter { get; } = new PrefixableUnit<Length>(
                                                             name: "meter",
             symbol: "m",
             unitsPerDefault: 1d
         );
 
-        public static IPrefixableUnit<Mass> Tonne { get; } = Unit.CreatePrefixable<Mass>(
+        public static PrefixableUnit<Mass> Tonne { get; } = new PrefixableUnit<Mass>(
             name: "tonne",
             symbol: "t",
             unitsPerDefault: 1d / 1000d

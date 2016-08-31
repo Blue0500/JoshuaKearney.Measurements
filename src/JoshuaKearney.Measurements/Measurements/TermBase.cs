@@ -16,10 +16,10 @@
             item1.MeasurementProvider.DefaultUnit.MultiplyToTerm(item2.MeasurementProvider.DefaultUnit).Cast<Term<T1, T2>, TSelf>()
         ) { }
 
-        protected TermBase(double amount, IUnit<TSelf> unit) : base(amount, unit) {
+        protected TermBase(double amount, Unit<TSelf> unit) : base(amount, unit) {
         }
 
-        protected TermBase(double amount, IUnit<T1> item1Def, IUnit<T2> item2Def) : base(amount, item1Def.MultiplyToTerm(item2Def).Cast<Term<T1, T2>, TSelf>()) {
+        protected TermBase(double amount, Unit<T1> item1Def, Unit<T2> item2Def) : base(amount, item1Def.MultiplyToTerm(item2Def).Cast<Term<T1, T2>, TSelf>()) {
         }
 
         public static T1 operator /(TermBase<TSelf, T1, T2> term, T2 term2) {
@@ -36,27 +36,27 @@
             return this.DivideToFirst(that);
         }
 
-        public double ToDouble(IUnit<T1> item1Def, IUnit<T2> item2Def) {
+        public double ToDouble(Unit<T1> item1Def, Unit<T2> item2Def) {
             Validate.NonNull(item1Def, nameof(item1Def));
             Validate.NonNull(item2Def, nameof(item2Def));
 
             return this.ToDouble(item1Def.MultiplyToTerm(item2Def).Cast<Term<T1, T2>, TSelf>());
         }
 
-        public double ToDouble(IUnit<Term<T1, T2>> unit) {
+        public double ToDouble(Unit<Term<T1, T2>> unit) {
             Validate.NonNull(unit, nameof(unit));
 
             return this.ToDouble(unit.Cast<Term<T1, T2>, TSelf>());
         }
 
-        public string ToString(IUnit<T1> item1Def, IUnit<T2> item2Def) {
+        public string ToString(Unit<T1> item1Def, Unit<T2> item2Def) {
             Validate.NonNull(item1Def, nameof(item1Def));
             Validate.NonNull(item1Def, nameof(item2Def));
 
             return this.ToString(item1Def.MultiplyToTerm(item2Def).Cast<Term<T1, T2>, TSelf>());
         }
 
-        public string ToString(IUnit<Term<T1, T2>> unit) {
+        public string ToString(Unit<Term<T1, T2>> unit) {
             Validate.NonNull(unit, nameof(unit));
             return this.ToString(unit.Cast<Term<T1, T2>, TSelf>());
         }

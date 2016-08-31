@@ -16,10 +16,10 @@
             numerator.MeasurementProvider.DefaultUnit.DivideToRatio(denominator.MeasurementProvider.DefaultUnit).Cast<Ratio<TNumerator, TDenominator>, TSelf>()
         ) { }
 
-        protected RatioBase(double amount, IUnit<TSelf> unit) : base(amount, unit) {
+        protected RatioBase(double amount, Unit<TSelf> unit) : base(amount, unit) {
         }
 
-        protected RatioBase(double amount, IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) : this(
+        protected RatioBase(double amount, Unit<TNumerator> numDef, Unit<TDenominator> denomDef) : this(
             amount,
             numDef.DivideToRatio(denomDef).Cast<Ratio<TNumerator, TDenominator>, TSelf>()
         ) { }
@@ -69,7 +69,7 @@
             );
         }
 
-        public double ToDouble(IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) {
+        public double ToDouble(Unit<TNumerator> numDef, Unit<TDenominator> denomDef) {
             Validate.NonNull(numDef, nameof(numDef));
             Validate.NonNull(denomDef, nameof(denomDef));
 
@@ -83,7 +83,7 @@
             DenominatorProvider
         );
 
-        public string ToString(IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef) {
+        public string ToString(Unit<TNumerator> numDef, Unit<TDenominator> denomDef) {
             Validate.NonNull(numDef, nameof(numDef));
             Validate.NonNull(denomDef, nameof(denomDef));
 

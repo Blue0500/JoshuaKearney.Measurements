@@ -28,13 +28,13 @@
         public Volume() {
         }
 
-        public Volume(double amount, IUnit<Volume> unit) : base(amount, unit) {
+        public Volume(double amount, Unit<Volume> unit) : base(amount, unit) {
         }
 
         public Volume(Length length, Area area) : base(length, area) {
         }
 
-        public Volume(double amount, IUnit<Length> lengthDef, IUnit<Area> areaDef) : base(amount, lengthDef, areaDef) {
+        public Volume(double amount, Unit<Length> lengthDef, Unit<Area> areaDef) : base(amount, lengthDef, areaDef) {
         }
 
         public static Area operator /(Volume volume, Length length) {
@@ -52,29 +52,29 @@
         }
 
         public static partial class Units {
-            public static IUnit<Volume> CentimeterCubed { get; } = Length.Units.Centimeter.Cube<Length, Volume>();
-            public static IUnit<Volume> FootCubed { get; } = MeasurementSystems.EnglishLength.Foot.Cube<Length, Volume>();
-            public static IUnit<Volume> InchCubed { get; } = MeasurementSystems.EnglishLength.Inch.Cube<Length, Volume>();
-            public static IUnit<Volume> KilometerCubed { get; } = Length.Units.Kilometer.Cube<Length, Volume>();
-            public static IPrefixableUnit<Volume> Liter { get; } = MeasurementSystems.Metric.Liter;
-            public static IUnit<Volume> MeterCubed { get; } = MeasurementSystems.Metric.Meter.Cube<Length, Volume>();
-            public static IUnit<Volume> MileCubed { get; } = Length.Units.Mile.Cube<Length, Volume>();
-            public static IUnit<Volume> Milliliter { get; } = Prefix.Milli(MeasurementSystems.Metric.Liter);
-            public static IUnit<Volume> MillimeterCubed { get; } = Length.Units.Millimeter.Cube<Length, Volume>();
-            public static IUnit<Volume> Tablespoon { get; } = MeasurementSystems.CustomaryVolume.Tablespoon;
-            public static IUnit<Volume> Teaspoon { get; } = MeasurementSystems.CustomaryVolume.Teaspoon;
-            public static IUnit<Volume> USCup { get; } = MeasurementSystems.CustomaryVolume.Cup;
-            public static IUnit<Volume> USFluidOunce { get; } = MeasurementSystems.CustomaryVolume.FluidOunce;
-            public static IUnit<Volume> USGallon { get; } = MeasurementSystems.CustomaryVolume.Gallon;
-            public static IUnit<Volume> USPint { get; } = MeasurementSystems.CustomaryVolume.Pint;
-            public static IUnit<Volume> USQuart { get; } = MeasurementSystems.CustomaryVolume.Quart;
-            public static IUnit<Volume> YardCubed { get; } = MeasurementSystems.EnglishLength.Yard.Cube<Length, Volume>();
+            public static Unit<Volume> CentimeterCubed { get; } = Length.Units.Centimeter.Cube<Length, Volume>();
+            public static Unit<Volume> FootCubed { get; } = MeasurementSystems.EnglishLength.Foot.Cube<Length, Volume>();
+            public static Unit<Volume> InchCubed { get; } = MeasurementSystems.EnglishLength.Inch.Cube<Length, Volume>();
+            public static Unit<Volume> KilometerCubed { get; } = Length.Units.Kilometer.Cube<Length, Volume>();
+            public static PrefixableUnit<Volume> Liter { get; } = MeasurementSystems.Metric.Liter;
+            public static Unit<Volume> MeterCubed { get; } = MeasurementSystems.Metric.Meter.Cube<Length, Volume>();
+            public static Unit<Volume> MileCubed { get; } = Length.Units.Mile.Cube<Length, Volume>();
+            public static Unit<Volume> Milliliter { get; } = Prefix.Milli(MeasurementSystems.Metric.Liter);
+            public static Unit<Volume> MillimeterCubed { get; } = Length.Units.Millimeter.Cube<Length, Volume>();
+            public static Unit<Volume> Tablespoon { get; } = MeasurementSystems.CustomaryVolume.Tablespoon;
+            public static Unit<Volume> Teaspoon { get; } = MeasurementSystems.CustomaryVolume.Teaspoon;
+            public static Unit<Volume> USCup { get; } = MeasurementSystems.CustomaryVolume.Cup;
+            public static Unit<Volume> USFluidOunce { get; } = MeasurementSystems.CustomaryVolume.FluidOunce;
+            public static Unit<Volume> USGallon { get; } = MeasurementSystems.CustomaryVolume.Gallon;
+            public static Unit<Volume> USPint { get; } = MeasurementSystems.CustomaryVolume.Pint;
+            public static Unit<Volume> USQuart { get; } = MeasurementSystems.CustomaryVolume.Quart;
+            public static Unit<Volume> YardCubed { get; } = MeasurementSystems.EnglishLength.Yard.Cube<Length, Volume>();
         }
 
         private class VolumeProvider : IMeasurementProvider<Volume> {
-            public IUnit<Volume> DefaultUnit => Units.MeterCubed;
+            public Unit<Volume> DefaultUnit => Units.MeterCubed;
 
-            public Volume CreateMeasurement(double value, IUnit<Volume> unit) => new Volume(value, unit);
+            public Volume CreateMeasurement(double value, Unit<Volume> unit) => new Volume(value, unit);
         }
     }
 }

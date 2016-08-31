@@ -50,7 +50,7 @@ namespace JoshuaKearney.Measurements {
             where T1 : Measurement<T1>
             where T2 : Measurement<T2> {
 
-        public Term(double amount, IUnit<Term<T1, T2>> unit, IMeasurementProvider<T1> t1Prov, IMeasurementProvider<T2> t2Prov) : base(amount, unit) {
+        public Term(double amount, Unit<Term<T1, T2>> unit, IMeasurementProvider<T1> t1Prov, IMeasurementProvider<T2> t2Prov) : base(amount, unit) {
             this.Item1Provider = t1Prov;
             this.Item2Provider = t2Prov;
             this.MeasurementProvider = new TermProvider(this.Item1Provider, this.Item2Provider);
@@ -111,9 +111,9 @@ namespace JoshuaKearney.Measurements {
                 this.DefaultUnit = t1Prov.DefaultUnit.MultiplyToTerm(t2Prov.DefaultUnit);
             }
 
-            public IUnit<Term<T1, T2>> DefaultUnit { get; }
+            public Unit<Term<T1, T2>> DefaultUnit { get; }
 
-            public Term<T1, T2> CreateMeasurement(double value, IUnit<Term<T1, T2>> unit) {
+            public Term<T1, T2> CreateMeasurement(double value, Unit<Term<T1, T2>> unit) {
                 return new Term<T1, T2>(value, unit, t1Prov, t2Prov);
             }
         }

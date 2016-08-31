@@ -12,7 +12,7 @@
         public Length() {
         }
 
-        public Length(double amount, IUnit<Length> unit) : base(amount, unit) {
+        public Length(double amount, Unit<Length> unit) : base(amount, unit) {
         }
 
         public static Area operator *(Length length, Length length2) {
@@ -46,21 +46,21 @@
         public Area Square() => this.Multiply(this);
 
         public static class Units {
-            public static IPrefixableUnit<Length> Meter { get; } = MeasurementSystems.Metric.Meter;
+            public static PrefixableUnit<Length> Meter { get; } = MeasurementSystems.Metric.Meter;
 
-            public static IUnit<Length> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
-            public static IUnit<Length> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
-            public static IUnit<Length> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
-            public static IUnit<Length> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
-            public static IUnit<Length> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
-            public static IUnit<Length> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
-            public static IUnit<Length> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
+            public static Unit<Length> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
+            public static Unit<Length> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
+            public static Unit<Length> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
+            public static Unit<Length> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
+            public static Unit<Length> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
+            public static Unit<Length> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
+            public static Unit<Length> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
         }
 
         private class LengthProvider : IMeasurementProvider<Length> {
-            public IUnit<Length> DefaultUnit => Units.Meter;
+            public Unit<Length> DefaultUnit => Units.Meter;
 
-            public Length CreateMeasurement(double value, IUnit<Length> unit) => new Length(value, unit);
+            public Length CreateMeasurement(double value, Unit<Length> unit) => new Length(value, unit);
         }
     }
 }
