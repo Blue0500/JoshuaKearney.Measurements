@@ -6,9 +6,9 @@ namespace Testing {
     public class Program {
 
         public static void Main(string[] args) {
-            Length l = new Length(4, Length.Units.Meter);
+            Distance l = new Distance(4, Distance.Meter);
 
-            var d = new DigitalSize(45000000000, DigitalSize.Units.Octet);
+            var d = new DigitalSize(45000000000, DigitalSize.Octet);
 
             Console.WriteLine(
                 d.ToString()

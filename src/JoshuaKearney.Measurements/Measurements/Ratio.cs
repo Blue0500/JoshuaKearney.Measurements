@@ -1,53 +1,6 @@
 ﻿using System;
 
 namespace JoshuaKearney.Measurements {
-    //public static class Ratio {
-    //    public static Ratio<TNumerator, TDenominator> From<TNumerator, TDenominator>(double amount, IUnit<Ratio<TNumerator, TDenominator>> def)
-    //            where TNumerator : Measurement
-    //            where TDenominator : Measurement {
-    //        Validate.NonNull(def, nameof(def));
-
-    //        return Ratio<TNumerator, TDenominator>.From(amount, def);
-    //    }
-
-    //    public static Ratio<TNumerator, TDenominator> From<TNumerator, TDenominator>(
-    //                double amount, IUnit<TNumerator> numDef, IUnit<TDenominator> denomDef)
-    //            where TNumerator : Measurement
-    //            where TDenominator : Measurement {
-    //        Validate.NonNull(numDef, nameof(numDef));
-    //        Validate.NonNull(denomDef, nameof(denomDef));
-
-    //        return Ratio<TNumerator, TDenominator>.From(amount, numDef, denomDef);
-    //    }
-
-    //    [Parser.Flag]
-    //    public static Ratio<TNumerator, TDenominator> From<TNumerator, TDenominator>(
-    //            TNumerator numerator, TDenominator denominator)
-    //            where TNumerator : Measurement
-    //            where TDenominator : Measurement {
-    //        Validate.NonNull(numerator, nameof(numerator));
-    //        Validate.NonNull(denominator, nameof(denominator));
-
-    //        return Ratio<TNumerator, TDenominator>.From(numerator, denominator);
-    //    }
-
-    //    public static Ratio<TNumerator, TDenominator> Parse<TNumerator, TDenominator>(string input)
-    //            where TNumerator : Measurement
-    //            where TDenominator : Measurement {
-    //        Validate.NonNull(input, nameof(input));
-
-    //        return Ratio<TNumerator, TDenominator>.Parse(input);
-    //    }
-
-    //    public static bool TryParse<TNumerator, TDenominator>(string input, out Ratio<TNumerator, TDenominator> result)
-    //            where TNumerator : Measurement
-    //            where TDenominator : Measurement {
-    //        Validate.NonNull(input, nameof(input));
-
-    //        return Ratio<TNumerator, TDenominator>.TryParse(input, out result);
-    //    }
-    //}
-
     public sealed class Ratio<TNumerator, TDenominator> : RatioBase<Ratio<TNumerator, TDenominator>, TNumerator, TDenominator>
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator> {

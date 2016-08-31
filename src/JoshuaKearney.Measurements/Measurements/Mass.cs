@@ -25,7 +25,7 @@
             return new Density(this, volume);
         }
 
-        public static class Units {
+        //public static class Units {
             public static PrefixableUnit<Mass> Gram { get; } = MeasurementSystems.Metric.Gram;
 
             public static Unit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
@@ -35,10 +35,10 @@
             public static Unit<Mass> Ounce { get; } = MeasurementSystems.AvoirdupoisMass.Ounce;
             public static Unit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
             public static Unit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
-        }
+        //}
 
         private class MassProvider : IMeasurementProvider<Mass> {
-            public Unit<Mass> DefaultUnit => Units.Kilogram;
+            public Unit<Mass> DefaultUnit => Kilogram;
 
             public Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
         }

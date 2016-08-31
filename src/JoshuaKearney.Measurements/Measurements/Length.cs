@@ -1,21 +1,21 @@
 ﻿namespace JoshuaKearney.Measurements {
 
-    public sealed class Length : Measurement<Length>,
-        IMultipliableMeasurement<Length, Area>,
-        IMultipliableMeasurement<Area, Volume>,
-        ISquareableMeasurement<Area>,
-        ICubableMeasurement<Volume> {
-        public static IMeasurementProvider<Length> Provider { get; } = new LengthProvider();
+    public sealed class Distance : Measurement<Distance>,
+            IMultipliableMeasurement<Distance, Area>,
+            IMultipliableMeasurement<Area, Volume>,
+            ISquareableMeasurement<Area>,
+            ICubableMeasurement<Volume> {
+        public static IMeasurementProvider<Distance> Provider { get; } = new LengthProvider();
 
-        public override IMeasurementProvider<Length> MeasurementProvider => Provider;
+        public override IMeasurementProvider<Distance> MeasurementProvider => Provider;
 
-        public Length() {
+        public Distance() {
         }
 
-        public Length(double amount, Unit<Length> unit) : base(amount, unit) {
+        public Distance(double amount, Unit<Distance> unit) : base(amount, unit) {
         }
 
-        public static Area operator *(Length length, Length length2) {
+        public static Area operator *(Distance length, Distance length2) {
             if (length == null || length2 == null) {
                 return null;
             }
@@ -23,7 +23,7 @@
             return length.Multiply(length2);
         }
 
-        public static Volume operator *(Length length, Area area) {
+        public static Volume operator *(Distance length, Area area) {
             if (length == null || area == null) {
                 return null;
             }
@@ -33,7 +33,7 @@
 
         public Volume Cube() => this.Multiply(this.Square());
 
-        public Area Multiply(Length length) {
+        public Area Multiply(Distance length) {
             Validate.NonNull(length, nameof(length));
             return new Area(this, length);
         }
@@ -45,22 +45,22 @@
 
         public Area Square() => this.Multiply(this);
 
-        public static class Units {
-            public static PrefixableUnit<Length> Meter { get; } = MeasurementSystems.Metric.Meter;
+        //public static class Units {
+            public static PrefixableUnit<Distance> Meter { get; } = MeasurementSystems.Metric.Meter;
 
-            public static Unit<Length> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
-            public static Unit<Length> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
-            public static Unit<Length> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
-            public static Unit<Length> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
-            public static Unit<Length> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
-            public static Unit<Length> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
-            public static Unit<Length> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
-        }
+            public static Unit<Distance> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
+            public static Unit<Distance> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
+            public static Unit<Distance> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
+            public static Unit<Distance> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
+            public static Unit<Distance> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
+            public static Unit<Distance> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
+            public static Unit<Distance> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
+        //}
 
-        private class LengthProvider : IMeasurementProvider<Length> {
-            public Unit<Length> DefaultUnit => Units.Meter;
+        private class LengthProvider : IMeasurementProvider<Distance> {
+            public Unit<Distance> DefaultUnit => Meter;
 
-            public Length CreateMeasurement(double value, Unit<Length> unit) => new Length(value, unit);
+            public Distance CreateMeasurement(double value, Unit<Distance> unit) => new Distance(value, unit);
         }
     }
 }

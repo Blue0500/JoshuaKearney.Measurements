@@ -22,7 +22,7 @@
             unitsPerDefault: 1000
         );
 
-        public static PrefixableUnit<Length> Meter { get; } = new PrefixableUnit<Length>(
+        public static PrefixableUnit<Distance> Meter { get; } = new PrefixableUnit<Distance>(
                                                             name: "meter",
             symbol: "m",
             unitsPerDefault: 1d

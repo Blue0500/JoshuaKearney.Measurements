@@ -36,19 +36,19 @@
         //    uniqueUnits: new List<IUnit<Density>>()
         //);
 
-        public static class Units {
-            public static Unit<Density> GramsPerCentimeterCubed { get; } = Mass.Units.Gram.Divide<Mass, Volume, Density>(Volume.Units.CentimeterCubed);
-            public static Unit<Density> KilogramsPerLiter { get; } = Mass.Units.Kilogram.Divide<Mass, Volume, Density>(Volume.Units.Liter);
-            public static Unit<Density> KilogramsPerMeterCubed { get; } = Mass.Units.Kilogram.Divide<Mass, Volume, Density>(Volume.Units.MeterCubed);
-            public static Unit<Density> MetricTonsPerMeterCubed { get; } = Mass.Units.ShortTon.Divide<Mass, Volume, Density>(Volume.Units.MeterCubed);
+       // public static class Units {
+            public static Unit<Density> GramsPerCentimeterCubed { get; } = Mass.Gram.Divide<Mass, Volume, Density>(Volume.CentimeterCubed);
+            public static Unit<Density> KilogramsPerLiter { get; } = Mass.Kilogram.Divide<Mass, Volume, Density>(Volume.Liter);
+            public static Unit<Density> KilogramsPerMeterCubed { get; } = Mass.Kilogram.Divide<Mass, Volume, Density>(Volume.MeterCubed);
+            public static Unit<Density> MetricTonsPerMeterCubed { get; } = Mass.ShortTon.Divide<Mass, Volume, Density>(Volume.MeterCubed);
 
-            public static Unit<Density> OuncesPerInchCubed { get; } = Mass.Units.Ounce.Divide<Mass, Volume, Density>(Volume.Units.InchCubed);
+            public static Unit<Density> OuncesPerInchCubed { get; } = Mass.Ounce.Divide<Mass, Volume, Density>(Volume.InchCubed);
 
-            public static Unit<Density> PoundsPerFootCubed { get; } = Mass.Units.Pound.Divide<Mass, Volume, Density>(Volume.Units.FootCubed);
-        }
+            public static Unit<Density> PoundsPerFootCubed { get; } = Mass.Pound.Divide<Mass, Volume, Density>(Volume.FootCubed);
+        //}
 
         private class DensityProvider : IMeasurementProvider<Density> {
-            public Unit<Density> DefaultUnit => Units.KilogramsPerMeterCubed;
+            public Unit<Density> DefaultUnit => KilogramsPerMeterCubed;
 
             public Density CreateMeasurement(double value, Unit<Density> unit) {
                 return new Density(value, unit);
