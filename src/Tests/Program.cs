@@ -14,6 +14,9 @@ namespace Testing {
                 d.ToString()
             );
 
+            Temperature t = Temperature.FromFahrenheit(32);
+            Console.WriteLine(t);
+
             //Console.WriteLine(new Force(1, Force.Units.Newton).ToString(Force.Units.PoundForce));
 
             //Math.

@@ -136,5 +136,9 @@
             this.Symbol = symbol;
             this.UnitsPerDefault = unitsPerDefault;
         }
+
+        public override string ToString() {
+            return this.Symbol;
+        }
     }
 }

@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
     <Compile Include="IMeasurementSupplier.cs" />
+    <Compile Include="Measurements\Temperature.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="MeasurementParser.cs" />
     <Compile Include="MeasurementSystems\AvoirdupoisMass.cs" />
