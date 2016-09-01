@@ -6,18 +6,16 @@ namespace Testing {
     public class Program {
 
         public static void Main(string[] args) {
-            Distance l = new Distance(4, Distance.Meter);
+            Speed s = new Speed(45, Distance.Meter, Time.Second);
+            Acceleration a = new Acceleration(s, new Time(7, Time.Second));
 
-            var d = new DigitalSize(45000000000, DigitalSize.Octet);
+            var f = new Force(1, Force.Newton);
 
-            Console.WriteLine(
-                d.ToString()
-            );
+            Console.WriteLine(f.ToDouble(Force.PoundForce));
 
-            Temperature t = Temperature.FromFahrenheit(32);
-            Console.WriteLine(t);
+            //Console.WriteLine(new Mass(1, Mass.Pound).Multiply(Acceleration.Gravity));
 
-            //Console.WriteLine(new Force(1, Force.Units.Newton).ToString(Force.Units.PoundForce));
+            //Console.WriteLine(new Force(1, Force.Newton).ToString(Force.PoundForce));
 
             //Math.
 

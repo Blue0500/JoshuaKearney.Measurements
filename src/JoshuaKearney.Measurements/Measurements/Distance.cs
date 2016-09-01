@@ -1,8 +1,11 @@
-﻿namespace JoshuaKearney.Measurements {
+﻿using System;
+
+namespace JoshuaKearney.Measurements {
 
     public sealed class Distance : Measurement<Distance>,
             IMultipliableMeasurement<Distance, Area>,
             IMultipliableMeasurement<Area, Volume>,
+            IDividableMeasurement<Time, Speed>,
             ISquareableMeasurement<Area>,
             ICubableMeasurement<Volume> {
         public static IMeasurementProvider<Distance> Provider { get; } = new LengthProvider();
@@ -31,6 +34,14 @@
             return length.Multiply(area);
         }
 
+        public static Speed operator /(Distance length, Time time) {
+            if (length == null || time == null) {
+                return null;
+            }
+
+            return length.Divide(time);
+        }
+
         public Volume Cube() => this.Multiply(this.Square());
 
         public Area Multiply(Distance length) {
@@ -45,16 +56,29 @@
 
         public Area Square() => this.Multiply(this);
 
-        //public static class Units {
-            public static PrefixableUnit<Distance> Meter { get; } = MeasurementSystems.Metric.Meter;
+        public Speed Divide(Time time) {
+            Validate.NonNull(time, nameof(time));
 
-            public static Unit<Distance> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
-            public static Unit<Distance> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
-            public static Unit<Distance> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
-            public static Unit<Distance> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
-            public static Unit<Distance> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
-            public static Unit<Distance> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
-            public static Unit<Distance> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
+            return new Speed(this, time);
+        }
+
+        //public static class Units {
+        public static PrefixableUnit<Distance> Meter { get; } = MeasurementSystems.Metric.Meter;
+
+        public static Unit<Distance> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
+
+        public static Unit<Distance> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
+
+        public static Unit<Distance> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
+
+        public static Unit<Distance> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
+
+        public static Unit<Distance> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
+
+        public static Unit<Distance> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
+
+        public static Unit<Distance> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
+
         //}
 
         private class LengthProvider : IMeasurementProvider<Distance> {
