@@ -408,11 +408,17 @@
 //            }
 
 //            public static Operator CloseParen { get; } = new Operator(")", 100);
+
 //            public static UrnaryOperator Cube { get; } = new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
+
 //            public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), typeof(Ratio), x, y));
+
 //            public static BinaryOperator Multiply { get; } = new BinaryOperator("*", 5, (x, y) => ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), typeof(Term), x, y));
+
 //            public static Operator OpenParen { get; } = new Operator("(", 100);
+
 //            public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
+
 //            public string Value { get; }
 
 //            public override string ToString() => this.Value;

@@ -1,4 +1,5 @@
 ﻿namespace JoshuaKearney.Measurements {
+
     public static partial class Extensions {
 
         public static Unit<TResult> Cast<T, TResult>(this Unit<T> unit)
@@ -119,16 +120,27 @@
                 unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault
             );
         }
+
+        public static T Multiply<T>(this Unit<T> unit, double amount) where T : Measurement<T>, new() {
+            return new T().MeasurementProvider.CreateMeasurement(amount, unit);
+        }
+
+        public static T Divide<T>(this Unit<T> unit, double amount) where T : Measurement<T>, new() {
+            return new T().MeasurementProvider.CreateMeasurement(1 / amount, unit);
+        }
     }
 
     public class PrefixableUnit<T> : Unit<T> where T : Measurement<T> {
+
         public PrefixableUnit(string name, string symbol, double unitsPerDefault) : base(name, symbol, unitsPerDefault) {
         }
     }
 
     public class Unit<T> where T : Measurement<T> {
         public string Name { get; }
+
         public string Symbol { get; }
+
         public double UnitsPerDefault { get; }
 
         public Unit(string name, string symbol, double unitsPerDefault) {

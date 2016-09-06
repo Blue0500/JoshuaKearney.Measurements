@@ -129,13 +129,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
-    <Compile Include="IMeasurementSupplier.cs" />
-    <Compile Include="Measurements\Acceleration.cs" />
-    <Compile Include="Measurements\Force.cs" />
-    <Compile Include="Measurements\Pressure.cs" />
-    <Compile Include="Measurements\Speed.cs" />
-    <Compile Include="Measurements\Temperature.cs" />
-    <Compile Include="Measurements\Time.cs" />
+    <Compile Include="IComplexMeasurementProvider.cs" />
+    <Compile Include="IMeasurementProvider.cs" />
+    <Compile Include="Measurements\Geometry\Angle.cs" />
+    <Compile Include="Measurements\Physics\Acceleration.cs" />
+    <Compile Include="Measurements\General\Concentration.cs" />
+    <Compile Include="Measurements\Physics\Force.cs" />
+    <Compile Include="Measurements\Physics\Frequency.cs" />
+    <Compile Include="Measurements\Physics\Pressure.cs" />
+    <Compile Include="Measurements\Physics\Speed.cs" />
+    <Compile Include="Measurements\Physics\Temperature.cs" />
+    <Compile Include="Measurements\Physics\Time.cs" />
+    <Compile Include="Parser\MeasurementToken.cs" />
+    <Compile Include="Parser\Operator.cs" />
+    <Compile Include="Parser\Token.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="MeasurementParser.cs" />
     <Compile Include="MeasurementSystems\AvoirdupoisMass.cs" />
@@ -149,15 +156,15 @@
     <Compile Include="Prefix.cs" />
     <Compile Include="Measurements\RatioBase.cs" />
     <Compile Include="Measurements\TermBase.cs" />
-    <Compile Include="Measurements\DigitalSize.cs" />
+    <Compile Include="Measurements\General\DigitalSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Measurements\Area.cs" />
-    <Compile Include="Measurements\Density.cs" />
-    <Compile Include="Measurements\Distance.cs" />
-    <Compile Include="Measurements\Mass.cs" />
+    <Compile Include="Measurements\Geometry\Area.cs" />
+    <Compile Include="Measurements\Physics\Density.cs" />
+    <Compile Include="Measurements\Geometry\Distance.cs" />
+    <Compile Include="Measurements\Physics\Mass.cs" />
     <Compile Include="Measurements\Ratio.cs" />
     <Compile Include="Measurements\Term.cs" />
-    <Compile Include="Measurements\Volume.cs" />
+    <Compile Include="Measurements\Geometry\Volume.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

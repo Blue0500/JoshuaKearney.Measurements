@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -11,9 +12,10 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static IMeasurementProvider<DigitalSize> Provider { get; } = new DigitalSizeProvider();
+
         public override IMeasurementProvider<DigitalSize> MeasurementProvider => Provider;
 
-        //public static class Units {
+        public static class Units {
 
             private static Lazy<PrefixableUnit<DigitalSize>> bit = new Lazy<PrefixableUnit<DigitalSize>>(() => new PrefixableUnit<DigitalSize>(
                 name: "bit",
@@ -28,8 +30,11 @@ namespace JoshuaKearney.Measurements {
             ));
 
             public static Unit<DigitalSize> Exabyte { get; } = Prefix.Exa(Octet);
+
             public static Unit<DigitalSize> Gigabyte { get; } = Prefix.Giga(Octet);
+
             public static Unit<DigitalSize> Kilobyte { get; } = Prefix.Kilo(Octet);
+
             public static Unit<DigitalSize> Megabyte { get; } = Prefix.Mega(Octet);
 
             public static Unit<DigitalSize> Nybble { get; } = new Unit<DigitalSize>(
@@ -39,13 +44,18 @@ namespace JoshuaKearney.Measurements {
             );
 
             public static Unit<DigitalSize> Petabyte { get; } = Prefix.Peta(Octet);
+
             public static Unit<DigitalSize> Terabyte { get; } = Prefix.Tera(Octet);
+
             public static PrefixableUnit<DigitalSize> Bit => bit.Value;
+
             public static PrefixableUnit<DigitalSize> Octet => sizeByte.Value;
-        //}
+        }
 
         private class DigitalSizeProvider : IMeasurementProvider<DigitalSize> {
-            public Unit<DigitalSize> DefaultUnit => Octet;
+            public IEnumerable<Unit<DigitalSize>> BaseUnits { get; } = new[] { Units.Bit, Units.Octet };
+
+            public Unit<DigitalSize> DefaultUnit => Units.Octet;
 
             public DigitalSize CreateMeasurement(double value, Unit<DigitalSize> unit) => new DigitalSize(value, unit);
         }

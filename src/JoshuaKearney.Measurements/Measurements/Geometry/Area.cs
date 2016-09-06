@@ -1,4 +1,7 @@
-﻿namespace JoshuaKearney.Measurements {
+﻿using System;
+using System.Collections.Generic;
+
+namespace JoshuaKearney.Measurements {
 
     public static partial class Extensions {
 
@@ -45,22 +48,36 @@
             return new Volume(other, this);
         }
 
-        //public static class Units {
+        public static class Units {
             public static Unit<Area> Acre { get; } = MeasurementSystems.EnglishArea.Acre;
-            public static Unit<Area> CentimeterSquared { get; } = Distance.Centimeter.Square<Distance, Area>();
+
+            public static Unit<Area> CentimeterSquared { get; } = Distance.Units.Centimeter.Square<Distance, Area>();
+
             public static Unit<Area> FootSquared { get; } = MeasurementSystems.EnglishLength.Foot.Square<Distance, Area>();
+
             public static Unit<Area> Hectare { get; } = Prefix.Hecto(MeasurementSystems.Metric.Are);
-            public static Unit<Area> InchSquared { get; } = Distance.Inch.Square<Distance, Area>();
-            public static Unit<Area> KilometerSquared { get; } = Distance.Kilometer.Square<Distance, Area>();
+
+            public static Unit<Area> InchSquared { get; } = Distance.Units.Inch.Square<Distance, Area>();
+
+            public static Unit<Area> KilometerSquared { get; } = Distance.Units.Kilometer.Square<Distance, Area>();
 
             public static Unit<Area> MeterSquared { get; } = MeasurementSystems.Metric.Meter.Square<Distance, Area>();
-            public static Unit<Area> MileSquared { get; } = Distance.Mile.Square<Distance, Area>();
-            public static Unit<Area> MillimeterSquared { get; } = Distance.Millimeter.Square<Distance, Area>();
-            public static Unit<Area> YardSquared { get; } = Distance.Yard.Square<Distance, Area>();
-        //}
 
-        private class AreaProvider : IMeasurementProvider<Area> {
-            public Unit<Area> DefaultUnit => MeterSquared;
+            public static Unit<Area> MileSquared { get; } = Distance.Units.Mile.Square<Distance, Area>();
+
+            public static Unit<Area> MillimeterSquared { get; } = Distance.Units.Millimeter.Square<Distance, Area>();
+
+            public static Unit<Area> YardSquared { get; } = Distance.Units.Yard.Square<Distance, Area>();
+        }
+
+        private class AreaProvider : IMeasurementProvider<Area>, IComplexMeasurementProvider<Distance, Distance> {
+            public IEnumerable<Unit<Area>> BaseUnits { get; } = new[] { Units.Acre };
+
+            public IMeasurementProvider<Distance> Component1Provider => Distance.Provider;
+
+            public IMeasurementProvider<Distance> Component2Provider => Distance.Provider;
+
+            public Unit<Area> DefaultUnit => Units.MeterSquared;
 
             public Area CreateMeasurement(double value, Unit<Area> unit) => new Area(value, unit);
         }

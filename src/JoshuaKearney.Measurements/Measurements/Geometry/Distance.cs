@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -62,27 +63,28 @@ namespace JoshuaKearney.Measurements {
             return new Speed(this, time);
         }
 
-        //public static class Units {
-        public static PrefixableUnit<Distance> Meter { get; } = MeasurementSystems.Metric.Meter;
+        public static class Units {
+            public static PrefixableUnit<Distance> Meter { get; } = MeasurementSystems.Metric.Meter;
 
-        public static Unit<Distance> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
+            public static Unit<Distance> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
 
-        public static Unit<Distance> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
+            public static Unit<Distance> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
 
-        public static Unit<Distance> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
+            public static Unit<Distance> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
 
-        public static Unit<Distance> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
+            public static Unit<Distance> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
 
-        public static Unit<Distance> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
+            public static Unit<Distance> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
 
-        public static Unit<Distance> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
+            public static Unit<Distance> Millimeter { get; } = Prefix.Milli(MeasurementSystems.Metric.Meter);
 
-        public static Unit<Distance> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
-
-        //}
+            public static Unit<Distance> Yard { get; } = MeasurementSystems.EnglishLength.Yard;
+        }
 
         private class LengthProvider : IMeasurementProvider<Distance> {
-            public Unit<Distance> DefaultUnit => Meter;
+            public IEnumerable<Unit<Distance>> BaseUnits { get; } = new[] { Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard };
+
+            public Unit<Distance> DefaultUnit => Units.Meter;
 
             public Distance CreateMeasurement(double value, Unit<Distance> unit) => new Distance(value, unit);
         }

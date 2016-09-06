@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
+
     public sealed class Temperature : Measurement<Temperature> {
         public static IMeasurementProvider<Temperature> Provider { get; } = new TemperatureProvider();
 
@@ -44,6 +45,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class TemperatureProvider : IMeasurementProvider<Temperature> {
+            public IEnumerable<Unit<Temperature>> BaseUnits { get; } = new[] { Units.Kelvin };
+
             public Unit<Temperature> DefaultUnit {
                 get {
                     return Temperature.Units.Kelvin;

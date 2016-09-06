@@ -1,4 +1,7 @@
-﻿namespace JoshuaKearney.Measurements {
+﻿using System;
+using System.Collections.Generic;
+
+namespace JoshuaKearney.Measurements {
 
     public sealed class Mass : Measurement<Mass>,
         IMultipliableMeasurement<Acceleration, Force>,
@@ -26,25 +29,33 @@
             return new Density(this, volume);
         }
 
-        public static PrefixableUnit<Mass> Gram { get; } = MeasurementSystems.Metric.Gram;
+        public static class Units {
+            public static PrefixableUnit<Mass> Gram { get; } = MeasurementSystems.Metric.Gram;
 
-        public static Unit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
+            public static Unit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
 
-        public static PrefixableUnit<Mass> MetricTon { get; } = MeasurementSystems.Metric.Tonne;
+            public static PrefixableUnit<Mass> MetricTon { get; } = MeasurementSystems.Metric.Tonne;
 
-        public static Unit<Mass> Milligram { get; } = Prefix.Milli(MeasurementSystems.Metric.Gram);
+            public static Unit<Mass> Milligram { get; } = Prefix.Milli(MeasurementSystems.Metric.Gram);
 
-        public static Unit<Mass> Ounce { get; } = MeasurementSystems.AvoirdupoisMass.Ounce;
+            public static Unit<Mass> Ounce { get; } = MeasurementSystems.AvoirdupoisMass.Ounce;
 
-        public static Unit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
+            public static Unit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
 
-        public static Unit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
+            public static Unit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
+        }
 
         public Force Multiply(Acceleration second) {
             Validate.NonNull(second, nameof(second));
 
             return new Force(this, second);
         }
+
+        //public Volume Divide(Density second) {
+        //    Validate.NonNull(second, nameof(second));
+
+        //    return new Volume(this.DefaultUnits / second.DefaultUnits, Volume.Units.MeterCubed);
+        //}
 
         public static Force operator *(Mass first, Acceleration second) {
             if (first == null || second == null) {
@@ -56,7 +67,9 @@
         }
 
         private class MassProvider : IMeasurementProvider<Mass> {
-            public Unit<Mass> DefaultUnit => Kilogram;
+            public IEnumerable<Unit<Mass>> BaseUnits { get; } = new[] { Units.Gram, Units.MetricTon, Units.Ounce, Units.Pound, Units.ShortTon };
+
+            public Unit<Mass> DefaultUnit => Units.Kilogram;
 
             public Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
         }

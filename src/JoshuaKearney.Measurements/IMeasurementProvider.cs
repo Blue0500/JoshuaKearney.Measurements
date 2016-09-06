@@ -1,10 +1,15 @@
-﻿namespace JoshuaKearney.Measurements {
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace JoshuaKearney.Measurements {
 
     public interface IMeasurementProvider<T> where T : Measurement<T> {
 
         T CreateMeasurement(double value, Unit<T> unit);
 
         Unit<T> DefaultUnit { get; }
+
+        IEnumerable<Unit<T>> BaseUnits { get; }
     }
 
     public static partial class Extensions {

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
+
     public sealed class Ratio<TNumerator, TDenominator> : RatioBase<Ratio<TNumerator, TDenominator>, TNumerator, TDenominator>
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator> {
@@ -46,6 +48,8 @@ namespace JoshuaKearney.Measurements {
             }
 
             public Unit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
+
+            public IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> BaseUnits => new Unit<Ratio<TNumerator, TDenominator>>[] { };
 
             public Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
                 return new Ratio<TNumerator, TDenominator>(value, unit, numProv, denomProv);

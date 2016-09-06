@@ -1,9 +1,9 @@
 ﻿namespace JoshuaKearney.Measurements {
 
     public abstract class TermBase<TSelf, T1, T2> : Measurement<TSelf>, IDividableMeasurement<T2, T1>
-        where TSelf : TermBase<TSelf, T1, T2>
-        where T1 : Measurement<T1>
-        where T2 : Measurement<T2> {
+            where TSelf : TermBase<TSelf, T1, T2>
+            where T1 : Measurement<T1>
+            where T2 : Measurement<T2> {
         protected abstract IMeasurementProvider<T1> Item1Provider { get; }
 
         protected abstract IMeasurementProvider<T2> Item2Provider { get; }

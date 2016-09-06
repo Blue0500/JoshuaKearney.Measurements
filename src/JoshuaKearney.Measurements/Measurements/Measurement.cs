@@ -34,6 +34,25 @@ namespace JoshuaKearney.Measurements {
             return measurement.Subtract(measurement2);
         }
 
+        public Unit<TSelf> CreateUnit(string name, string symbol) {
+            return new Unit<TSelf>(name, symbol, 1 / this.DefaultUnits);
+        }
+
+        public E Divide<E, F>(RatioBase<F, TSelf, E> ratio)
+                where F : RatioBase<F, TSelf, E>
+                where E : Measurement<E> {
+            return ratio.Reciprocal().Multiply(this.Unbox());
+        }
+
+        private TSelf Unbox() {
+            if (this is TSelf) {
+                return (TSelf)this;
+            }
+            else {
+                return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits);
+            }
+        }
+
         public static bool operator !=(Measurement<TSelf> measurement, TSelf measurement2) {
             if (object.ReferenceEquals(measurement, null)) {
                 if (object.ReferenceEquals(measurement2, null)) {
@@ -240,7 +259,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             if (this >= that) {
-                return (TSelf)this;
+                return this.Unbox();
             }
             else {
                 return that;
@@ -258,7 +277,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             if (this <= that) {
-                return (TSelf)this;
+                return this.Unbox();
             }
             else {
                 return that;
@@ -283,7 +302,6 @@ namespace JoshuaKearney.Measurements {
 
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(func(this.DefaultUnits));
         }
-
 
         public override string ToString() {
             return this.ToString(

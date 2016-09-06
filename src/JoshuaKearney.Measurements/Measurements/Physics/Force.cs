@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Force : TermBase<Force, Mass, Acceleration>, IDividableMeasurement<Mass, Acceleration> {
-        private static Unit<Force> newton = new Unit<Force>("newton", "N", 1);
+    public class Force : TermBase<Force, Mass, Acceleration>,
+        IDividableMeasurement<Area, Pressure>,
+        IDividableMeasurement<Mass, Acceleration> {
 
         public Force() {
         }
@@ -21,13 +22,19 @@ namespace JoshuaKearney.Measurements {
         public Force(double amount, Unit<Mass> massDef, Unit<Acceleration> accelDef) : base(amount, massDef, accelDef) {
         }
 
-        public static Unit<Force> PoundForce { get; } = new Unit<Force>("pound-force", "lbf", new Force(1, Newton).Divide(Acceleration.Gravity).Divide(new Mass(1, Mass.Pound)));
-
         public static IMeasurementProvider<Force> Provider { get; } = new ForceProvider();
 
         public override IMeasurementProvider<Force> MeasurementProvider => Provider;
 
-        public static Unit<Force> Newton => newton;
+        public static class Units {
+            private static Unit<Force> newton = new Unit<Force>("newton", "N", 1);
+
+            public static Unit<Force> PoundForce { get; } = new Mass(1, Mass.Units.Pound).Multiply(Acceleration.Gravity).CreateUnit("pount-force", "lbf");
+
+            // new Unit<Force>("pound-force", "lbf", new Force(1, Newton).Divide(Acceleration.Gravity).Divide(new Mass(1, Mass.Units.Pound)));
+
+            public static Unit<Force> Newton => newton;
+        }
 
         protected override IMeasurementProvider<Mass> Item1Provider => Mass.Provider;
 
@@ -48,8 +55,20 @@ namespace JoshuaKearney.Measurements {
             return this.DivideToSecond(second);
         }
 
-        private class ForceProvider : IMeasurementProvider<Force> {
-            public Unit<Force> DefaultUnit => Newton;
+        public Pressure Divide(Area second) {
+            Validate.NonNull(second, nameof(second));
+
+            return new Pressure(this, second);
+        }
+
+        private class ForceProvider : IMeasurementProvider<Force>, IComplexMeasurementProvider<Mass, Acceleration> {
+            public IEnumerable<Unit<Force>> BaseUnits { get; } = new[] { Units.Newton, Units.PoundForce };
+
+            public IMeasurementProvider<Mass> Component1Provider => Mass.Provider;
+
+            public IMeasurementProvider<Acceleration> Component2Provider => Acceleration.Provider;
+
+            public Unit<Force> DefaultUnit => Units.Newton;
 
             public Force CreateMeasurement(double value, Unit<Force> unit) => new Force(value, unit);
         }

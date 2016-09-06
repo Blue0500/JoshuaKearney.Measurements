@@ -25,6 +25,7 @@
         ) { }
 
         protected abstract IMeasurementProvider<TDenominator> DenominatorProvider { get; }
+
         protected abstract IMeasurementProvider<TNumerator> NumeratorProvider { get; }
 
         public static TNumerator operator *(RatioBase<TSelf, TNumerator, TDenominator> ratio, TDenominator denominator) {

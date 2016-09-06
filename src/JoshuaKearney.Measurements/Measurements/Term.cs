@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JoshuaKearney.Measurements {
 
@@ -57,6 +60,8 @@ namespace JoshuaKearney.Measurements {
                 this.t2Prov = t2Prov;
                 this.DefaultUnit = t1Prov.DefaultUnit.MultiplyToTerm(t2Prov.DefaultUnit);
             }
+
+            public IEnumerable<Unit<Term<T1, T2>>> BaseUnits { get; } = new Unit<Term<T1, T2>>[] { };
 
             public Unit<Term<T1, T2>> DefaultUnit { get; }
 

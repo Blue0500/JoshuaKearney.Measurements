@@ -1,165 +1,274 @@
-﻿namespace JoshuaKearney.Measurements {
+﻿using JoshuaKearney.Measurements.Parser;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
+namespace JoshuaKearney.Measurements {
     public class MeasurementParser<T> where T : Measurement<T> {
+        private Regex NumericPattern = new Regex(@"^\d*\.?\d*$");
+        private Dictionary<string, Func<double, MeasurementToken>> dictionary;
+        private IMeasurementProvider<T> provider;
 
-        private static bool PreProcess(string input, out T result) {
-            if (input == null) {
-                result = null;
-                return false;
+        public MeasurementParser(IMeasurementProvider<T> provider) {
+            this.provider = provider;
+        }
+
+        public T Parse(string toParse) {
+            Validate.NonNull(toParse, nameof(toParse));
+
+            if (dictionary == null) {
+                dictionary = GetUnits(this.provider);
             }
+
+            return ParseTokens(ToPostfix(Tokenize(toParse)));
+        }
+
+        private List<Token> Tokenize(string input) {
+            Validate.NonNull(input, nameof(input));
 
             input = input
                 .Replace("^2", "²")
-                .Replace("^3", "³");
+                .Replace("^3", "³")
+                .Replace(" ", "");
 
-            result = null;
-            return false;
-            //return Tokenize(input, out result);
+            List<Token> ret = new List<Token>();
+            string notLetters = "*/²³()";
+            string current = "";
+
+            foreach (char c in input) {
+                if (notLetters.Cast<char>().All(x => x != c)) {
+                    current += c;
+                }
+                else {
+                    if (c != '(' && !string.IsNullOrWhiteSpace(current)) {
+                        ret.Add(new Token(current));
+                        current = "";
+                    }
+
+                    switch (c) {
+                        case '*': ret.Add(Operator.Multiply); break;
+                        case '/': ret.Add(Operator.Divide); break;
+                        case '²': ret.Add(Operator.Square); break;
+                        case '³': ret.Add(Operator.Cube); break;
+                        case '(': ret.Add(Operator.OpenParen); break;
+                        case ')': ret.Add(Operator.CloseParen); break;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(current)) {
+                ret.Add(new Token(current));
+            }
+
+            for (int i = 0; i < ret.Count; i++) {
+                var token = ret[i];
+
+                if (token.GetType() == typeof(Token)) {
+                    string val = token.Value;
+                    string strNum = string.Join("", val.ToCharArray().TakeWhile(x => char.IsDigit(x) || x == '.'));
+
+                    string unit = val.Substring(strNum.Length);
+                    double value;
+
+                    if (!double.TryParse(strNum, out value)) {
+                        value = 1;
+                    }
+
+                    if (dictionary.ContainsKey(unit)) {
+                        ret[i] = dictionary[unit](value);
+                    }
+                    else {
+                        return null;
+                    }
+                }
+            }
+
+            return ret;
         }
 
-        //private static bool Tokenize(string input, out T result) {
-        //    List<Token> ret = new List<Token>();
-        //    IEnumerable<char> validNums = "123456789.";
-        //    string numbers = new string(input.TakeWhile(x => validNums.Contains(x)).ToArray());
-        //    string remaining = input.Substring(numbers.Length).Trim();
+        private T ParseTokens(IEnumerable<Token> tokens) {
+            if (tokens == null) {
+                return null;
+            }
 
-        //    double parsed;
-        //    if (!double.TryParse(numbers, out parsed)) {
-        //        result = null;
-        //        return false;
-        //    }
-        //    else {
-        //        //// All the possible atomic units
-        //        //MethodInfo prefixAllInfo = typeof(Prefix).GetTypeInfo().GetDeclaredMethod("All");
+            // The iterator to use when parsing
+            IEnumerator<Token> tokensEnum = tokens.GetEnumerator();
 
-        //        //IEnumerable<IUnit> units = ComposableUnits(typeof(T))
-        //        //    .SelectMany(x => {
-        //        //        if (x is IPrefixableUnit) {
-        //        //            Type tX = x.GetType();
+            // The valid tokens that could make up this Measurement
+            Stack<Token> toks = new Stack<Token>();
 
-        //        //            if (tX.GenericTypeArguments == null || tX.GenericTypeArguments.Count() <= 0) {
-        //        //                return new IUnit[] { };
-        //        //            }
+            while (tokensEnum.MoveNext()) {
+                Token tok = tokensEnum.Current;
 
-        //        //            MethodInfo generic = prefixAllInfo.MakeGenericMethod(tX.GenericTypeArguments[0]);
-        //        //            return (IEnumerable<IUnit>)generic.Invoke(null, new[] { x });
-        //        //        }
-        //        //        else {
-        //        //            return new IUnit[] { x };
-        //        //        }
-        //        //    });
+                if (tok is MeasurementToken) {
+                    toks.Push(tok);
+                }
+                else if (tok is UrnaryOperator) {
+                    UrnaryOperator op = tok as UrnaryOperator;
 
-        //        // Helper to get a matching unit
-        //        //Func<string, IUnit> matchUnit = x => units.FirstOrDefault(y => y.Name == x || y.Symbol.ToString() == x/* || y.Aliases.Any(z => z == x)*/);
+                    if (toks.Count < 1 || !(toks.Peek() is MeasurementToken)) {
+                        return null;
+                    }
 
-        //        ret.Add(new NumericToken(parsed));
+                    MeasurementToken eval = op.Evaluate(toks.Pop() as MeasurementToken);
 
-        //        string notLetters = "*/²³()";
-        //        string current = "";
+                    if (eval == null) {
+                        return null;
+                    }
 
-        //        foreach (char c in remaining) {
-        //            if (notLetters.All(x => x != c)) {
-        //                current += c;
-        //            }
-        //            else {
-        //                if (c != '(' && !string.IsNullOrWhiteSpace(current)) {
-        //                    IUnit u = matchUnit(current);
-        //                    if (u == null) {
-        //                        result = null;
-        //                        return false;
-        //                    }
+                    toks.Push(eval);
+                }
+                else if (tok is BinaryOperator) {
+                    BinaryOperator op = tok as BinaryOperator;
 
-        //                    if (u.UnitsPerDefault == 0) {
-        //                        result = null;
-        //                        return false;
-        //                    }
+                    if (toks.Count < 2) {
+                        return null;
+                    }
 
-        //                    ret.Add(new MeasurementToken(CreateMeasurement(u.AssociatedMeasurement, 1 / u.UnitsPerDefault)));
-        //                    current = "";
-        //                }
+                    MeasurementToken pop2 = toks.Pop() as MeasurementToken;
+                    MeasurementToken pop1 = toks.Pop() as MeasurementToken;
 
-        //                switch (c) {
-        //                    case '*': ret.Add(Token.Multiply); break;
-        //                    case '/': ret.Add(Token.Divide); break;
-        //                    case '²': ret.Add(Token.Square); break;
-        //                    case '³': ret.Add(Token.Cube); break;
-        //                    case '(': ret.Add(Token.OpenParen); break;
-        //                    case ')': ret.Add(Token.CloseParen); break;
-        //                }
-        //            }
-        //        }
+                    if (!(pop1 is MeasurementToken && pop2 is MeasurementToken)) {
+                        return null;
+                    }
 
-        //        if (!string.IsNullOrWhiteSpace(current)) {
-        //            IUnit u = matchUnit(current);
-        //            if (u == null) {
-        //                result = null;
-        //                return false;
-        //            }
+                    MeasurementToken eval = op.Evaluate(pop1, pop2);
 
-        //            ret.Add(new MeasurementToken(CreateMeasurement(u.AssociatedMeasurement, 1 / u.UnitsPerDefault)));
-        //        }
+                    if (eval == null) {
+                        return null;
+                    }
 
-        //        return ToPostfix(ret, out result);
-        //    }
-        //}
+                    toks.Push(eval);
+                }
+            }
 
-        //private class BinaryOperator : Operator {
-        //    public BinaryOperator(string value, int priority, Func<dynamic, dynamic, dynamic> eval) : base(value, priority) {
-        //        this.Evaluate = eval;
-        //    }
+            object final = (toks.Pop() as MeasurementToken).MeasurementValue;
+            var tFinal = final.GetType();
 
-        //    public Func<dynamic, dynamic, dynamic> Evaluate { get; }
-        //}
+            if (!typeof(T).GetTypeInfo().IsAssignableFrom(tFinal.GetTypeInfo())) {
+                return null;
+            }
 
-        //private class MeasurementToken : Token {
-        //    public MeasurementToken(dynamic unit) : base("MeasurementToken") {
-        //        this.Measurement = unit;
-        //    }
+            return (T)final;
+        }
 
-        //    public dynamic Measurement { get; }
-        //}
+        private List<Token> ToPostfix(IEnumerable<Token> input) {
+            Stack<Operator> operatorStack = new Stack<Operator>();
+            List<Token> ret = new List<Token>();
 
-        //private class NumericToken : Token {
-        //    public NumericToken(double num) : base(num.ToString()) {
-        //        this.Number = num;
-        //    }
+            foreach (Token tok in input) {
+                // Push operands
+                if (!(tok is Operator)) {
+                    ret.Add(tok);
+                }
+                else {
+                    Operator opTok = tok as Operator;
 
-        //    public double Number { get; }
-        //}
+                    if (opTok == Operator.OpenParen) {
+                        operatorStack.Push(opTok);
+                        continue;
+                    }
 
-        //private class Operator : Token {
-        //    public Operator(string value, int priority) : base(value) {
-        //        this.Priority = priority;
-        //    }
+                    // If the stack is empty, put an operator on it
+                    if ((operatorStack.Count == 0 || operatorStack.Peek() == Operator.OpenParen) && opTok != Operator.CloseParen) {
+                        operatorStack.Push(opTok);
+                    }
+                    else {
+                        // Mismatched parenthensis
+                        if (operatorStack.Count == 0) {
+                            return null;
+                        }
 
-        //    // Higher is higher priortiy
-        //    public int Priority { get; }
-        //}
+                        // If the top has a higher priority, pop and print it
+                        Operator top = operatorStack.Peek();
+                        if (top.Priority >= opTok.Priority) {
+                            ret.Add(operatorStack.Pop());
+                            operatorStack.Push(opTok);
+                        }
+                        else {
+                            if (opTok == Operator.CloseParen) {
+                                while (operatorStack.Peek() != Operator.OpenParen) {
+                                    ret.Add(operatorStack.Pop());
+                                    // Catch nothing else after this
+                                    if (operatorStack.Count == 0) {
+                                        return null;
+                                    }
+                                }
 
-        //private abstract class Token {
-        //    public Token(string value) {
-        //        this.Value = value;
-        //    }
+                                // Catch mismatched parenthensis
+                                if (operatorStack.Peek() != Operator.OpenParen) {
+                                    return null;
+                                }
 
-        //    public static Operator CloseParen { get; } = new Operator(")", 100);
+                                operatorStack.Pop();
+                            }
+                            else {
+                                operatorStack.Push(opTok);
+                            }
+                        }
+                    }
+                }
+            }
 
-        //    //public static UrnaryOperator Cube { get; } = new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
-        //    //public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), typeof(Ratio), x, y));
-        //    //public static BinaryOperator Multiply { get; } = new BinaryOperator("*", 5, (x, y) => ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), typeof(Term), x, y));
-        //    public static Operator OpenParen { get; } = new Operator("(", 100);
+            while (operatorStack.Count > 0) {
+                ret.Add(operatorStack.Pop());
+            }
 
-        //    //public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
-        //    public string Value { get; }
+            return ret;
+        }
 
-        //    public override string ToString() => this.Value;
-        //}
+        private Dictionary<string, Func<double, MeasurementToken>> GetUnits<E>(IMeasurementProvider<E> provider) where E : Measurement<E> {
+            Dictionary<string, Func<double, MeasurementToken>> ret = provider
+                .BaseUnits
+                .SelectMany(x => {
+                    if (x is PrefixableUnit<E>) {
+                        return Prefix.All(x as PrefixableUnit<E>).Concat(new[] { x });
+                    }
+                    else {
+                        return new[] { x };
+                    }
+                })
+                .Select(
+                    x => Tuple.Create<string, Func<double, MeasurementToken>>(
+                        x.Symbol,
+                        y => new MeasurementToken(provider.CreateMeasurement(y, x))
+                    )
+                )
+                .ToDictionary(x => x.Item1, y => y.Item2);
 
-        //private class UrnaryOperator : Operator {
-        //    public UrnaryOperator(string value, int priority, Func<dynamic, dynamic> eval) : base(value, priority) {
-        //        this.Evaluate = eval;
-        //    }
+            var complexInferface = typeof(IComplexMeasurementProvider<,>);
+            var foundInterface = provider.GetType().GetTypeInfo().ImplementedInterfaces.FirstOrDefault(x => x.GetGenericTypeDefinition() == complexInferface);
 
-        //    public Func<dynamic, dynamic> Evaluate { get; }
-        //}
+            if (foundInterface != null) {
+                MethodInfo info = typeof(MeasurementParser<T>).GetRuntimeMethods().First(x => x.Name == nameof(GetUnits));
+
+                object provider1 = provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider);
+                object provider2 = provider.GetType().GetRuntimeProperty("Component2Provider").GetValue(provider);
+
+                MethodInfo prov1Info = info.MakeGenericMethod(new[] { provider1.GetType().GetTypeInfo().ImplementedInterfaces.First(x => x.GetGenericTypeDefinition() == typeof(IMeasurementProvider<>)).GenericTypeArguments[0] });
+                MethodInfo prov2Info = info.MakeGenericMethod(new[] { provider2.GetType().GetTypeInfo().ImplementedInterfaces.First(x => x.GetGenericTypeDefinition() == typeof(IMeasurementProvider<>)).GenericTypeArguments[0] });
+
+                var prov1Ret = (Dictionary<string, Func<double, MeasurementToken>>)prov1Info.Invoke(this, new[] { provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider) });
+                foreach (var item in prov1Ret.Keys) {
+                    if (!ret.ContainsKey(item)) {
+                        ret.Add(item, prov1Ret[item]);
+                    }
+                }
+
+                var prov2Ret = (Dictionary<string, Func<double, MeasurementToken>>)prov2Info.Invoke(this, new[] { provider.GetType().GetRuntimeProperty("Component2Provider").GetValue(provider) });
+                foreach (var item in prov2Ret.Keys) {
+                    if (!ret.ContainsKey(item)) {
+                        ret.Add(item, prov2Ret[item]);
+                    }
+                }
+            }
+
+            return ret;
+        }
     }
 }
