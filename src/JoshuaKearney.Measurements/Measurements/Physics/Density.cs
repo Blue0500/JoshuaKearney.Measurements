@@ -34,17 +34,17 @@ namespace JoshuaKearney.Measurements {
         protected override IMeasurementProvider<Mass> NumeratorProvider => Mass.Provider;
 
         public static class Units {
-            public static Unit<Density> GramsPerCentimeterCubed { get; } = Mass.Units.Gram.Divide<Mass, Volume, Density>(Volume.Units.CentimeterCubed);
+            public static Unit<Density> GramPerCentimeterCubed { get; } = Mass.Units.Gram.Divide<Mass, Volume, Density>(Volume.Units.CentimeterCubed);
 
-            public static Unit<Density> KilogramsPerLiter { get; } = Mass.Units.Kilogram.Divide<Mass, Volume, Density>(Volume.Units.Liter);
+            public static Unit<Density> KilogramPerLiter { get; } = Mass.Units.Kilogram.Divide<Mass, Volume, Density>(Volume.Units.Liter);
 
-            public static Unit<Density> KilogramsPerMeterCubed { get; } = Mass.Units.Kilogram.Divide<Mass, Volume, Density>(Volume.Units.MeterCubed);
+            public static Unit<Density> KilogramPerMeterCubed { get; } = Mass.Units.Kilogram.Divide<Mass, Volume, Density>(Volume.Units.MeterCubed);
 
-            public static Unit<Density> MetricTonsPerMeterCubed { get; } = Mass.Units.ShortTon.Divide<Mass, Volume, Density>(Volume.Units.MeterCubed);
+            public static Unit<Density> MetricTonPerMeterCubed { get; } = Mass.Units.ShortTon.Divide<Mass, Volume, Density>(Volume.Units.MeterCubed);
 
-            public static Unit<Density> OuncesPerInchCubed { get; } = Mass.Units.Ounce.Divide<Mass, Volume, Density>(Volume.Units.InchCubed);
+            public static Unit<Density> OuncePerInchCubed { get; } = Mass.Units.Ounce.Divide<Mass, Volume, Density>(Volume.Units.InchCubed);
 
-            public static Unit<Density> PoundsPerFootCubed { get; } = Mass.Units.Pound.Divide<Mass, Volume, Density>(Volume.Units.FootCubed);
+            public static Unit<Density> PoundPerFootCubed { get; } = Mass.Units.Pound.Divide<Mass, Volume, Density>(Volume.Units.FootCubed);
         }
 
         private class DensityProvider : IMeasurementProvider<Density>, IComplexMeasurementProvider<Mass, Volume> {
@@ -54,7 +54,7 @@ namespace JoshuaKearney.Measurements {
 
             public IMeasurementProvider<Volume> Component2Provider => Volume.Provider;
 
-            public Unit<Density> DefaultUnit => Units.KilogramsPerMeterCubed;
+            public Unit<Density> DefaultUnit => Units.KilogramPerMeterCubed;
 
             public Density CreateMeasurement(double value, Unit<Density> unit) {
                 return new Density(value, unit);

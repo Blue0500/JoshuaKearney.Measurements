@@ -14,7 +14,7 @@ namespace JoshuaKearney.Measurements {
         public Concentration() {
         }
 
-        public Concentration(double partsPer, double wholeAmount) : this(partsPer / wholeAmount, Units.Percent) {
+        public Concentration(double partsPer, double wholeAmount) : this(partsPer / wholeAmount * 100, Units.Percent) {
         }
 
         public Concentration(double amount, Unit<Concentration> unit) : base(amount, unit) {

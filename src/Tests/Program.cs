@@ -10,14 +10,17 @@ namespace Testing {
         public static void Main(string[] args) {
             Ratio<Mass, Volume> r = new Density(45, Mass.Units.Gram, Volume.Units.InchCubed);
 
-            Class1 c = new Class1();
-            c.
+            //Class1 c = new Class1();
+            //c.
 
-            Quantity<string> strings = new Quantity<string>(45);
+            Concentration c = .45;
+            Console.WriteLine(c.ToString());
 
-            Ratio<Quantity<int>, Mass> a;
+            //Quantity<string> strings = new Quantity<string>(45);
 
-            Console.WriteLine(strings);
+            //Ratio<Quantity<int>, Mass> a;
+
+            //Console.WriteLine(strings);
 
             //Density d = new Density(2.70, Density.Units.GramsPerCentimeterCubed);
             //Distance width = new Distance(15, Distance.Units.Inch);
