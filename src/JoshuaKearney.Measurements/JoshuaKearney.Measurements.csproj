@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="IComplexMeasurementProvider.cs" />
     <Compile Include="IMeasurementProvider.cs" />
     <Compile Include="Measurements\Geometry\Angle.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Measurements\Physics\Speed.cs" />
     <Compile Include="Measurements\Physics\Temperature.cs" />
     <Compile Include="Measurements\Physics\Time.cs" />
+    <Compile Include="Measurements\Quantity.cs" />
     <Compile Include="Parser\MeasurementToken.cs" />
     <Compile Include="Parser\Operator.cs" />
     <Compile Include="Parser\Token.cs" />
