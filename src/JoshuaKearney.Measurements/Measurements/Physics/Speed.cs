@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Speed : RatioBase<Speed, Distance, Time>, IDividableMeasurement<Time, Acceleration> {
+    public class Speed : Ratio<Speed, Distance, Time>, IDividableMeasurement<Time, Acceleration> {
         public static IMeasurementProvider<Speed> Provider { get; } = new SpeedProvider();
 
         public static Speed SpeedOfSound { get; } = new Speed(340.29, Units.MetersPerSecond);

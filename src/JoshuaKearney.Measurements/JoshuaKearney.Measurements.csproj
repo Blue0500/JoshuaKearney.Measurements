@@ -154,8 +154,6 @@
     <Compile Include="Measurements\Measurement.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Prefix.cs" />
-    <Compile Include="Measurements\RatioBase.cs" />
-    <Compile Include="Measurements\TermBase.cs" />
     <Compile Include="Measurements\General\DigitalSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Measurements\Geometry\Area.cs" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Force : TermBase<Force, Mass, Acceleration>,
+    public class Force : Term<Force, Mass, Acceleration>,
         IDividableMeasurement<Area, Pressure>,
         IDividableMeasurement<Mass, Acceleration> {
 

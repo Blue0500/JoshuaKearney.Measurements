@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Acceleration : RatioBase<Acceleration, Speed, Time>, IMultipliableMeasurement<Mass, Force> {
+    public class Acceleration : Ratio<Acceleration, Speed, Time>, IMultipliableMeasurement<Mass, Force> {
 
         public Acceleration() {
         }

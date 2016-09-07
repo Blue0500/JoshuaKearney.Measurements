@@ -18,7 +18,7 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    public sealed class Volume : TermBase<Volume, Distance, Area>,
+    public sealed class Volume : Term<Volume, Distance, Area>,
             IDividableMeasurement<Distance, Area> {
         public static IMeasurementProvider<Volume> Provider { get; } = new VolumeProvider();
 

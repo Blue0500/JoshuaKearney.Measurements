@@ -8,11 +8,13 @@ namespace Testing {
     public class Program {
 
         public static void Main(string[] args) {
-            Density d = new Density(2.70, Density.Units.GramsPerCentimeterCubed);
-            Distance width = new Distance(15, Distance.Units.Inch);
-            Distance length = new Distance(6, Distance.Units.Inch);
+            Ratio<Mass, Volume> r = new Density(45, Mass.Units.Gram, Volume.Units.InchCubed);
 
-            Console.WriteLine(new Mass(8.455, Mass.Units.Gram).Divide(d).Divide(width).Divide(length).ToDouble(Distance.Units.Inch));
+            //Density d = new Density(2.70, Density.Units.GramsPerCentimeterCubed);
+            //Distance width = new Distance(15, Distance.Units.Inch);
+            //Distance length = new Distance(6, Distance.Units.Inch);
+
+            //Console.WriteLine(new Mass(8.455, Mass.Units.Gram).Divide(d).Divide(width).Divide(length).ToDouble(Distance.Units.Inch));
 
             //Speed s = new Speed(45, Distance.Units.Meter, Time.Units.Second);
             //Acceleration a = new Acceleration(s, new Time(7, Time.Units.Second));

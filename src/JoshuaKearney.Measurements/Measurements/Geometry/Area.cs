@@ -12,7 +12,7 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    public sealed class Area : TermBase<Area, Distance, Distance>,
+    public sealed class Area : Term<Area, Distance, Distance>,
             IMultipliableMeasurement<Distance, Volume> {
         public static IMeasurementProvider<Area> Provider { get; } = new AreaProvider();
 

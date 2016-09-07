@@ -38,19 +38,14 @@ namespace JoshuaKearney.Measurements {
             return new Unit<TSelf>(name, symbol, 1 / this.DefaultUnits);
         }
 
-        public E Divide<E, F>(RatioBase<F, TSelf, E> ratio)
-                where F : RatioBase<F, TSelf, E>
+        public E Divide<E, F>(Ratio<F, TSelf, E> ratio)
+                where F : Ratio<F, TSelf, E>
                 where E : Measurement<E> {
-            return ratio.Reciprocal().Multiply(this.Unbox());
+            return ratio.Reciprocal().Multiply(this);
         }
 
-        private TSelf Unbox() {
-            if (this is TSelf) {
-                return (TSelf)this;
-            }
-            else {
-                return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits);
-            }
+        public static implicit operator TSelf(Measurement<TSelf> measurement) {
+            return measurement as TSelf ?? measurement.MeasurementProvider.CreateMeasurementWithDefaultUnits(measurement.DefaultUnits);
         }
 
         public static bool operator !=(Measurement<TSelf> measurement, TSelf measurement2) {
@@ -161,16 +156,6 @@ namespace JoshuaKearney.Measurements {
             return measurement.CompareTo(measurement2) >= 0;
         }
 
-        //public static TSelf Parse(string input) {
-        //    Validate.NonNull(input, nameof(input));
-        //    return Parser.Parse<TSelf>(input);
-        //}
-
-        //public static bool TryParse(string input, out TSelf result) {
-        //    Validate.NonNull(input, nameof(input));
-        //    return Parser.TryParse(input, out result);
-        //}
-
         public TSelf Add(TSelf that) {
             Validate.NonNull(that, nameof(that));
             return that.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits + that.DefaultUnits);
@@ -259,7 +244,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             if (this >= that) {
-                return this.Unbox();
+                return this;
             }
             else {
                 return that;
@@ -277,7 +262,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             if (this <= that) {
-                return this.Unbox();
+                return this;
             }
             else {
                 return that;
