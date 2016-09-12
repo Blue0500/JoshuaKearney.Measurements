@@ -131,6 +131,7 @@
     <Compile Include="ArithmeticInterfaces.cs" />
     <Compile Include="IComplexMeasurementProvider.cs" />
     <Compile Include="IMeasurementProvider.cs" />
+    <Compile Include="Measurements\General\Label.cs" />
     <Compile Include="Measurements\Geometry\Angle.cs" />
     <Compile Include="Measurements\Physics\Acceleration.cs" />
     <Compile Include="Measurements\General\Concentration.cs" />

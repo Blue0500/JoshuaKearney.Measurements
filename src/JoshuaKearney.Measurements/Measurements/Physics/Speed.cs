@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -40,7 +36,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class SpeedProvider : IMeasurementProvider<Speed>, IComplexMeasurementProvider<Distance, Time> {
-            public IEnumerable<Unit<Speed>> BaseUnits { get; } = new Unit<Speed>[] { };
+            public IEnumerable<Unit<Speed>> AllUnits { get; } = new Unit<Speed>[] { };
 
             public IMeasurementProvider<Distance> Component1Provider => Distance.Provider;
 

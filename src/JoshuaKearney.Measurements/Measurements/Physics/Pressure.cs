@@ -50,7 +50,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class PressureProvider : IMeasurementProvider<Pressure>, IComplexMeasurementProvider<Force, Area> {
-            public IEnumerable<Unit<Pressure>> BaseUnits { get; } = new[] { Units.Pascal };//, Units.Bar, Units.Atmosphere, Units.Torr, Units.PoundsPerSquareInch };
+            public IEnumerable<Unit<Pressure>> AllUnits { get; } = new[] { Units.Pascal };//, Units.Bar, Units.Atmosphere, Units.Torr, Units.PoundsPerSquareInch };
 
             public IMeasurementProvider<Force> Component1Provider => Force.Provider;
 

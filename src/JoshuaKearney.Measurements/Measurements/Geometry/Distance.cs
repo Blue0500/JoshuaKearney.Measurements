@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -90,7 +89,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class LengthProvider : IMeasurementProvider<Distance> {
-            public IEnumerable<Unit<Distance>> BaseUnits { get; } = new[] { Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard };
+            public IEnumerable<Unit<Distance>> AllUnits { get; } = new[] { Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard };
 
             public Unit<Distance> DefaultUnit => Units.Meter;
 

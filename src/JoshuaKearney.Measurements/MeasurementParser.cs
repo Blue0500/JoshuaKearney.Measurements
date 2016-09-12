@@ -300,7 +300,7 @@ namespace JoshuaKearney.Measurements {
 
         private Dictionary<string, Func<double, MeasurementToken>> GetUnits<E>(IMeasurementProvider<E> provider) where E : Measurement<E> {
             Dictionary<string, Func<double, MeasurementToken>> ret = provider
-                .BaseUnits
+                .AllUnits
                 .SelectMany(x => {
                     if (x is PrefixableUnit<E>) {
                         return Prefix.All(x as PrefixableUnit<E>).Concat(new[] { x });

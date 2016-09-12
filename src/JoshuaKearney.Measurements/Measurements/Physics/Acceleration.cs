@@ -37,7 +37,7 @@ namespace JoshuaKearney.Measurements {
         protected override IMeasurementProvider<Speed> NumeratorProvider => Speed.Provider;
 
         private class AccelerationProvider : IMeasurementProvider<Acceleration>, IComplexMeasurementProvider<Speed, Time> {
-            public IEnumerable<Unit<Acceleration>> BaseUnits => new Unit<Acceleration>[] { };
+            public IEnumerable<Unit<Acceleration>> AllUnits => new Unit<Acceleration>[] { };
 
             public IMeasurementProvider<Speed> Component1Provider => Speed.Provider;
 

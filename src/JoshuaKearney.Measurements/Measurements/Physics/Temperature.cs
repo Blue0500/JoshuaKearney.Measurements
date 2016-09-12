@@ -45,7 +45,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class TemperatureProvider : IMeasurementProvider<Temperature> {
-            public IEnumerable<Unit<Temperature>> BaseUnits { get; } = new[] { Units.Kelvin };
+            public IEnumerable<Unit<Temperature>> AllUnits { get; } = new[] { Units.Kelvin };
 
             public Unit<Temperature> DefaultUnit {
                 get {

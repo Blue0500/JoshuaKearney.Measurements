@@ -53,7 +53,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class DigitalSizeProvider : IMeasurementProvider<DigitalSize> {
-            public IEnumerable<Unit<DigitalSize>> BaseUnits { get; } = new[] { Units.Bit, Units.Octet };
+            public IEnumerable<Unit<DigitalSize>> AllUnits { get; } = new[] { Units.Bit, Units.Octet };
 
             public Unit<DigitalSize> DefaultUnit => Units.Octet;
 

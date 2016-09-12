@@ -33,7 +33,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class FrequencyProvider : IMeasurementProvider<Frequency> {
-            public IEnumerable<Unit<Frequency>> BaseUnits { get; } = new[] { Units.Hertz };
+            public IEnumerable<Unit<Frequency>> AllUnits { get; } = new[] { Units.Hertz };
 
             public Unit<Frequency> DefaultUnit => Units.Hertz;
 

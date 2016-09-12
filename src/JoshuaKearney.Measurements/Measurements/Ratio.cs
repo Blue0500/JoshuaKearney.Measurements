@@ -153,7 +153,7 @@ namespace JoshuaKearney.Measurements {
 
             public Unit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
 
-            public IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> BaseUnits => new Unit<Ratio<TNumerator, TDenominator>>[] { };
+            public IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> AllUnits => new Unit<Ratio<TNumerator, TDenominator>>[] { };
 
             public Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
                 return new Ratio<TNumerator, TDenominator>(value, unit, numProv, denomProv);

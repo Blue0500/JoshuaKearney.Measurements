@@ -1,18 +1,28 @@
 ﻿using JoshuaKearney.Measurements;
 using System;
+using static JoshuaKearney.Measurements.DigitalSize.Units;
+using static JoshuaKearney.Measurements.Mass.Units;
+using static JoshuaKearney.Measurements.Time.Units;
+using static JoshuaKearney.Measurements.Volume.Units;
 
 namespace Testing {
 
     public class Program {
 
+        public class Banana { }
+
         public static void Main(string[] args) {
             // Ratio<Mass, Volume> r = new Density(45, Mass.Units.Gram, Volume.Units.InchCubed);
             // Distance d = new Distance();
 
-            //Console.WriteLine(new DigitalSize(1, DigitalSize.Units.Terabyte).ToString());
+            Term<Mass, Volume> arialDensity = new Term<Mass, Volume>(new Mass(45, Kilogram), new Volume(4, MeterCubed));
+            Console.WriteLine(arialDensity);
 
-            MeasurementParser<Force> p = new MeasurementParser<Force>(Force.Provider);
-            Console.WriteLine(p.Parse("1 kg * (m / 4 s /s)"));
+            Ratio<DigitalSize, Time> downloadSpeed = new Ratio<DigitalSize, Time>(new DigitalSize(2.1, Prefix.Giga(Bit)), new Time(1, Second));
+            Console.WriteLine(downloadSpeed);
+
+            Label<Banana> bananas = new Label<Banana>(4, Label.Units.Dozen);
+            Console.WriteLine(bananas);
 
             //Class1 c = new Class1();
             //c.

@@ -48,7 +48,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class TimeProvider : IMeasurementProvider<Time> {
-            public IEnumerable<Unit<Time>> BaseUnits { get; } = new[] { Units.Hour, Units.Second, Units.Minute, Units.Day };
+            public IEnumerable<Unit<Time>> AllUnits { get; } = new[] { Units.Hour, Units.Second, Units.Minute, Units.Day };
 
             public Unit<Time> DefaultUnit => Units.Second;
 

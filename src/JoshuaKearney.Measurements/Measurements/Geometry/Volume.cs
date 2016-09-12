@@ -91,7 +91,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class VolumeProvider : IMeasurementProvider<Volume>, IComplexMeasurementProvider<Area, Distance> {
-            public IEnumerable<Unit<Volume>> BaseUnits { get; } = new[] { Units.Liter };
+            public IEnumerable<Unit<Volume>> AllUnits { get; } = new[] { Units.Liter };
 
             public IMeasurementProvider<Area> Component1Provider => Area.Provider;
 

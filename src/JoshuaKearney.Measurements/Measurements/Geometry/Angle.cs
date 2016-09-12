@@ -28,7 +28,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class AngleProvider : IMeasurementProvider<Angle> {
-            public IEnumerable<Unit<Angle>> BaseUnits { get; } = new[] { Units.Radian, Units.Degree, Units.Revolution, Units.Gradian };
+            public IEnumerable<Unit<Angle>> AllUnits { get; } = new[] { Units.Radian, Units.Degree, Units.Revolution, Units.Gradian };
 
             public Unit<Angle> DefaultUnit => Units.Radian;
 

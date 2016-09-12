@@ -48,7 +48,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class DensityProvider : IMeasurementProvider<Density>, IComplexMeasurementProvider<Mass, Volume> {
-            public IEnumerable<Unit<Density>> BaseUnits => new Unit<Density>[] { };
+            public IEnumerable<Unit<Density>> AllUnits => new Unit<Density>[] { };
 
             public IMeasurementProvider<Mass> Component1Provider => Mass.Provider;
 

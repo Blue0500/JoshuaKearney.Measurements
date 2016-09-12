@@ -41,7 +41,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class ConcentrationProvider : IMeasurementProvider<Concentration> {
-            public IEnumerable<Unit<Concentration>> BaseUnits { get; } = new[] { Units.Percent, Units.PartsPerThousand, Units.PartsPerMillion, Units.PartsPerBillion, Units.ParsPerTrillion };
+            public IEnumerable<Unit<Concentration>> AllUnits { get; } = new[] { Units.Percent, Units.PartsPerThousand, Units.PartsPerMillion, Units.PartsPerBillion, Units.ParsPerTrillion };
 
             public Unit<Concentration> DefaultUnit => Units.Percent;
 

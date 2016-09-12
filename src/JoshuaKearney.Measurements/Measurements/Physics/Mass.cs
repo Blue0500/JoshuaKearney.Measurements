@@ -67,7 +67,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class MassProvider : IMeasurementProvider<Mass> {
-            public IEnumerable<Unit<Mass>> BaseUnits { get; } = new[] { Units.Gram, Units.MetricTon, Units.Ounce, Units.Pound, Units.ShortTon };
+            public IEnumerable<Unit<Mass>> AllUnits { get; } = new[] { Units.Gram, Units.MetricTon, Units.Ounce, Units.Pound, Units.ShortTon };
 
             public Unit<Mass> DefaultUnit => Units.Kilogram;
 

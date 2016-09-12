@@ -9,7 +9,7 @@ namespace JoshuaKearney.Measurements {
 
         Unit<T> DefaultUnit { get; }
 
-        IEnumerable<Unit<T>> BaseUnits { get; }
+        IEnumerable<Unit<T>> AllUnits { get; }
     }
 
     public static partial class Extensions {

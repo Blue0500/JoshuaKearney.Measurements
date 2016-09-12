@@ -146,7 +146,7 @@ namespace JoshuaKearney.Measurements {
                 this.DefaultUnit = t1Prov.DefaultUnit.MultiplyToTerm(t2Prov.DefaultUnit);
             }
 
-            public IEnumerable<Unit<Term<T1, T2>>> BaseUnits { get; } = new Unit<Term<T1, T2>>[] { };
+            public IEnumerable<Unit<Term<T1, T2>>> AllUnits { get; } = new Unit<Term<T1, T2>>[] { };
 
             public Unit<Term<T1, T2>> DefaultUnit { get; }
 

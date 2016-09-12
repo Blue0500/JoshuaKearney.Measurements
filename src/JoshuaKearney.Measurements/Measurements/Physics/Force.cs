@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -29,7 +25,7 @@ namespace JoshuaKearney.Measurements {
         public static class Units {
             private static Unit<Force> newton = new Unit<Force>("newton", "N", 1);
 
-            public static Unit<Force> PoundForce { get; } = new Mass(1, Mass.Units.Pound).Multiply(Acceleration.Gravity).CreateUnit("pount-force", "lbf");
+            public static Unit<Force> PoundForce { get; } = new Mass(1, Mass.Units.Pound).Multiply(Acceleration.Gravity).CreateUnit("pound-force", "lbf");
 
             // new Unit<Force>("pound-force", "lbf", new Force(1, Newton).Divide(Acceleration.Gravity).Divide(new Mass(1, Mass.Units.Pound)));
 
@@ -62,7 +58,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class ForceProvider : IMeasurementProvider<Force>, IComplexMeasurementProvider<Mass, Acceleration> {
-            public IEnumerable<Unit<Force>> BaseUnits { get; } = new[] { Units.Newton, Units.PoundForce };
+            public IEnumerable<Unit<Force>> AllUnits { get; } = new[] { Units.Newton, Units.PoundForce };
 
             public IMeasurementProvider<Mass> Component1Provider => Mass.Provider;
 

@@ -71,7 +71,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class AreaProvider : IMeasurementProvider<Area>, IComplexMeasurementProvider<Distance, Distance> {
-            public IEnumerable<Unit<Area>> BaseUnits { get; } = new[] { Units.Acre };
+            public IEnumerable<Unit<Area>> AllUnits { get; } = new[] { Units.Acre };
 
             public IMeasurementProvider<Distance> Component1Provider => Distance.Provider;
 
