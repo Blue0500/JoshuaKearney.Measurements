@@ -20,11 +20,11 @@ namespace JoshuaKearney.Measurements {
         public class Units {
             public static Unit<Angle> Radian { get; } = new Unit<Angle>("radian", "rad", 1);
 
-            public static Unit<Angle> Degree { get; } = Radian.Multiply(Math.PI).Divide(180).CreateUnit("degree", "°");
+            public static Unit<Angle> Degree { get; } = new Angle(1, Radian).Multiply(Math.PI).Divide(180).CreateUnit("degree", "°");
 
-            public static Unit<Angle> Revolution { get; } = Radian.Multiply(2 * Math.PI).CreateUnit("revolution", "rev");
+            public static Unit<Angle> Revolution { get; } = new Angle(1, Radian).Multiply(2 * Math.PI).CreateUnit("revolution", "rev");
 
-            public static Unit<Angle> Gradian { get; } = Radian.Multiply(Math.PI).Divide(200).CreateUnit("gradian", "grad");
+            public static Unit<Angle> Gradian { get; } = new Angle(1, Radian).Multiply(Math.PI).Divide(200).CreateUnit("gradian", "grad");
         }
 
         private class AngleProvider : IMeasurementProvider<Angle> {

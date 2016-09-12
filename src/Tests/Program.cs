@@ -1,20 +1,25 @@
 ﻿using JoshuaKearney.Measurements;
-using JoshuaKearney.Measurements.Parser;
 using System;
-using System.Diagnostics;
 
 namespace Testing {
 
     public class Program {
 
         public static void Main(string[] args) {
-            Ratio<Mass, Volume> r = new Density(45, Mass.Units.Gram, Volume.Units.InchCubed);
+            // Ratio<Mass, Volume> r = new Density(45, Mass.Units.Gram, Volume.Units.InchCubed);
+            // Distance d = new Distance();
+
+            //Console.WriteLine(new DigitalSize(1, DigitalSize.Units.Terabyte).ToString());
+
+            MeasurementParser<Force> p = new MeasurementParser<Force>(Force.Provider);
+            Console.WriteLine(p.Parse("1 kg * (m / 4 s /s)"));
 
             //Class1 c = new Class1();
             //c.
+            // Mole m = new Mole(45);
 
-            Concentration c = .45;
-            Console.WriteLine(c.ToString());
+            //Concentration c = .45;
+            // Console.WriteLine(c.ToString());
 
             //Quantity<string> strings = new Quantity<string>(45);
 

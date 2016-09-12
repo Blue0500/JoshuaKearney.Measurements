@@ -4,6 +4,13 @@ using System.Linq;
 
 namespace JoshuaKearney.Measurements {
 
+    /// <summary>
+    /// The base class to represent all measurements within JoshuaKearney.Measurements
+    /// </summary>
+    /// <typeparam name="TSelf">The type of the derived class</typeparam>
+    /// <seealso cref="System.IEquatable{TSelf}" />
+    /// <seealso cref="System.IComparable{TSelf}" />
+    /// <seealso cref="System.IComparable" />
     public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable
         where TSelf : Measurement<TSelf> {
 
@@ -147,15 +154,31 @@ namespace JoshuaKearney.Measurements {
             return measurement.CompareTo(measurement2) >= 0;
         }
 
+        /// <summary>
+        /// Returns the absolute value of this instance
+        /// </summary>
+        /// <returns></returns>
         public TSelf Abs() {
             return this.Select(Math.Abs);
         }
 
+        /// <summary>
+        /// Adds this instance to the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
         public TSelf Add(TSelf that) {
             Validate.NonNull(that, nameof(that));
             return that.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits + that.DefaultUnits);
         }
 
+        /// <summary>
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="obj">An object to compare with this instance.</param>
+        /// <returns>
+        /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
+        /// </returns>
         public int CompareTo(TSelf that) {
             if (that == null) {
                 return 1;
@@ -164,6 +187,13 @@ namespace JoshuaKearney.Measurements {
             return this.DefaultUnits.CompareTo(that.DefaultUnits);
         }
 
+        /// <summary>
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="obj">An object to compare with this instance.</param>
+        /// <returns>
+        /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
+        /// </returns>
         public int CompareTo(object obj) {
             TSelf measurement = obj as TSelf;
 
@@ -175,25 +205,54 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
+        /// <summary>
+        /// Creates a unit with the given name and symbol from this measurement's value
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="symbol">The symbol.</param>
+        /// <returns></returns>
         public Unit<TSelf> CreateUnit(string name, string symbol) {
             return new Unit<TSelf>(name, symbol, 1 / this.DefaultUnits);
         }
 
+        /// <summary>
+        /// Divides this instance by the specified ratio.
+        /// </summary>
+        /// <typeparam name="E"></typeparam>
+        /// <typeparam name="F"></typeparam>
+        /// <param name="ratio">The ratio.</param>
+        /// <returns></returns>
         public E Divide<E, F>(Ratio<F, TSelf, E> ratio)
                 where F : Ratio<F, TSelf, E>
                 where E : Measurement<E> {
             return ratio.Reciprocal().Multiply(this);
         }
 
+        /// <summary>
+        /// Divides this instance by the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
         public double Divide(TSelf that) {
             Validate.NonNull(that, nameof(that));
             return this.DefaultUnits / that.DefaultUnits;
         }
 
+        /// <summary>
+        /// Divides this instance by the specified double.
+        /// </summary>
+        /// <param name="factor">The factor.</param>
+        /// <returns></returns>
         public TSelf Divide(double factor) {
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits / factor);
         }
 
+        /// <summary>
+        /// Divides this instance by another type of measurement to create a ratio.
+        /// </summary>
+        /// <typeparam name="E"></typeparam>
+        /// <param name="that">The that.</param>
+        /// <returns></returns>
         public Ratio<TSelf, E> DivideToRatio<E>(E that)
                 where E : Measurement<E> {
             Validate.NonNull(that, nameof(that));
@@ -201,6 +260,13 @@ namespace JoshuaKearney.Measurements {
             return new Ratio<TSelf, E>(this as TSelf, that);
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="that">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object that) {
             TSelf cast = that as TSelf;
 
@@ -212,6 +278,13 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified measurement, is equal to this instance.
+        /// </summary>
+        /// <param name="that">The measurement to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified measurement> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public bool Equals(TSelf that) {
             if (object.ReferenceEquals(that, null)) {
                 return false;
@@ -221,8 +294,19 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
         public override int GetHashCode() => this.DefaultUnits.GetHashCode();
 
+        /// <summary>
+        /// Returns the maximum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
         public TSelf Max(TSelf that) {
             Validate.NonNull(that, nameof(that));
 
@@ -234,6 +318,11 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
+        /// <summary>
+        /// Returns the maximum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="measurements">The other measurements.</param>
+        /// <returns></returns>
         public TSelf Max(params TSelf[] measurements) {
             Validate.NonNull(measurements, nameof(measurements));
             Validate.NonEmpty(measurements, nameof(measurements));
@@ -241,6 +330,11 @@ namespace JoshuaKearney.Measurements {
             return measurements.Aggregate((x, y) => x.Max(y));
         }
 
+        /// <summary>
+        /// Returns the minimum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
         public TSelf Min(TSelf that) {
             Validate.NonNull(that, nameof(that));
 
@@ -252,6 +346,11 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
+        /// <summary>
+        /// Returns the minimum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="measurments">The other measurments.</param>
+        /// <returns></returns>
         public TSelf Min(params TSelf[] measurments) {
             Validate.NonNull(measurments, nameof(measurments));
             Validate.NonEmpty(measurments, nameof(measurments));
@@ -259,36 +358,75 @@ namespace JoshuaKearney.Measurements {
             return measurments.Aggregate((x, y) => x.Min(y));
         }
 
+        /// <summary>
+        /// Multiplies this instance by the specified double.
+        /// </summary>
+        /// <param name="factor">The double to multiply by.</param>
+        /// <returns></returns>
         public TSelf Multiply(double factor) {
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits * factor);
         }
 
+        /// <summary>
+        /// Multiplies this instance by another type of measurement, creating a term
+        /// </summary>
+        /// <typeparam name="E"></typeparam>
+        /// <param name="that">The that.</param>
+        /// <returns></returns>
         public Term<TSelf, E> MultiplyToTerm<E>(E that) where E : Measurement<E> {
             Validate.NonNull(that, nameof(that));
 
             return new Term<TSelf, E>(this as TSelf, that);
         }
 
+        /// <summary>
+        /// Negates this instance.
+        /// </summary>
+        /// <returns></returns>
         public TSelf Negate() => this.Select(x => -x);
 
+        /// <summary>
+        /// Subtracts the this instance by another measurement
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
         public TSelf Subtract(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
 
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits - that.DefaultUnits);
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.Double" /> that represents this instance.
+        /// </summary>
+        /// <param name="unit">The unit.</param>
+        /// <returns></returns>
         public double ToDouble(Unit<TSelf> unit) {
             Validate.NonNull(unit, nameof(unit));
 
             return this.DefaultUnits * unit.UnitsPerDefault;
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public override string ToString() {
             return this.ToString(
                 this.MeasurementProvider.DefaultUnit
             );
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <param name="unit">The unit.</param>
+        /// <param name="format">The format.</param>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public string ToString(Unit<TSelf> unit, string format) {
             Validate.NonNull(unit, nameof(unit));
             Validate.NonNull(format, nameof(format));
@@ -296,6 +434,13 @@ namespace JoshuaKearney.Measurements {
             return this.ToDouble(unit).ToString(format) + " " + unit.ToString().Trim();
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <param name="units">The units.</param>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public string ToString(params Unit<TSelf>[] units) {
             Validate.NonNull(units, nameof(units));
 

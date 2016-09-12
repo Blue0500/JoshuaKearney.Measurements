@@ -129,7 +129,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="IComplexMeasurementProvider.cs" />
     <Compile Include="IMeasurementProvider.cs" />
     <Compile Include="Measurements\Geometry\Angle.cs" />
@@ -154,7 +153,6 @@
     <Compile Include="MeasurementSystems\ImperialVolume.cs" />
     <Compile Include="MeasurementSystems\Metric.cs" />
     <Compile Include="Measurements\Measurement.cs" />
-    <Compile Include="Parser.cs" />
     <Compile Include="Prefix.cs" />
     <Compile Include="Measurements\General\DigitalSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

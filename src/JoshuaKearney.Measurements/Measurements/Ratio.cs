@@ -91,6 +91,14 @@ namespace JoshuaKearney.Measurements {
             return ratio.ToRatio();
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <param name="numDef">The numerator definition.</param>
+        /// <param name="denomDef">The denominator definition.</param>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public string ToString(Unit<TNumerator> numDef, Unit<TDenominator> denomDef) {
             Validate.NonNull(numDef, nameof(numDef));
             Validate.NonNull(denomDef, nameof(denomDef));

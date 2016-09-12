@@ -2,22 +2,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
+
+    /// <summary>
+    /// A class that is able to parse units out of strings. Compatable with all <see cref="Measurement{T}.ToString()"/> outputs
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MeasurementParser<T> where T : Measurement<T> {
         private Regex NumericPattern = new Regex(@"^\d*\.?\d*$");
         private Dictionary<string, Func<double, MeasurementToken>> dictionary;
         private IMeasurementProvider<T> provider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MeasurementParser{T}"/> class.
+        /// </summary>
+        /// <param name="provider">
+        /// The measurement provider for this type of measurement. Can be found as static members in measurement classes.
+        /// Ex: <see cref="Distance.Provider"/>
+        /// </param>
         public MeasurementParser(IMeasurementProvider<T> provider) {
             this.provider = provider;
         }
 
+        /// <summary>
+        /// Parses the specified string into a measurement of type <see cref="T"/>. Will throw if the
+        /// parse failed.
+        /// </summary>
+        /// <param name="toParse">The string to parse.</param>
+        /// <returns></returns>
         public T Parse(string toParse) {
             Validate.NonNull(toParse, nameof(toParse));
 
@@ -25,10 +40,43 @@ namespace JoshuaKearney.Measurements {
                 dictionary = GetUnits(this.provider);
             }
 
-            return ParseTokens(ToPostfix(Tokenize(toParse)));
+            var res = ParseTokens(ToPostfix(Tokenize(toParse)));
+
+            if (res.Item2 != null || res.Item1 == null) {
+                throw res.Item2 ?? new FormatException();
+            }
+            else {
+                return res.Item1;
+            }
         }
 
-        private List<Token> Tokenize(string input) {
+        /// <summary>
+        /// Parses the specified string into a measurement of type <see cref="T"/>. Will set result to <see cref="null"/> if the
+        /// parse failed.
+        /// </summary>
+        /// <param name="toParse">The string to parse.</param>
+        /// <param name="result">The result.</param>
+        /// <returns></returns>
+        public bool TryParse(string toParse, out T result) {
+            Validate.NonNull(toParse, nameof(toParse));
+
+            if (dictionary == null) {
+                dictionary = GetUnits(this.provider);
+            }
+
+            var res = ParseTokens(ToPostfix(Tokenize(toParse)));
+
+            if (res.Item2 != null || res.Item1 == null) {
+                result = null;
+                return false;
+            }
+            else {
+                result = res.Item1;
+                return true;
+            }
+        }
+
+        private Tuple<IEnumerable<Token>, Exception> Tokenize(string input) {
             Validate.NonNull(input, nameof(input));
 
             input = input
@@ -83,21 +131,22 @@ namespace JoshuaKearney.Measurements {
                         ret[i] = dictionary[unit](value);
                     }
                     else {
-                        return null;
+                        // Bad Unit exception
+                        return Tuple.Create<IEnumerable<Token>, Exception>(null, new FormatException($"Unable to tokenize expression. The unit '{unit}' was not recognized"));
                     }
                 }
             }
 
-            return ret;
+            return Tuple.Create<IEnumerable<Token>, Exception>(ret, null);
         }
 
-        private T ParseTokens(IEnumerable<Token> tokens) {
-            if (tokens == null) {
-                return null;
+        private Tuple<T, Exception> ParseTokens(Tuple<IEnumerable<Token>, Exception> input) {
+            if (input == null || input.Item1 == null) {
+                return Tuple.Create<T, Exception>(null, input?.Item2 ?? new FormatException());
             }
 
             // The iterator to use when parsing
-            IEnumerator<Token> tokensEnum = tokens.GetEnumerator();
+            IEnumerator<Token> tokensEnum = input.Item1.GetEnumerator();
 
             // The valid tokens that could make up this Measurement
             Stack<Token> toks = new Stack<Token>();
@@ -111,14 +160,23 @@ namespace JoshuaKearney.Measurements {
                 else if (tok is UrnaryOperator) {
                     UrnaryOperator op = tok as UrnaryOperator;
 
-                    if (toks.Count < 1 || !(toks.Peek() is MeasurementToken)) {
-                        return null;
+                    if (toks.Count < 1) {
+                        // Expected a measurement, got nothing
+                        return Tuple.Create<T, Exception>(null, new FormatException($"Unable to evaluate urnary operator '{op.ToString()}'. Expected a measurement, got nothing"));
                     }
 
-                    MeasurementToken eval = op.Evaluate(toks.Pop() as MeasurementToken);
+                    MeasurementToken pop = toks.Pop() as MeasurementToken;
+
+                    if (pop == null) {
+                        // Expected a measurement, got an operator
+                        return Tuple.Create<T, Exception>(null, new FormatException($"Unable to evaluate urnary operator '{op.ToString()}'. Expected a measurement, got '{pop.ToString()}'"));
+                    }
+
+                    MeasurementToken eval = op.Evaluate(pop);
 
                     if (eval == null) {
-                        return null;
+                        // Could not evaluate urnary operator
+                        return Tuple.Create<T, Exception>(null, new FormatException($"Unable to evaluate urnary operator '{op.ToString()}' on '{pop.ToString()}'. The measurement is incompatable"));
                     }
 
                     toks.Push(eval);
@@ -127,20 +185,30 @@ namespace JoshuaKearney.Measurements {
                     BinaryOperator op = tok as BinaryOperator;
 
                     if (toks.Count < 2) {
-                        return null;
+                        // Expected a measurement, got nothing
+                        return Tuple.Create<T, Exception>(null, new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected two measurements, got {toks.Count}"));
                     }
 
                     MeasurementToken pop2 = toks.Pop() as MeasurementToken;
                     MeasurementToken pop1 = toks.Pop() as MeasurementToken;
 
-                    if (!(pop1 is MeasurementToken && pop2 is MeasurementToken)) {
-                        return null;
+                    if (pop1 == null) {
+                        // Expected a measurement, got an operator
+                        return Tuple.Create<T, Exception>(null, new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, got '{pop1.ToString()}'"));
+                    }
+
+                    if (pop2 == null) {
+                        // Expected a measurement, got an operator
+                        return Tuple.Create<T, Exception>(null, new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, got '{pop2.ToString()}'"));
                     }
 
                     MeasurementToken eval = op.Evaluate(pop1, pop2);
 
                     if (eval == null) {
-                        return null;
+                        // Could not evaluate binary operator
+                        return Tuple.Create<T, Exception>(
+                            null, new FormatException($"Unable to evaluate binary operator '{op.ToString()}' on '{pop1.ToString()}' and '{pop2.ToString()}'. The measurements are incompatable")
+                        );
                     }
 
                     toks.Push(eval);
@@ -151,17 +219,24 @@ namespace JoshuaKearney.Measurements {
             var tFinal = final.GetType();
 
             if (!typeof(T).GetTypeInfo().IsAssignableFrom(tFinal.GetTypeInfo())) {
-                return null;
+                // Bad type
+                return Tuple.Create<T, Exception>(
+                    null, new FormatException($"Unable to evaluate expression. Expected  a {typeof(T).ToString()}, got a {tFinal.ToString()}")
+                );
             }
 
-            return (T)final;
+            return Tuple.Create<T, Exception>((T)final, null);
         }
 
-        private List<Token> ToPostfix(IEnumerable<Token> input) {
+        private Tuple<IEnumerable<Token>, Exception> ToPostfix(Tuple<IEnumerable<Token>, Exception> input) {
+            if (input == null || input.Item1 == null) {
+                return Tuple.Create<IEnumerable<Token>, Exception>(null, input?.Item2 ?? new FormatException());
+            }
+
             Stack<Operator> operatorStack = new Stack<Operator>();
             List<Token> ret = new List<Token>();
 
-            foreach (Token tok in input) {
+            foreach (Token tok in input.Item1) {
                 // Push operands
                 if (!(tok is Operator)) {
                     ret.Add(tok);
@@ -181,7 +256,7 @@ namespace JoshuaKearney.Measurements {
                     else {
                         // Mismatched parenthensis
                         if (operatorStack.Count == 0) {
-                            return null;
+                            return Tuple.Create<IEnumerable<Token>, Exception>(null, new FormatException("Unable to analyze expression: mismatched parenthensis"));
                         }
 
                         // If the top has a higher priority, pop and print it
@@ -194,15 +269,16 @@ namespace JoshuaKearney.Measurements {
                             if (opTok == Operator.CloseParen) {
                                 while (operatorStack.Peek() != Operator.OpenParen) {
                                     ret.Add(operatorStack.Pop());
+
                                     // Catch nothing else after this
                                     if (operatorStack.Count == 0) {
-                                        return null;
+                                        return Tuple.Create<IEnumerable<Token>, Exception>(null, new FormatException("Unable to analyze expression: mismatched parenthensis"));
                                     }
                                 }
 
                                 // Catch mismatched parenthensis
                                 if (operatorStack.Peek() != Operator.OpenParen) {
-                                    return null;
+                                    return Tuple.Create<IEnumerable<Token>, Exception>(null, new FormatException("Unable to analyze expression: mismatched parenthensis"));
                                 }
 
                                 operatorStack.Pop();
@@ -219,7 +295,7 @@ namespace JoshuaKearney.Measurements {
                 ret.Add(operatorStack.Pop());
             }
 
-            return ret;
+            return Tuple.Create<IEnumerable<Token>, Exception>(ret, null);
         }
 
         private Dictionary<string, Func<double, MeasurementToken>> GetUnits<E>(IMeasurementProvider<E> provider) where E : Measurement<E> {

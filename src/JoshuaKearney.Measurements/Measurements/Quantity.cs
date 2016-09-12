@@ -1,42 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
-namespace JoshuaKearney.Measurements {
+//namespace JoshuaKearney.Measurements {
+//    public abstract class Quantity<TSelf> : Measurement<TSelf> where TSelf : Quantity<TSelf> {
+//        private static Unit<TSelf> DefaultUnit { get; } = new Unit<TSelf>("", "", 1);
 
-    //public class Quantity<TSelf, T> : Measurement<TSelf> where TSelf : Quantity<TSelf> {
-    //    public override IMeasurementProvider<TSelf> MeasurementProvider {
-    //        get {
-    //            throw new NotImplementedException();
-    //        }
-    //    }
-    //}
+//        protected sealed class QuantityProvider : IMeasurementProvider<TSelf> {
+//            private readonly Func<double, TSelf> makeTSelf;
+//            private readonly Unit<TSelf> unit;
 
-    //public class Quantity<T> : Measurement<Quantity<T>> {
-    //    public static IMeasurementProvider<Quantity<T>> Provider { get; } = new QuantityProvider();
+//            public QuantityProvider(Func<double, TSelf> createTSelf, string unitName, string unitSymbol) {
+//                this.makeTSelf = createTSelf;
+//                this.unit = new Unit<TSelf>(unitName, unitSymbol, 1);
+//            }
 
-    //    public override IMeasurementProvider<Quantity<T>> MeasurementProvider => Provider;
+//            public IEnumerable<Unit<TSelf>> BaseUnits => new Unit<TSelf>[] { };
 
-    //    public Quantity(double amount) : this(amount, Units.DefaultUnit) {
-    //    }
+//            public Unit<TSelf> DefaultUnit => unit;
 
-    //    private Quantity(double amount, Unit<Quantity<T>> unit) : base(amount, unit) {
-    //    }
+//            public TSelf CreateMeasurement(double value, Unit<TSelf> unit) {
+//                return this.makeTSelf(value);
+//            }
+//        }
 
-    //    private static class Units {
-    //        public static Unit<Quantity<T>> DefaultUnit { get; } = new Unit<Quantity<T>>("", "", 1);
-    //    }
+//        public Quantity(double value) : base(value, DefaultUnit) {
+//        }
 
-    //    private class QuantityProvider : IMeasurementProvider<Quantity<T>> {
-    //        public IEnumerable<Unit<Quantity<T>>> BaseUnits { get; } = new Unit<Quantity<T>>[] { };
+//        public double ToDouble() {
+//            return this.DefaultUnits;
+//        }
+//    }
 
-    //        public Unit<Quantity<T>> DefaultUnit { get; } = Units.DefaultUnit;
+//    public sealed class Label<T> : Measurement<Label<T>> {
+//        public static IMeasurementProvider<Label<T>> Provider { get; } = new QuantityProvider();
 
-    //        public Quantity<T> CreateMeasurement(double value, Unit<Quantity<T>> unit) {
-    //            return new Quantity<T>(value, unit);
-    //        }
-    //    }
-    //}
-}
+//        public override IMeasurementProvider<Label<T>> MeasurementProvider => Provider;
+
+//        public Label(double amount) : this(amount, Units.DefaultUnit) {
+//        }
+
+//        private Label(double amount, Unit<Label<T>> unit) : base(amount, unit) {
+//        }
+
+//        private static class Units {
+//            public static Unit<Label<T>> DefaultUnit { get; } = new Unit<Label<T>>("", "", 1);
+//        }
+
+//        private class QuantityProvider : IMeasurementProvider<Label<T>> {
+//            public IEnumerable<Unit<Label<T>>> BaseUnits { get; } = new Unit<Label<T>>[] { };
+
+//            public Unit<Label<T>> DefaultUnit { get; } = Units.DefaultUnit;
+
+//            public Label<T> CreateMeasurement(double value, Unit<Label<T>> unit) {
+//                return new Label<T>(value, unit);
+//            }
+//        }
+//    }
+//}

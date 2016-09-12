@@ -43,6 +43,10 @@ namespace JoshuaKearney.Measurements {
             return length.Divide(time);
         }
 
+        /// <summary>
+        /// Returns a measurement that represents the cube of this instance
+        /// </summary>
+        /// <returns></returns>
         public Volume Cube() => this.Multiply(this.Square());
 
         public Area Multiply(Distance length) {
@@ -55,6 +59,10 @@ namespace JoshuaKearney.Measurements {
             return new Volume(this, area);
         }
 
+        /// <summary>
+        /// Returns a measurement that represents the cube of this instance
+        /// </summary>
+        /// <returns></returns>
         public Area Square() => this.Multiply(this);
 
         public Speed Divide(Time time) {
