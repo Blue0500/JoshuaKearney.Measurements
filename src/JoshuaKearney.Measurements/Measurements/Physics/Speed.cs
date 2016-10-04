@@ -2,7 +2,7 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public class Speed : Ratio<Speed, Distance, Time>, IDividableMeasurement<Time, Acceleration> {
+    public class Speed : Ratio<Speed, Distance, Time>, IDividableMeasurement<Time, Acceleration>, IDividableMeasurement<Distance, Frequency> {
         public static IMeasurementProvider<Speed> Provider { get; } = new SpeedProvider();
 
         public static Speed SpeedOfSound { get; } = new Speed(340.29, Units.MetersPerSecond);
@@ -47,10 +47,14 @@ namespace JoshuaKearney.Measurements {
             public Speed CreateMeasurement(double value, Unit<Speed> unit) => new Speed(value, unit);
         }
 
-        public Acceleration Divide(Time second) {
-            Validate.NonNull(second, nameof(second));
+        public Acceleration Divide(Time measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
 
-            return new Acceleration(this, second);
+            return new Acceleration(this, measurement2);
+        }
+
+        public Frequency Divide(Distance measurement2) {
+            return new Frequency(this.ToDouble(Units.MetersPerSecond) / measurement2.ToDouble(Distance.Units.Meter), Frequency.Units.Hertz);
         }
 
         public static Acceleration operator /(Speed speed, Time time) {

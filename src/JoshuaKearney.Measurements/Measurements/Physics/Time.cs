@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
@@ -26,17 +23,17 @@ namespace JoshuaKearney.Measurements {
         public override IMeasurementProvider<Time> MeasurementProvider => Provider;
 
         public static class Units {
-            private static Lazy<PrefixableUnit<Time>> second = new Lazy<PrefixableUnit<Time>>(() => new PrefixableUnit<Time>("second", "s", 1));
+            private static Lazy<PrefixableUnit<Time>> measurement2 = new Lazy<PrefixableUnit<Time>>(() => new PrefixableUnit<Time>("measurement2", "s", 1));
 
             public static Unit<Time> Hour { get; } = new Unit<Time>("hour", "hr", 1d / 60d / 60d);
 
-            public static Unit<Time> Millisecond { get; } = Prefix.Milli(Second);
+            public static Unit<Time> Millimeasurement2 { get; } = Prefix.Milli(Second);
 
             public static Unit<Time> Minute { get; } = new Unit<Time>("minute", "min", 1d / 60d);
 
             public static Unit<Time> Day { get; } = new Unit<Time>("day", "d", 1d / 24d / 60d / 60d);
 
-            public static PrefixableUnit<Time> Second => second.Value;
+            public static PrefixableUnit<Time> Second => measurement2.Value;
         }
 
         public static implicit operator TimeSpan(Time time) {

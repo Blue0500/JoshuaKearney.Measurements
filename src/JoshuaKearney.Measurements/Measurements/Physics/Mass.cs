@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -34,7 +33,7 @@ namespace JoshuaKearney.Measurements {
 
             public static Unit<Mass> Kilogram { get; } = Prefix.Kilo(MeasurementSystems.Metric.Gram);
 
-            public static PrefixableUnit<Mass> MetricTon { get; } = MeasurementSystems.Metric.Tonne;
+            public static Unit<Mass> MetricTon { get; } = MeasurementSystems.Metric.Tonne;
 
             public static Unit<Mass> Milligram { get; } = Prefix.Milli(MeasurementSystems.Metric.Gram);
 
@@ -45,24 +44,24 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
         }
 
-        public Force Multiply(Acceleration second) {
-            Validate.NonNull(second, nameof(second));
+        public Force Multiply(Acceleration measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
 
-            return new Force(this, second);
+            return new Force(this, measurement2);
         }
 
-        //public Volume Divide(Density second) {
-        //    Validate.NonNull(second, nameof(second));
+        //public Volume Divide(Density measurement2) {
+        //    Validate.NonNull(measurement2, nameof(measurement2));
 
-        //    return new Volume(this.DefaultUnits / second.DefaultUnits, Volume.Units.MeterCubed);
+        //    return new Volume(this.DefaultUnits / measurement2.DefaultUnits, Volume.Units.MeterCubed);
         //}
 
-        public static Force operator *(Mass first, Acceleration second) {
-            if (first == null || second == null) {
+        public static Force operator *(Mass first, Acceleration measurement2) {
+            if (first == null || measurement2 == null) {
                 return null;
             }
             else {
-                return first.Multiply(second);
+                return first.Multiply(measurement2);
             }
         }
 

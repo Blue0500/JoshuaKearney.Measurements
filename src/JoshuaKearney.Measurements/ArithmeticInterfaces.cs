@@ -26,9 +26,9 @@
         /// <summary>
         /// Returns a measurement that represents the division of this instance by another measurement
         /// </summary>
-        /// <param name="second">The second.</param>
+        /// <param name="measurement2">The measurement2.</param>
         /// <returns></returns>
-        TResult Divide(TIn second);
+        TResult Divide(TIn measurement2);
     }
 
     /// <summary>
@@ -43,9 +43,9 @@
         /// <summary>
         /// Returns a measurement that represents the multiplication of this instance by another measurement
         /// </summary>
-        /// <param name="second">The second.</param>
+        /// <param name="measurement2">The measurement2.</param>
         /// <returns></returns>
-        TResult Multiply(TIn second);
+        TResult Multiply(TIn measurement2);
     }
 
     /// <summary>

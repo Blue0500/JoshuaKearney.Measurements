@@ -12,8 +12,8 @@ namespace JoshuaKearney.Measurements {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class MeasurementParser<T> where T : Measurement<T> {
-        private Regex NumericPattern = new Regex(@"^\d*\.?\d*$");
-        private Dictionary<string, Func<double, MeasurementToken>> dictionary;
+        private static Regex NumericPattern = new Regex(@"^\d*\.?\d*$");
+        private static Dictionary<string, Func<double, MeasurementToken>> dictionary;
         private IMeasurementProvider<T> provider;
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        private Tuple<IEnumerable<Token>, Exception> Tokenize(string input) {
+        private static Tuple<IEnumerable<Token>, Exception> Tokenize(string input) {
             Validate.NonNull(input, nameof(input));
 
             input = input
@@ -140,7 +140,7 @@ namespace JoshuaKearney.Measurements {
             return Tuple.Create<IEnumerable<Token>, Exception>(ret, null);
         }
 
-        private Tuple<T, Exception> ParseTokens(Tuple<IEnumerable<Token>, Exception> input) {
+        private static Tuple<T, Exception> ParseTokens(Tuple<IEnumerable<Token>, Exception> input) {
             if (input == null || input.Item1 == null) {
                 return Tuple.Create<T, Exception>(null, input?.Item2 ?? new FormatException());
             }
@@ -228,7 +228,7 @@ namespace JoshuaKearney.Measurements {
             return Tuple.Create<T, Exception>((T)final, null);
         }
 
-        private Tuple<IEnumerable<Token>, Exception> ToPostfix(Tuple<IEnumerable<Token>, Exception> input) {
+        private static Tuple<IEnumerable<Token>, Exception> ToPostfix(Tuple<IEnumerable<Token>, Exception> input) {
             if (input == null || input.Item1 == null) {
                 return Tuple.Create<IEnumerable<Token>, Exception>(null, input?.Item2 ?? new FormatException());
             }
@@ -298,7 +298,7 @@ namespace JoshuaKearney.Measurements {
             return Tuple.Create<IEnumerable<Token>, Exception>(ret, null);
         }
 
-        private Dictionary<string, Func<double, MeasurementToken>> GetUnits<E>(IMeasurementProvider<E> provider) where E : Measurement<E> {
+        private static Dictionary<string, Func<double, MeasurementToken>> GetUnits<E>(IMeasurementProvider<E> provider) where E : Measurement<E> {
             Dictionary<string, Func<double, MeasurementToken>> ret = provider
                 .AllUnits
                 .SelectMany(x => {
@@ -312,8 +312,9 @@ namespace JoshuaKearney.Measurements {
                 .Select(
                     x => Tuple.Create<string, Func<double, MeasurementToken>>(
                         x.Symbol,
-                        y => new MeasurementToken(provider.CreateMeasurement(y, x))
-                    )
+                        y => {
+                            return new MeasurementToken(provider.CreateMeasurement(y, x));
+                        })
                 )
                 .ToDictionary(x => x.Item1, y => y.Item2);
 
@@ -329,14 +330,14 @@ namespace JoshuaKearney.Measurements {
                 MethodInfo prov1Info = info.MakeGenericMethod(new[] { provider1.GetType().GetTypeInfo().ImplementedInterfaces.First(x => x.GetGenericTypeDefinition() == typeof(IMeasurementProvider<>)).GenericTypeArguments[0] });
                 MethodInfo prov2Info = info.MakeGenericMethod(new[] { provider2.GetType().GetTypeInfo().ImplementedInterfaces.First(x => x.GetGenericTypeDefinition() == typeof(IMeasurementProvider<>)).GenericTypeArguments[0] });
 
-                var prov1Ret = (Dictionary<string, Func<double, MeasurementToken>>)prov1Info.Invoke(this, new[] { provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider) });
+                var prov1Ret = (Dictionary<string, Func<double, MeasurementToken>>)prov1Info.Invoke(null, new[] { provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider) });
                 foreach (var item in prov1Ret.Keys) {
                     if (!ret.ContainsKey(item)) {
                         ret.Add(item, prov1Ret[item]);
                     }
                 }
 
-                var prov2Ret = (Dictionary<string, Func<double, MeasurementToken>>)prov2Info.Invoke(this, new[] { provider.GetType().GetRuntimeProperty("Component2Provider").GetValue(provider) });
+                var prov2Ret = (Dictionary<string, Func<double, MeasurementToken>>)prov2Info.Invoke(null, new[] { provider.GetType().GetRuntimeProperty("Component2Provider").GetValue(provider) });
                 foreach (var item in prov2Ret.Keys) {
                     if (!ret.ContainsKey(item)) {
                         ret.Add(item, prov2Ret[item]);

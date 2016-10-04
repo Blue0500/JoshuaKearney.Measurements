@@ -45,16 +45,16 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        public Acceleration Divide(Mass second) {
-            Validate.NonNull(second, nameof(second));
+        public Acceleration Divide(Mass measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
 
-            return this.DivideToSecond(second);
+            return this.DivideToSecond(measurement2);
         }
 
-        public Pressure Divide(Area second) {
-            Validate.NonNull(second, nameof(second));
+        public Pressure Divide(Area measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
 
-            return new Pressure(this, second);
+            return new Pressure(this, measurement2);
         }
 
         private class ForceProvider : IMeasurementProvider<Force>, IComplexMeasurementProvider<Mass, Acceleration> {

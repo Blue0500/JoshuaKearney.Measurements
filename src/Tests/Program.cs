@@ -1,9 +1,5 @@
 ﻿using JoshuaKearney.Measurements;
 using System;
-using static JoshuaKearney.Measurements.DigitalSize.Units;
-using static JoshuaKearney.Measurements.Mass.Units;
-using static JoshuaKearney.Measurements.Time.Units;
-using static JoshuaKearney.Measurements.Volume.Units;
 
 namespace Testing {
 
@@ -12,17 +8,25 @@ namespace Testing {
         public class Banana { }
 
         public static void Main(string[] args) {
+            //Console.WriteLine(new Pressure(1, Pressure.Units.Pascal).ToString(Force.Units.PoundForce, Area.Units.FootSquared));
+
+            MeasurementParser<Volume> p = new MeasurementParser<Volume>(Volume.Provider);
+            Console.WriteLine(p.Parse("3 cm * (78 ft^2)"));
+            Console.WriteLine(p.Parse("3 cm * (78 ft*ft)"));
+
             // Ratio<Mass, Volume> r = new Density(45, Mass.Units.Gram, Volume.Units.InchCubed);
             // Distance d = new Distance();
 
-            Term<Mass, Volume> arialDensity = new Term<Mass, Volume>(new Mass(45, Kilogram), new Volume(4, MeterCubed));
-            Console.WriteLine(arialDensity);
+            //Term<Mass, Volume> arialDensity = new Term<Mass, Volume>(new Mass(45, Kilogram), new Volume(4, MeterCubed));
+            //Console.WriteLine(arialDensity);
 
-            Ratio<DigitalSize, Time> downloadSpeed = new Ratio<DigitalSize, Time>(new DigitalSize(2.1, Prefix.Giga(Bit)), new Time(1, Second));
-            Console.WriteLine(downloadSpeed);
+            //Ratio<DigitalSize, Time> downloadSpeed = new Ratio<DigitalSize, Time>(new DigitalSize(2.1, Prefix.Giga(Bit)), new Time(1, Second));
+            //Console.WriteLine(downloadSpeed);
 
-            Label<Banana> bananas = new Label<Banana>(4, Label.Units.Dozen);
-            Console.WriteLine(bananas);
+            //Quantity<Banana> bananas = new Quantity<Banana>(4, Quantity<Banana>.Units.Dozen);
+            //Console.WriteLine(bananas);
+
+            //Console.WriteLine(bananas.ToString(Quantity<Banana>.Units.Dozen));
 
             //Class1 c = new Class1();
             //c.

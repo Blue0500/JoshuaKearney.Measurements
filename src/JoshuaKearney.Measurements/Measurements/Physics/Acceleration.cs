@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -48,18 +44,18 @@ namespace JoshuaKearney.Measurements {
             public Acceleration CreateMeasurement(double value, Unit<Acceleration> unit) => new Acceleration(value, unit);
         }
 
-        public Force Multiply(Mass second) {
-            Validate.NonNull(second, nameof(second));
+        public Force Multiply(Mass measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
 
-            return new Force(second, this);
+            return new Force(measurement2, this);
         }
 
-        public static Force operator *(Acceleration first, Mass second) {
-            if (first == null || second == null) {
+        public static Force operator *(Acceleration first, Mass measurement2) {
+            if (first == null || measurement2 == null) {
                 return null;
             }
             else {
-                return first.Multiply(second);
+                return first.Multiply(measurement2);
             }
         }
     }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace JoshuaKearney.Measurements {
 
@@ -112,10 +110,10 @@ namespace JoshuaKearney.Measurements {
 
         protected override IMeasurementProvider<T2> Item2Provider { get; }
 
-        public new T1 DivideToFirst(T2 second) {
-            Validate.NonNull(second, nameof(second));
+        public new T1 DivideToFirst(T2 measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
 
-            return base.DivideToFirst(second);
+            return base.DivideToFirst(measurement2);
         }
 
         public new T2 DivideToSecond(T1 first) {

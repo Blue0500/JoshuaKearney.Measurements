@@ -31,6 +31,10 @@ namespace JoshuaKearney.Measurements {
 
         protected abstract IMeasurementProvider<TNumerator> NumeratorProvider { get; }
 
+        public static implicit operator Ratio<TNumerator, TDenominator>(Ratio<TSelf, TNumerator, TDenominator> ratio) {
+            return ratio.ToRatio();
+        }
+
         public static TNumerator operator *(Ratio<TSelf, TNumerator, TDenominator> ratio, TDenominator denominator) {
             if (ratio == null || denominator == null) {
                 return null;
@@ -45,17 +49,17 @@ namespace JoshuaKearney.Measurements {
             return this.DenominatorProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits / that.DefaultUnits);
         }
 
-        public double Multiply<E>(Ratio<E, TDenominator, TNumerator> that)
-                where E : Ratio<E, TDenominator, TNumerator> {
-            return this.DefaultUnits * that.DefaultUnits;
-        }
-
         public Ratio<TThatDenom, TDenominator> DivideToRatio<TThatDenom, E>(Ratio<E, TNumerator, TThatDenom> that)
                 where TThatDenom : Measurement<TThatDenom>
                 where E : Ratio<E, TNumerator, TThatDenom> {
             return that.DenominatorProvider.CreateMeasurement(this.DefaultUnits, that.DenominatorProvider.DefaultUnit).DivideToRatio(
                 this.DenominatorProvider.CreateMeasurementWithDefaultUnits(that.DefaultUnits)
             );
+        }
+
+        public double Multiply<E>(Ratio<E, TDenominator, TNumerator> that)
+                        where E : Ratio<E, TDenominator, TNumerator> {
+            return this.DefaultUnits * that.DefaultUnits;
         }
 
         public TNumerator Multiply(TDenominator denominator) {
@@ -86,10 +90,6 @@ namespace JoshuaKearney.Measurements {
             NumeratorProvider,
             DenominatorProvider
         );
-
-        public static implicit operator Ratio<TNumerator, TDenominator>(Ratio<TSelf, TNumerator, TDenominator> ratio) {
-            return ratio.ToRatio();
-        }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
@@ -142,8 +142,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class RatioProvider : IMeasurementProvider<Ratio<TNumerator, TDenominator>> {
-            private readonly IMeasurementProvider<TNumerator> numProv;
             private readonly IMeasurementProvider<TDenominator> denomProv;
+            private readonly IMeasurementProvider<TNumerator> numProv;
 
             public RatioProvider(IMeasurementProvider<TNumerator> t1Prov, IMeasurementProvider<TDenominator> t2Prov) {
                 this.numProv = t1Prov;
@@ -151,9 +151,9 @@ namespace JoshuaKearney.Measurements {
                 this.DefaultUnit = t1Prov.DefaultUnit.DivideToRatio(t2Prov.DefaultUnit);
             }
 
-            public Unit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
-
             public IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> AllUnits => new Unit<Ratio<TNumerator, TDenominator>>[] { };
+
+            public Unit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
 
             public Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
                 return new Ratio<TNumerator, TDenominator>(value, unit, numProv, denomProv);

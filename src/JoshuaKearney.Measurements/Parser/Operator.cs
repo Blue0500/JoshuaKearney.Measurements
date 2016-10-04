@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements.Parser {
 
@@ -16,9 +13,9 @@ namespace JoshuaKearney.Measurements.Parser {
 
         public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), typeof(Ratio<,>), x, y));
 
-        public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 5, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
+        public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
 
-        public static UrnaryOperator Cube { get; } = new UrnaryOperator("³", 5, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
+        public static UrnaryOperator Cube { get; } = new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
 
         public Operator(string value, int priority) : base(value) {
             this.Priority = priority;

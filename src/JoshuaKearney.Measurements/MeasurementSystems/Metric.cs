@@ -28,7 +28,7 @@
             unitsPerDefault: 1d
         );
 
-        public static PrefixableUnit<Mass> Tonne { get; } = new PrefixableUnit<Mass>(
+        public static Unit<Mass> Tonne { get; } = new Unit<Mass>(
             name: "tonne",
             symbol: "t",
             unitsPerDefault: 1d / 1000d
