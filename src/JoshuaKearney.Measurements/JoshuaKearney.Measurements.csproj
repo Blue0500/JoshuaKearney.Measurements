@@ -131,6 +131,10 @@
     <Compile Include="ArithmeticInterfaces.cs" />
     <Compile Include="IComplexMeasurementProvider.cs" />
     <Compile Include="IMeasurementProvider.cs" />
+    <Compile Include="Measurements\Chemistry\ChemicalSubstance.cs" />
+    <Compile Include="Measurements\Chemistry\Molality.cs" />
+    <Compile Include="Measurements\Chemistry\Molarity.cs" />
+    <Compile Include="Measurements\Chemistry\MolarMass.cs" />
     <Compile Include="Measurements\Electricity\Charge.cs" />
     <Compile Include="Measurements\General\Quantity.cs" />
     <Compile Include="Measurements\Geometry\Angle.cs" />

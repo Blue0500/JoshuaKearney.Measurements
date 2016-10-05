@@ -4,7 +4,8 @@ namespace JoshuaKearney.Measurements {
 
     public sealed class Mass : Measurement<Mass>,
         IMultipliableMeasurement<Acceleration, Force>,
-        IDividableMeasurement<Volume, Density> {
+        IDividableMeasurement<Volume, Density>,
+        IDividableMeasurement<ChemicalAmount, MolarMass> {
         public static IMeasurementProvider<Mass> Provider { get; } = new MassProvider();
 
         public override IMeasurementProvider<Mass> MeasurementProvider => Provider;
@@ -48,6 +49,12 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(measurement2, nameof(measurement2));
 
             return new Force(this, measurement2);
+        }
+
+        public MolarMass Divide(ChemicalAmount measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            return new MolarMass(this, measurement2);
         }
 
         //public Volume Divide(Density measurement2) {
