@@ -2,10 +2,11 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public class Force : Term<Force, Mass, Acceleration>
-        //IDividableMeasurement<Area, Pressure>,
-        //IDividableMeasurement<Mass, Acceleration> {
-        {
+    public class Force : Term<Force, Mass, Acceleration>,
+        IDividableMeasurement<Acceleration, Mass>,
+        IDividableMeasurement<Area, Pressure>,
+        IDividableMeasurement<Mass, Acceleration> {
+        
         public Force() {
         }
 

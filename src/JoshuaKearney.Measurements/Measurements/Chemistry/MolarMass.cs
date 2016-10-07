@@ -2,7 +2,9 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public class MolarMass : Ratio<MolarMass, Mass, ChemicalAmount> {
+    public class MolarMass : Ratio<MolarMass, Mass, ChemicalAmount>,
+        IMultipliableMeasurement<ChemicalAmount, Mass> {
+
         public static IMeasurementProvider<MolarMass> Provider { get; } = new MolarMassProvider();
 
         public override IMeasurementProvider<MolarMass> MeasurementProvider => Provider;

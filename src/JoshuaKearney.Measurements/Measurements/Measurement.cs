@@ -377,8 +377,11 @@ namespace JoshuaKearney.Measurements {
 
             return new Term<TSelf, E>(this as TSelf, that);
         }
+         
+        public T Multiply<T, E>(Ratio<E, T, TSelf> ratio)
+            where E : Ratio<E, T, TSelf>
+            where T : Measurement<T> {
 
-        public T Multiply<T>(Ratio<T, TSelf> ratio) where T : Measurement<T> {
             return ratio.Multiply(this);
         }
 

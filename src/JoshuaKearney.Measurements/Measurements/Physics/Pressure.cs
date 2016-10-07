@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Pressure : Ratio<Pressure, Force, Area> {
+    public class Pressure : Ratio<Pressure, Force, Area>,
+        IMultipliableMeasurement<Area, Force> {
 
         public Pressure() {
         }

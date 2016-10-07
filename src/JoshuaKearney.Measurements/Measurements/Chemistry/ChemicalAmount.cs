@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public class ChemicalAmount : Measurement<ChemicalAmount> {
+    public class ChemicalAmount : Measurement<ChemicalAmount>,
+        IDividableMeasurement<Volume, Molarity> {
 
         private static Lazy<Ratio<DoubleMeasurement, ChemicalAmount>> avagadroConstant = new Lazy<Ratio<DoubleMeasurement, ChemicalAmount>>(() => new Ratio<DoubleMeasurement, ChemicalAmount>(
             6.02214085774e23,
@@ -36,6 +37,10 @@ namespace JoshuaKearney.Measurements {
             public ChemicalAmount CreateMeasurement(double value, Unit<ChemicalAmount> unit) {
                 return new ChemicalAmount(value, unit);
             }
+        }
+
+        public Molarity Divide(Volume measurement2) {
+            return new Molarity(this, measurement2);
         }
     }
 }

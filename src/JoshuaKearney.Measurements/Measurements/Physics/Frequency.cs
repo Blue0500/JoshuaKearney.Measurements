@@ -10,6 +10,9 @@ namespace JoshuaKearney.Measurements {
         public Frequency(double amount, Unit<Frequency> unit) : base(amount, unit) {
         }
 
+        public Frequency(double amount, Time time) : base(amount, time) {
+        }
+
         public override IMeasurementProvider<Frequency> MeasurementProvider => Provider;
 
         public IMeasurementProvider<Frequency> Provider { get; } = new FrequencyProvider();

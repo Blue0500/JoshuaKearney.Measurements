@@ -12,7 +12,9 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    public sealed class Density : Ratio<Density, Mass, Volume> {
+    public sealed class Density : Ratio<Density, Mass, Volume>,
+        IMultipliableMeasurement<Volume, Mass> {
+
         public static IMeasurementProvider<Density> Provider { get; } = new DensityProvider();
 
         public Density() {

@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public sealed class DoubleMeasurement : Measurement<DoubleMeasurement> {
+    public sealed class DoubleMeasurement : Measurement<DoubleMeasurement>,
+        IDividableMeasurement<Time, Frequency> {
+
         public static IMeasurementProvider<DoubleMeasurement> Provider { get; } = new DoubleMeasurementProvider();
 
         public override IMeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
@@ -17,6 +20,10 @@ namespace JoshuaKearney.Measurements {
         }
 
         public double ToDouble() => this.ToDouble(Units.DefaultUnit);
+
+        public Frequency Divide(Time measurement2) {
+            return new Frequency(this, measurement2);
+        }
 
         public static implicit operator double(DoubleMeasurement measurement) {
             return measurement?.ToDouble() ?? 0;
