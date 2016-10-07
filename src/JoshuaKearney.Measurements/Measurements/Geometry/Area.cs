@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
@@ -12,8 +11,9 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    public sealed class Area : Term<Area, Distance, Distance>,
-            IMultipliableMeasurement<Distance, Volume> {
+    public sealed class Area : Term<Area, Distance, Distance>
+            //IMultipliableMeasurement<Distance, Volume>
+            {
         public static IMeasurementProvider<Area> Provider { get; } = new AreaProvider();
 
         protected override IMeasurementProvider<Distance> Item1Provider => Distance.Provider;

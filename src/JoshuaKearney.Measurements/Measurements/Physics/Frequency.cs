@@ -2,7 +2,7 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public class Frequency : Measurement<Frequency> {
+    public class Frequency : Ratio<Frequency, DoubleMeasurement, Time> {
 
         public Frequency() {
         }
@@ -14,9 +14,9 @@ namespace JoshuaKearney.Measurements {
 
         public IMeasurementProvider<Frequency> Provider { get; } = new FrequencyProvider();
 
-        public double Multiply(Time time) {
-            return this.ToDouble(Units.Hertz) * time.ToDouble(Time.Units.Second);
-        }
+        protected override IMeasurementProvider<Time> DenominatorProvider => Time.Provider;
+
+        protected override IMeasurementProvider<DoubleMeasurement> NumeratorProvider => DoubleMeasurement.Provider;
 
         public static class Units {
             private static PrefixableUnit<Frequency> hertz = new PrefixableUnit<Frequency>("Hertz", "Hz", 1);

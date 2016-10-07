@@ -2,7 +2,7 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public class Molarity : Ratio<Molarity, Mass, ChemicalAmount> {
+    public class Molarity : Ratio<Molarity, ChemicalAmount, Volume> {
 
         public override IMeasurementProvider<Molarity> MeasurementProvider {
             get {
@@ -10,13 +10,13 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        protected override IMeasurementProvider<ChemicalAmount> DenominatorProvider {
+        protected override IMeasurementProvider<Volume> DenominatorProvider {
             get {
                 throw new NotImplementedException();
             }
         }
 
-        protected override IMeasurementProvider<Mass> NumeratorProvider {
+        protected override IMeasurementProvider<ChemicalAmount> NumeratorProvider {
             get {
                 throw new NotImplementedException();
             }

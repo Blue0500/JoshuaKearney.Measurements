@@ -2,8 +2,8 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public class Acceleration : Ratio<Acceleration, Speed, Time>, IMultipliableMeasurement<Mass, Force> {
-
+    public class Acceleration : Ratio<Acceleration, Speed, Time>//, IMultipliableMeasurement<Mass, Force>
+        {
         public Acceleration() {
         }
 

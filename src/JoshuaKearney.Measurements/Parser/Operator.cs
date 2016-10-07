@@ -9,13 +9,13 @@ namespace JoshuaKearney.Measurements.Parser {
 
         public static Operator OpenParen { get; } = new Operator("(", 100);
 
-        public static BinaryOperator Multiply { get; } = new BinaryOperator("*", 5, (x, y) => ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), typeof(Term<,>), x, y));
+        public static BinaryOperator Multiply { get; } = null;// new BinaryOperator("*", 5, (x, y) => ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), typeof(Term<,>), x, y));
 
-        public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), typeof(Ratio<,>), x, y));
+        public static BinaryOperator Divide { get; } = null;// new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), typeof(Ratio<,>), x, y));
 
-        public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
+        public static UrnaryOperator Square { get; } = null;// new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
 
-        public static UrnaryOperator Cube { get; } = new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
+        public static UrnaryOperator Cube { get; } = null;//new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
 
         public Operator(string value, int priority) : base(value) {
             this.Priority = priority;

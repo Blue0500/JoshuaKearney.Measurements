@@ -1,8 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
     public class ChemicalAmount : Measurement<ChemicalAmount> {
+
+        private static Lazy<Ratio<DoubleMeasurement, ChemicalAmount>> avagadroConstant = new Lazy<Ratio<DoubleMeasurement, ChemicalAmount>>(() => new Ratio<DoubleMeasurement, ChemicalAmount>(
+            6.02214085774e23,
+            new ChemicalAmount(1, Units.Mole)
+        ));
+
+        public static Ratio<DoubleMeasurement, ChemicalAmount> AvagadroConstant => avagadroConstant.Value;
+
         public static IMeasurementProvider<ChemicalAmount> Provider { get; } = new ChemicalSubstanceProvider();
 
         public override IMeasurementProvider<ChemicalAmount> MeasurementProvider => Provider;
@@ -20,7 +29,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class ChemicalSubstanceProvider : IMeasurementProvider<ChemicalAmount> {
-            public IEnumerable<Unit<ChemicalAmount>> AllUnits => new[] { Units.Mole };
+            public IEnumerable<Unit<ChemicalAmount>> AllUnits => new[] { Units.Mole, Units.RepresentativeParticle };
 
             public Unit<ChemicalAmount> DefaultUnit => Units.Mole;
 

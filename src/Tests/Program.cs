@@ -8,11 +8,16 @@ namespace Testing {
         public class Banana { }
 
         public static void Main(string[] args) {
+            ChemicalAmount m = new ChemicalAmount(45, ChemicalAmount.Units.Mole);
+            double parts = m.Multiply(ChemicalAmount.AvagadroConstant);
+
+            Console.WriteLine(parts);
+
             //Console.WriteLine(new Pressure(1, Pressure.Units.Pascal).ToString(Force.Units.PoundForce, Area.Units.FootSquared));
 
-            MeasurementParser<Volume> p = new MeasurementParser<Volume>(Volume.Provider);
-            Console.WriteLine(p.Parse("3 cm * (78 ft^2)"));
-            Console.WriteLine(p.Parse("3 cm * (78 ft*ft)"));
+            // MeasurementParser<Volume> p = new MeasurementParser<Volume>(Volume.Provider);
+            //  Console.WriteLine(p.Parse("3 cm * (78 ft^2)"));
+            // Console.WriteLine(p.Parse("3 cm * (78 ft*ft)"));
 
             // Ratio<Mass, Volume> r = new Density(45, Mass.Units.Gram, Volume.Units.InchCubed);
             // Distance d = new Distance();

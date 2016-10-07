@@ -27,7 +27,7 @@
         /// <param name="unit">The unit.</param>
         /// <returns></returns>
         public static Unit<TResult> Cube<TSelf, TResult>(this Unit<TSelf> unit)
-                where TSelf : Measurement<TSelf>, ICubableMeasurement<TResult>
+                where TSelf : Measurement<TSelf>//, ICubableMeasurement<TResult>
                 where TResult : Measurement<TResult> {
             Validate.NonNull(unit, nameof(unit));
 
@@ -48,7 +48,7 @@
         /// <param name="that">The that.</param>
         /// <returns></returns>
         public static Unit<TResult> Divide<TSelf, TThat, TResult>(this Unit<TSelf> unit, Unit<TThat> that)
-                where TSelf : Measurement<TSelf>, IDividableMeasurement<TThat, TResult>
+                where TSelf : Measurement<TSelf>//, IDividableMeasurement<TThat, TResult>
                 where TThat : Measurement<TThat>
                 where TResult : Measurement<TResult> {
             Validate.NonNull(unit, nameof(unit));
@@ -84,7 +84,7 @@
         /// <param name="that">The that.</param>
         /// <returns></returns>
         public static Unit<TResult> Multiply<TSelf, TThat, TResult>(this Unit<TSelf> unit, Unit<TThat> that)
-                where TSelf : Measurement<TSelf>, IMultipliableMeasurement<TThat, TResult>
+                where TSelf : Measurement<TSelf>//, IMultipliableMeasurement<TThat, TResult>
                 where TThat : Measurement<TThat>
                 where TResult : Measurement<TResult> {
             Validate.NonNull(unit, nameof(unit));
@@ -118,7 +118,7 @@
         /// <param name="unit">The unit.</param>
         /// <returns></returns>
         public static Unit<TResult> Square<TSelf, TResult>(this Unit<TSelf> unit)
-                where TSelf : Measurement<TSelf>, ISquareableMeasurement<TResult>
+                where TSelf : Measurement<TSelf>//, ISquareableMeasurement<TResult>
                 where TResult : Measurement<TResult> {
             Validate.NonNull(unit, nameof(unit));
 

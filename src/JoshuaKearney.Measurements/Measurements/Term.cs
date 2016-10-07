@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>, IDividableMeasurement<T2, T1>
+    public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>//, IDividableMeasurement<T2, T1>
            where TSelf : Term<TSelf, T1, T2>
            where T1 : Measurement<T1>
            where T2 : Measurement<T2> {

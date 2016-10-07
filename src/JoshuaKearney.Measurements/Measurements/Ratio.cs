@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace JoshuaKearney.Measurements {
 
     public abstract class Ratio<TSelf, TNumerator, TDenominator> :
-        Measurement<TSelf>,
-        IMultipliableMeasurement<TDenominator, TNumerator>
+        Measurement<TSelf>//,
+        //IMultipliableMeasurement<TDenominator, TNumerator>
 
         where TSelf : Ratio<TSelf, TNumerator, TDenominator>
         where TNumerator : Measurement<TNumerator>

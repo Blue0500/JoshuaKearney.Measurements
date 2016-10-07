@@ -2,10 +2,11 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public sealed class Mass : Measurement<Mass>,
-        IMultipliableMeasurement<Acceleration, Force>,
-        IDividableMeasurement<Volume, Density>,
-        IDividableMeasurement<ChemicalAmount, MolarMass> {
+    public sealed class Mass : Measurement<Mass>
+        //IMultipliableMeasurement<Acceleration, Force>,
+        //IDividableMeasurement<Volume, Density>,
+        //IDividableMeasurement<ChemicalAmount, MolarMass>
+        {
         public static IMeasurementProvider<Mass> Provider { get; } = new MassProvider();
 
         public override IMeasurementProvider<Mass> MeasurementProvider => Provider;

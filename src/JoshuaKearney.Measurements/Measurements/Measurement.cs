@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace JoshuaKearney.Measurements {
@@ -377,6 +376,10 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             return new Term<TSelf, E>(this as TSelf, that);
+        }
+
+        public T Multiply<T>(Ratio<T, TSelf> ratio) where T : Measurement<T> {
+            return ratio.Multiply(this);
         }
 
         /// <summary>

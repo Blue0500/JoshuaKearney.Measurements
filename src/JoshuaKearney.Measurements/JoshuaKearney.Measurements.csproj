@@ -123,6 +123,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="ClassDiagram1.cd" />
     <None Include="JoshuaKearney.Measurements.nuspec" />
     <None Include="Releases\JoshuaKearney.Measurements.nuspec" />
     <None Include="project.json" />
@@ -131,11 +132,12 @@
     <Compile Include="ArithmeticInterfaces.cs" />
     <Compile Include="IComplexMeasurementProvider.cs" />
     <Compile Include="IMeasurementProvider.cs" />
-    <Compile Include="Measurements\Chemistry\ChemicalSubstance.cs" />
+    <Compile Include="Measurements\Chemistry\ChemicalAmount.cs" />
     <Compile Include="Measurements\Chemistry\Molality.cs" />
     <Compile Include="Measurements\Chemistry\Molarity.cs" />
     <Compile Include="Measurements\Chemistry\MolarMass.cs" />
     <Compile Include="Measurements\Electricity\Charge.cs" />
+    <Compile Include="Measurements\General\DoubleMeasurement.cs" />
     <Compile Include="Measurements\General\Quantity.cs" />
     <Compile Include="Measurements\Geometry\Angle.cs" />
     <Compile Include="Measurements\Physics\Acceleration.cs" />

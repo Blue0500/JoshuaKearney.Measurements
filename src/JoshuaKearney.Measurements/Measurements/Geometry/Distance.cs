@@ -2,12 +2,13 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public sealed class Distance : Measurement<Distance>,
-            IMultipliableMeasurement<Distance, Area>,
-            IMultipliableMeasurement<Area, Volume>,
-            IDividableMeasurement<Time, Speed>,
-            ISquareableMeasurement<Area>,
-            ICubableMeasurement<Volume> {
+    public sealed class Distance : Measurement<Distance>
+            //IMultipliableMeasurement<Distance, Area>,
+            //IMultipliableMeasurement<Area, Volume>,
+            //IDividableMeasurement<Time, Speed>,
+            //ISquareableMeasurement<Area>,
+            //ICubableMeasurement<Volume>
+            {
         public static IMeasurementProvider<Distance> Provider { get; } = new LengthProvider();
 
         public override IMeasurementProvider<Distance> MeasurementProvider => Provider;
