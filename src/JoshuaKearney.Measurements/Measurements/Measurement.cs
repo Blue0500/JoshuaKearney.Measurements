@@ -10,7 +10,9 @@ namespace JoshuaKearney.Measurements {
     /// <seealso cref="System.IEquatable{TSelf}" />
     /// <seealso cref="System.IComparable{TSelf}" />
     /// <seealso cref="System.IComparable" />
-    public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable
+    public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable,
+        IMultipliableMeasurement<DoubleMeasurement, TSelf>,
+        IDividableMeasurement<DoubleMeasurement, TSelf>
         where TSelf : Measurement<TSelf> {
 
         protected Measurement(double amount, Unit<TSelf> unit) {
@@ -246,6 +248,14 @@ namespace JoshuaKearney.Measurements {
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits / factor);
         }
 
+        public Ratio<TSelf, DoubleMeasurement> ToRatio() {
+            return new Ratio<TSelf, DoubleMeasurement>(this, 1);
+        }
+
+        public static implicit operator Ratio<TSelf, DoubleMeasurement>(Measurement<TSelf> measurement) {
+            return measurement.ToRatio();
+        }
+
         /// <summary>
         /// Divides this instance by another type of measurement to create a ratio.
         /// </summary>
@@ -377,11 +387,14 @@ namespace JoshuaKearney.Measurements {
 
             return new Term<TSelf, E>(this as TSelf, that);
         }
-         
+
+        public Ratio<DoubleMeasurement, TSelf> Reciprocal() {
+            return new Ratio<DoubleMeasurement, TSelf>(1, this);
+        }
+
         public T Multiply<T, E>(Ratio<E, T, TSelf> ratio)
             where E : Ratio<E, T, TSelf>
             where T : Measurement<T> {
-
             return ratio.Multiply(this);
         }
 
@@ -437,7 +450,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(unit, nameof(unit));
             Validate.NonNull(format, nameof(format));
 
-            return this.ToDouble(unit).ToString(format) + " " + unit.ToString().Trim();
+            return (this.ToDouble(unit).ToString(format) + " " + unit.ToString()).Trim();
         }
 
         /// <summary>
@@ -461,5 +474,21 @@ namespace JoshuaKearney.Measurements {
 
             return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(func(this.DefaultUnits));
         }
+
+        TSelf IDividableMeasurement<DoubleMeasurement, TSelf>.Divide(DoubleMeasurement measurement2) {
+            return this.Divide(measurement2.ToDouble());
+        }
+
+        TSelf IMultipliableMeasurement<DoubleMeasurement, TSelf>.Multiply(DoubleMeasurement measurement2) {
+            return this.Multiply(measurement2.ToDouble());
+        }
+
+        //public TSelf Divide(DoubleMeasurement measurement2) {
+        //    return this.Divide(measurement2.ToDouble());
+        //}
+
+        //public TSelf Multiply(DoubleMeasurement measurement2) {
+        //    return this.Multiply(measurement2.ToDouble());
+        //}
     }
 }

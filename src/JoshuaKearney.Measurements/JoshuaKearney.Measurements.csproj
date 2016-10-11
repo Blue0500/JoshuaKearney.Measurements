@@ -136,6 +136,7 @@
     <Compile Include="Measurements\Chemistry\Molality.cs" />
     <Compile Include="Measurements\Chemistry\Molarity.cs" />
     <Compile Include="Measurements\Chemistry\MolarMass.cs" />
+    <Compile Include="Measurements\DimensionlessMeasurement.cs" />
     <Compile Include="Measurements\Electricity\Charge.cs" />
     <Compile Include="Measurements\General\DoubleMeasurement.cs" />
     <Compile Include="Measurements\General\Quantity.cs" />
@@ -149,11 +150,13 @@
     <Compile Include="Measurements\Physics\Temperature.cs" />
     <Compile Include="Measurements\Physics\Time.cs" />
     <Compile Include="Measurements\Quantity.cs" />
+    <Compile Include="Parser\DoubleMeasurementToken.cs" />
+    <Compile Include="Parser\MeasurementParser.cs" />
     <Compile Include="Parser\MeasurementToken.cs" />
     <Compile Include="Parser\Operator.cs" />
     <Compile Include="Parser\Token.cs" />
+    <Compile Include="Parser\Union.cs" />
     <Compile Include="Unit.cs" />
-    <Compile Include="MeasurementParser.cs" />
     <Compile Include="MeasurementSystems\AvoirdupoisMass.cs" />
     <Compile Include="MeasurementSystems\CustomaryVolume.cs" />
     <Compile Include="MeasurementSystems\EnglishArea.cs" />

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>//, IDividableMeasurement<T2, T1>
+    public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>, IDividableMeasurement<T2, T1>
            where TSelf : Term<TSelf, T1, T2>
            where T1 : Measurement<T1>
            where T2 : Measurement<T2> {
@@ -31,6 +31,12 @@ namespace JoshuaKearney.Measurements {
             }
 
             return term.Divide(term2);
+        }
+
+        public TNew Reduce<TNew>(Func<T1, T2, TNew> reducer) {
+            T2 oneItem2 = Item2Provider.CreateMeasurementWithDefaultUnits(1);
+
+            return reducer(this.Divide(oneItem2), oneItem2);
         }
 
         public T1 Divide(T2 that) {

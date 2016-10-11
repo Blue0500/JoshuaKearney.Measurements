@@ -9,16 +9,13 @@ namespace JoshuaKearney.Measurements.Parser {
 
         public static Operator OpenParen { get; } = new Operator("(", 100);
 
-        public static BinaryOperator Multiply { get; } = new BinaryOperator("*", 5, (x, y) => {
-            var result = ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), x, y) ?? ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), y, x);
-            return result;
-        });
+        public static BinaryOperator Multiply { get; } = null;// new BinaryOperator("*", 5, (x, y) => ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), typeof(Term<,>), x, y));
 
-        public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), x, y));
+        public static BinaryOperator Divide { get; } = null;// new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), typeof(Ratio<,>), x, y));
 
-        public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
+        public static UrnaryOperator Square { get; } = null;// new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
 
-        public static UrnaryOperator Cube { get; } = new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
+        public static UrnaryOperator Cube { get; } = null;//new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
 
         public Operator(string value, int priority) : base(value) {
             this.Priority = priority;
@@ -27,7 +24,7 @@ namespace JoshuaKearney.Measurements.Parser {
         // Higher is higher priortiy
         public int Priority { get; }
 
-        private static MethodInfo GetArithmeticInterfaceMethod(Type tInterface, MeasurementToken x, MeasurementToken y) {
+        private static MeasurementToken ApplyBinaryOp(Type tInterface, Type tBackup, MeasurementToken x, MeasurementToken y) {
             Type tFirst = x.MeasurementValue.GetType();
             Type tSecond = y.MeasurementValue.GetType();
 
@@ -41,16 +38,12 @@ namespace JoshuaKearney.Measurements.Parser {
                     z.GenericTypeArguments[0] == tSecond)
                 .FirstOrDefault();
 
-            return tGenericInterface
-                ?.GetTypeInfo()
-                ?.DeclaredMethods
-                ?.First();
-        }
+            if (tGenericInterface != null) {
+                var mathMethod = tGenericInterface
+                    .GetTypeInfo()
+                    .DeclaredMethods
+                    .First();
 
-        private static MeasurementToken ApplyBinaryOp(Type tInterface, MeasurementToken x, MeasurementToken y) {
-            var mathMethod = GetArithmeticInterfaceMethod(tInterface, x, y);
-
-            if (mathMethod != null) {
                 return new MeasurementToken(mathMethod.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
             }
             else {

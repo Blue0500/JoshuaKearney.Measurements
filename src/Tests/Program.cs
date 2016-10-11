@@ -8,10 +8,8 @@ namespace Testing {
         public class Banana { }
 
         public static void Main(string[] args) {
-            ChemicalAmount m = new ChemicalAmount(45, ChemicalAmount.Units.Mole);
-            double parts = m.Multiply(ChemicalAmount.AvagadroConstant);
-
-            Console.WriteLine(parts);
+            MeasurementParser<Pressure> p = new MeasurementParser<Pressure>(Pressure.Provider);
+            Console.WriteLine(p.Parse("(7 m / s / s * 78 kg) / (4.25 m * m)"));
 
             //Console.WriteLine(new Pressure(1, Pressure.Units.Pascal).ToString(Force.Units.PoundForce, Area.Units.FootSquared));
 

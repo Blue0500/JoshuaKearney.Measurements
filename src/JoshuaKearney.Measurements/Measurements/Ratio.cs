@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace JoshuaKearney.Measurements {
 
     public abstract class Ratio<TSelf, TNumerator, TDenominator> :
-        Measurement<TSelf>//,
-        //IMultipliableMeasurement<TDenominator, TNumerator>
+        Measurement<TSelf>,
+        IMultipliableMeasurement<TDenominator, TNumerator>
 
         where TSelf : Ratio<TSelf, TNumerator, TDenominator>
         where TNumerator : Measurement<TNumerator>
@@ -68,7 +68,7 @@ namespace JoshuaKearney.Measurements {
             return NumeratorProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits * denominator.DefaultUnits);
         }
 
-        public Ratio<TDenominator, TNumerator> Reciprocal() {
+        public new Ratio<TDenominator, TNumerator> Reciprocal() {
             return new Ratio<TDenominator, TNumerator>(
                 this.DefaultUnits,
                 this.DenominatorProvider.DefaultUnit.DivideToRatio(this.NumeratorProvider.DefaultUnit),
@@ -84,12 +84,17 @@ namespace JoshuaKearney.Measurements {
             return this.ToDouble(numDef.DivideToRatio(denomDef).Cast<Ratio<TNumerator, TDenominator>, TSelf>());
         }
 
-        public Ratio<TNumerator, TDenominator> ToRatio() => new Ratio<TNumerator, TDenominator>(
+        public new Ratio<TNumerator, TDenominator> ToRatio() => new Ratio<TNumerator, TDenominator>(
             this.DefaultUnits,
             this.MeasurementProvider.DefaultUnit.Cast<TSelf, Ratio<TNumerator, TDenominator>>(),
             NumeratorProvider,
             DenominatorProvider
         );
+
+        public TNew Reduce<TNew>(Func<TNumerator, TDenominator, TNew> reducer) {
+            var oneDenom = DenominatorProvider.CreateMeasurementWithDefaultUnits(1);
+            return reducer(this.Multiply(oneDenom), oneDenom);
+        }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
