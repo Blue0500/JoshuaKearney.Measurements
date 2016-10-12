@@ -6,20 +6,18 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public abstract class DimensionlessMeasurement<T> : Measurement<T> where T : Measurement<T> {
+    public abstract class DimensionlessMeasurement<T> : Measurement<T> where T : DimensionlessMeasurement<T> {
 
         public double ToDouble() => this.ToDouble(this.MeasurementProvider.DefaultUnit);
+
+        protected static Unit<T> DefaultUnit { get; } = new Unit<T>("", "", 1);
 
         public Frequency Divide(Time measurement2) {
             return new Frequency(this, measurement2);
         }
 
         public static implicit operator double(DimensionlessMeasurement<T> measurement) {
-            return measurement?.ToDouble() ?? 0;
-        }
-
-        private static class Units {
-            public static Unit<DoubleMeasurement> DefaultUnit { get; } = new Unit<DoubleMeasurement>("", "", 1);
+            return measurement?.ToDouble() ?? double.NaN;
         }
     }
 }
