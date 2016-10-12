@@ -91,9 +91,9 @@ namespace JoshuaKearney.Measurements {
             DenominatorProvider
         );
 
-        public TNew Reduce<TNew>(Func<TNumerator, TDenominator, TNew> reducer) {
+        public TNew Simplify<TNew>(Func<TNumerator, TDenominator, TNew> simplifier) {
             var oneDenom = DenominatorProvider.CreateMeasurementWithDefaultUnits(1);
-            return reducer(this.Multiply(oneDenom), oneDenom);
+            return simplifier(this.Multiply(oneDenom), oneDenom);
         }
 
         /// <summary>

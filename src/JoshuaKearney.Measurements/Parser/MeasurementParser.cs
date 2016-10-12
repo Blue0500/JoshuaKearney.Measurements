@@ -22,10 +22,10 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        public object Parse(string input) {
+        public T Parse(string input) {
             var res = EvalPostfix(ToPostfix(EvalInfix(Tokenize(input))));
 
-            object ret = new List<Token>();
+            T ret = default(T);
 
             res.Match(
                 x => ret = x,

@@ -33,10 +33,10 @@ namespace JoshuaKearney.Measurements {
             return term.Divide(term2);
         }
 
-        public TNew Reduce<TNew>(Func<T1, T2, TNew> reducer) {
+        public TNew Simplify<TNew>(Func<T1, T2, TNew> simplifier) {
             T2 oneItem2 = Item2Provider.CreateMeasurementWithDefaultUnits(1);
 
-            return reducer(this.Divide(oneItem2), oneItem2);
+            return simplifier(this.Divide(oneItem2), oneItem2);
         }
 
         public T1 Divide(T2 that) {

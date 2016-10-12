@@ -4,27 +4,27 @@ namespace JoshuaKearney.Measurements {
 
     public static partial class Extensions {
 
-        public static double Reduce<TSelf>(this Ratio<TSelf, DoubleMeasurement, DoubleMeasurement> measurement)
+        public static double Simplify<TSelf>(this Ratio<TSelf, DoubleMeasurement, DoubleMeasurement> measurement)
                 where TSelf : Ratio<TSelf, DoubleMeasurement, DoubleMeasurement> {
-            return measurement.Reduce((x, y) => x.Divide(y));
+            return measurement.Simplify((x, y) => x.Divide(y));
         }
 
-        public static TNum Reduce<TSelf, TNum>(this Ratio<TSelf, TNum, DoubleMeasurement> measurement)
+        public static TNum Simplify<TSelf, TNum>(this Ratio<TSelf, TNum, DoubleMeasurement> measurement)
                 where TSelf : Ratio<TSelf, TNum, DoubleMeasurement>
                 where TNum : Measurement<TNum> {
-            return measurement.Reduce((x, y) => x.Divide(y));
+            return measurement.Simplify((x, y) => x.Divide(y));
         }
 
-        public static TFirst Reduce<TSelf, TFirst>(this Term<TSelf, TFirst, DoubleMeasurement> measurement)
+        public static TFirst Simplify<TSelf, TFirst>(this Term<TSelf, TFirst, DoubleMeasurement> measurement)
                 where TFirst : Measurement<TFirst>
                 where TSelf : Term<TSelf, TFirst, DoubleMeasurement> {
-            return measurement.Reduce((x, y) => x.Multiply(y));
+            return measurement.Simplify((x, y) => x.Multiply(y));
         }
 
-        public static TSecond Reduce<TSelf, TSecond>(this Term<TSelf, DoubleMeasurement, TSecond> measurement)
+        public static TSecond Simplify<TSelf, TSecond>(this Term<TSelf, DoubleMeasurement, TSecond> measurement)
                 where TSecond : Measurement<TSecond>
                 where TSelf : Term<TSelf, DoubleMeasurement, TSecond> {
-            return measurement.Reduce((x, y) => y.Multiply(x));
+            return measurement.Simplify((x, y) => y.Multiply(x));
         }
     }
 
