@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Concentration : Measurement<Concentration> {
+    public class Concentration : NumericMeasurement<Concentration> {
         public static IMeasurementProvider<Concentration> Provider { get; } = new ConcentrationProvider();
 
         public override IMeasurementProvider<Concentration> MeasurementProvider => Provider;
@@ -32,14 +32,6 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Concentration> ParsPerTrillion { get; } = new Unit<Concentration>("parts per trillion", "ppt", 10000000000);
         }
 
-        public static implicit operator double(Concentration c) {
-            return c.ToDouble();
-        }
-
-        public static implicit operator Concentration(double d) {
-            return new Concentration(d, 1);
-        }
-
         private class ConcentrationProvider : IMeasurementProvider<Concentration> {
             public IEnumerable<Unit<Concentration>> AllUnits { get; } = new[] { Units.Percent, Units.PartsPerThousand, Units.PartsPerMillion, Units.PartsPerBillion, Units.ParsPerTrillion };
 
@@ -50,7 +42,7 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        public double ToDouble() {
+        public override double ToDouble() {
             return this.ToDouble(Units.Percent) / 100;
         }
     }

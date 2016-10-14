@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
+    public static partial class Extensions {
+
+        public static double SimplifyToDouble<TSelf, T>(this Ratio<TSelf, T, T> measurement)
+            where T : Measurement<T>
+            where TSelf : Ratio<TSelf, T, T> {
+            return measurement.Simplify((x, y) => x.Divide(y));
+        }
+    }
+
     public abstract class Ratio<TSelf, TNumerator, TDenominator> :
         Measurement<TSelf>,
         IMultipliableMeasurement<TDenominator, TNumerator>

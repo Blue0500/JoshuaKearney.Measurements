@@ -136,7 +136,7 @@
     <Compile Include="Measurements\Chemistry\Molality.cs" />
     <Compile Include="Measurements\Chemistry\Molarity.cs" />
     <Compile Include="Measurements\Chemistry\MolarMass.cs" />
-    <Compile Include="Measurements\DimensionlessMeasurement.cs" />
+    <Compile Include="Measurements\NumericMeasurement.cs" />
     <Compile Include="Measurements\Electricity\Charge.cs" />
     <Compile Include="Measurements\General\DoubleMeasurement.cs" />
     <Compile Include="Measurements\General\Quantity.cs" />
