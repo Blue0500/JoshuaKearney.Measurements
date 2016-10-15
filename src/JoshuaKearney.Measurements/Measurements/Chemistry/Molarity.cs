@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Molarity : Ratio<Molarity, ChemicalAmount, Volume>,
+    public sealed class Molarity : Ratio<Molarity, ChemicalAmount, Volume>,
         IMultipliableMeasurement<Volume, ChemicalAmount> {
 
         public static IMeasurementProvider<Molarity> Provider { get; } = new MolarityProvider();
 
         public override IMeasurementProvider<Molarity> MeasurementProvider => Provider;
-
         public Molarity() {
         }
 
@@ -24,11 +23,19 @@ namespace JoshuaKearney.Measurements {
         protected override IMeasurementProvider<ChemicalAmount> NumeratorProvider => ChemicalAmount.Provider;
 
         public static class Units {
-            public static Unit<Molarity> MolePerMeterCubed { get; } = new ChemicalAmount(1, ChemicalAmount.Units.Mole).Divide(new Volume(1, Volume.Units.MeterCubed)).CreateUnit("mole per meter cubed", "mol/cm^3");
+            public static Unit<Molarity> MolePerMeterCubed { get; } = new ChemicalAmount(1, ChemicalAmount.Units.Mole)
+                .Divide(new Volume(1, Volume.Units.MeterCubed))
+                .CreateUnit("mole per meter cubed", "mol/cm^3");
+
+            public static Unit<Molarity> MolePerMilliliter { get; } = new ChemicalAmount(1, ChemicalAmount.Units.Mole)
+                .Divide(new Volume(1, Volume.Units.Milliliter))
+                .CreateUnit("mole per milliliter", "mol/mL");
+
+            public static Unit<Molarity> Molar => MolePerMilliliter;
         }
 
         private class MolarityProvider : IMeasurementProvider<Molarity> {
-            public IEnumerable<Unit<Molarity>> AllUnits => new[] { Units.MolePerMeterCubed };
+            public IEnumerable<Unit<Molarity>> AllUnits => new[] { Units.MolePerMeterCubed, Units.MolePerMilliliter };
 
             public Unit<Molarity> DefaultUnit => Units.MolePerMeterCubed;
 

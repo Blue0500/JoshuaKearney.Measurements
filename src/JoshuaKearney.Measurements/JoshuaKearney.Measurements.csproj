@@ -143,8 +143,10 @@
     <Compile Include="Measurements\Geometry\Angle.cs" />
     <Compile Include="Measurements\Physics\Acceleration.cs" />
     <Compile Include="Measurements\General\Concentration.cs" />
+    <Compile Include="Measurements\Physics\Energy.cs" />
     <Compile Include="Measurements\Physics\Force.cs" />
     <Compile Include="Measurements\Physics\Frequency.cs" />
+    <Compile Include="Measurements\Physics\Power.cs" />
     <Compile Include="Measurements\Physics\Pressure.cs" />
     <Compile Include="Measurements\Physics\Speed.cs" />
     <Compile Include="Measurements\Physics\Temperature.cs" />

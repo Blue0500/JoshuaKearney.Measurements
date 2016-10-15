@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public class ChemicalAmount : Measurement<ChemicalAmount>,
+    public sealed class ChemicalAmount : Measurement<ChemicalAmount>,
         IDividableMeasurement<Volume, Molarity> {
 
         private static Lazy<Ratio<DoubleMeasurement, ChemicalAmount>> avagadroConstant = new Lazy<Ratio<DoubleMeasurement, ChemicalAmount>>(() => new Ratio<DoubleMeasurement, ChemicalAmount>(
