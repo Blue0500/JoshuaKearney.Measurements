@@ -5,14 +5,6 @@ namespace JoshuaKearney.Measurements {
     public class MolarMass : Ratio<MolarMass, Mass, ChemicalAmount>,
         IMultipliableMeasurement<ChemicalAmount, Mass> {
 
-        public static IMeasurementProvider<MolarMass> Provider { get; } = new MolarMassProvider();
-
-        public override IMeasurementProvider<MolarMass> MeasurementProvider => Provider;
-
-        protected override IMeasurementProvider<ChemicalAmount> DenominatorProvider => ChemicalAmount.Provider;
-
-        protected override IMeasurementProvider<Mass> NumeratorProvider => Mass.Provider;
-
         public MolarMass() {
         }
 
@@ -22,13 +14,22 @@ namespace JoshuaKearney.Measurements {
         public MolarMass(Mass mass, ChemicalAmount conc) : base(mass, conc) {
         }
 
-        public MolarMass(double amount, Unit<Mass> massUnit, Unit<ChemicalAmount> subsUnit) : base(amount, massUnit, subsUnit) {
+        public MolarMass(double amount, Unit<Mass> massUnit, Unit<ChemicalAmount> subsUnit)
+            : base(amount, massUnit, subsUnit) {
         }
 
-        public static class Units {
-            public static Unit<MolarMass> KilgoramsPerMole { get; } = new Mass(1, Mass.Units.Kilogram).Divide(new ChemicalAmount(1, ChemicalAmount.Units.Mole)).CreateUnit("kilogram per mole", "kg/mol");
+        public static IMeasurementProvider<MolarMass> Provider { get; } = new MolarMassProvider();
 
+        public override IMeasurementProvider<MolarMass> MeasurementProvider => Provider;
+
+        protected override IMeasurementProvider<ChemicalAmount> DenominatorProvider => ChemicalAmount.Provider;
+
+        protected override IMeasurementProvider<Mass> NumeratorProvider => Mass.Provider;
+
+        public static class Units {
             public static Unit<MolarMass> GramsPerMole { get; } = new Mass(1, Mass.Units.Gram).Divide(new ChemicalAmount(1, ChemicalAmount.Units.Mole)).CreateUnit("gram per mole", "g/mol");
+
+            public static Unit<MolarMass> KilgoramsPerMole { get; } = new Mass(1, Mass.Units.Kilogram).Divide(new ChemicalAmount(1, ChemicalAmount.Units.Mole)).CreateUnit("kilogram per mole", "kg/mol");
         }
 
         private class MolarMassProvider : IMeasurementProvider<MolarMass> {

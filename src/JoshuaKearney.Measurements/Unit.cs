@@ -1,6 +1,6 @@
 ﻿namespace JoshuaKearney.Measurements {
 
-    public static partial class Extensions {
+    public static partial class MeasurementExtensions {
 
         /// <summary>
         /// Casts the specified unit to a different type of measurement. This can result in unchecked, bad conversions. Only use this if you know what you're doing
@@ -238,5 +238,7 @@
         public override string ToString() {
             return this.Symbol;
         }
+
+        public static Unit<T> Default { get; } = new Unit<T>("default unit", "default", 1d);
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public partial class Extensions {
+    public partial class MeasurementExtensions {
 
         public static Volume ToVolume(this Term<Area, Distance> term) {
             Validate.NonNull(term, nameof(term));
@@ -18,27 +19,38 @@ namespace JoshuaKearney.Measurements {
     }
 
     public sealed class Volume : Term<Volume, Distance, Area>,
+        IMultipliableMeasurement<Pressure, Energy>,
         IDividableMeasurement<Distance, Area> {
-
-        public static IMeasurementProvider<Volume> Provider { get; } = new VolumeProvider();
-
-        protected override IMeasurementProvider<Distance> Item1Provider => Distance.Provider;
-
-        protected override IMeasurementProvider<Area> Item2Provider => Area.Provider;
-
-        public override IMeasurementProvider<Volume> MeasurementProvider => Provider;
 
         public Volume() {
         }
 
-        public Volume(double amount, Unit<Volume> unit) : base(amount, unit) {
+        public Volume(double amount, Unit<Volume> unit)
+            : base(amount, unit) {
         }
 
-        public Volume(Distance length, Area area) : base(length, area) {
+        public Volume(Distance length, Area area)
+            : base(length, area) {
         }
 
-        public Volume(double amount, Unit<Distance> lengthDef, Unit<Area> areaDef) : base(amount, lengthDef, areaDef) {
+        public Volume(Distance dist1, Distance dist2, Distance dist3)
+            : this(dist1, dist2.Multiply(dist3)) {
         }
+
+        public Volume(double amount, Unit<Distance> lengthDef, Unit<Area> areaDef)
+            : base(amount, lengthDef, areaDef) {
+        }
+
+        public Volume(double amount, Unit<Distance> dist1Unit, Unit<Distance> dist2Unit, Unit<Distance> dist3Unit)
+            : this(amount, dist1Unit, dist2Unit.Multiply<Distance, Distance, Area>(dist3Unit)) { }
+
+        public static IMeasurementProvider<Volume> Provider { get; } = new VolumeProvider();
+
+        public override IMeasurementProvider<Volume> MeasurementProvider => Provider;
+
+        protected override IMeasurementProvider<Distance> Item1Provider => Distance.Provider;
+
+        protected override IMeasurementProvider<Area> Item2Provider => Area.Provider;
 
         public static Area operator /(Volume volume, Distance length) {
             if (volume == null || length == null) {
@@ -52,6 +64,20 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(length, nameof(length));
 
             return this.DivideToSecond(length);
+        }
+
+        public Energy Multiply(Pressure measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            return measurement2.Multiply(this);
+        }
+
+        public string ToString(Unit<Distance> unit1, Unit<Distance> unit2, Unit<Distance> unit3) {
+            return this.ToString(unit1, unit2.Multiply<Distance, Distance, Area>(unit3));
+        }
+
+        public double ToDouble(Unit<Distance> unit1, Unit<Distance> unit2, Unit<Distance> unit3) {
+            return this.ToDouble(unit1, unit2.Multiply<Distance, Distance, Area>(unit3));
         }
 
         public static class Units {

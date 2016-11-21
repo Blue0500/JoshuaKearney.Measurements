@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
     public class Force : Term<Force, Mass, Acceleration>,
+        IMultipliableMeasurement<Distance, Energy>,
         IDividableMeasurement<Acceleration, Mass>,
         IDividableMeasurement<Area, Pressure>,
         IDividableMeasurement<Mass, Acceleration> {
-        
+
         public Force() {
         }
 
@@ -27,8 +29,6 @@ namespace JoshuaKearney.Measurements {
             private static Unit<Force> newton = new Unit<Force>("newton", "N", 1);
 
             public static Unit<Force> PoundForce { get; } = new Mass(1, Mass.Units.Pound).Multiply(Acceleration.Gravity).CreateUnit("pound-force", "lbf");
-
-            // new Unit<Force>("pound-force", "lbf", new Force(1, Newton).Divide(Acceleration.Gravity).Divide(new Mass(1, Mass.Units.Pound)));
 
             public static Unit<Force> Newton => newton;
         }
@@ -56,6 +56,12 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(measurement2, nameof(measurement2));
 
             return new Pressure(this, measurement2);
+        }
+
+        public Energy Multiply(Distance measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            return new Energy(this, measurement2);
         }
 
         private class ForceProvider : IMeasurementProvider<Force>, IComplexMeasurementProvider<Mass, Acceleration> {

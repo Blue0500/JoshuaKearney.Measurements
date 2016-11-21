@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace JoshuaKearney.Measurements {
 
     public class Pressure : Ratio<Pressure, Force, Area>,
+        IMultipliableMeasurement<Volume, Energy>,
         IMultipliableMeasurement<Area, Force> {
 
         public Pressure() {
@@ -28,6 +29,12 @@ namespace JoshuaKearney.Measurements {
         protected override IMeasurementProvider<Area> DenominatorProvider => Area.Provider;
 
         protected override IMeasurementProvider<Force> NumeratorProvider => Force.Provider;
+
+        public Energy Multiply(Volume measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            return new Energy(this, measurement2);
+        }
 
         public static class Units {
             private static PrefixableUnit<Pressure> pascal = new PrefixableUnit<Pressure>("Pascal", "Pa", 1);

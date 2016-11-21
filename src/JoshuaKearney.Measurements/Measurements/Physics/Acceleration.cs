@@ -2,7 +2,7 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public class Acceleration : Ratio<Acceleration, Speed, Time>, 
+    public class Acceleration : Ratio<Acceleration, Speed, Time>,
         IMultipliableMeasurement<Time, Speed>,
         IMultipliableMeasurement<Mass, Force> {
 
@@ -24,15 +24,30 @@ namespace JoshuaKearney.Measurements {
 
         public override IMeasurementProvider<Acceleration> MeasurementProvider => Provider;
 
+        protected override IMeasurementProvider<Time> DenominatorProvider => Time.Provider;
+
+        protected override IMeasurementProvider<Speed> NumeratorProvider => Speed.Provider;
+
+        public static Force operator *(Acceleration first, Mass measurement2) {
+            if (first == null || measurement2 == null) {
+                return null;
+            }
+            else {
+                return first.Multiply(measurement2);
+            }
+        }
+
+        public Force Multiply(Mass measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            return new Force(measurement2, this);
+        }
+
         public static class Units {
             private static Unit<Acceleration> metersPerSecondSquared = Speed.Units.MetersPerSecond.Divide<Speed, Time, Acceleration>(Time.Units.Second);
 
             public static Unit<Acceleration> MetersPerSecondSquared => metersPerSecondSquared;
         }
-
-        protected override IMeasurementProvider<Time> DenominatorProvider => Time.Provider;
-
-        protected override IMeasurementProvider<Speed> NumeratorProvider => Speed.Provider;
 
         private class AccelerationProvider : IMeasurementProvider<Acceleration>, IComplexMeasurementProvider<Speed, Time> {
             public IEnumerable<Unit<Acceleration>> AllUnits => new Unit<Acceleration>[] { };
@@ -44,21 +59,6 @@ namespace JoshuaKearney.Measurements {
             public Unit<Acceleration> DefaultUnit => Units.MetersPerSecondSquared;
 
             public Acceleration CreateMeasurement(double value, Unit<Acceleration> unit) => new Acceleration(value, unit);
-        }
-
-        public Force Multiply(Mass measurement2) {
-            Validate.NonNull(measurement2, nameof(measurement2));
-
-            return new Force(measurement2, this);
-        }
-
-        public static Force operator *(Acceleration first, Mass measurement2) {
-            if (first == null || measurement2 == null) {
-                return null;
-            }
-            else {
-                return first.Multiply(measurement2);
-            }
         }
     }
 }

@@ -123,7 +123,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="ClassDiagram1.cd" />
     <None Include="JoshuaKearney.Measurements.nuspec" />
     <None Include="Releases\JoshuaKearney.Measurements.nuspec" />
     <None Include="project.json" />
@@ -131,11 +130,13 @@
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
     <Compile Include="IComplexMeasurementProvider.cs" />
+    <Compile Include="Ikajdfable.cs" />
     <Compile Include="IMeasurementProvider.cs" />
     <Compile Include="Measurements\Chemistry\ChemicalAmount.cs" />
     <Compile Include="Measurements\Chemistry\Molality.cs" />
     <Compile Include="Measurements\Chemistry\Molarity.cs" />
     <Compile Include="Measurements\Chemistry\MolarMass.cs" />
+    <Compile Include="Measurements\Electricity\ElectricPotential.cs" />
     <Compile Include="Measurements\NumericMeasurement.cs" />
     <Compile Include="Measurements\Electricity\Charge.cs" />
     <Compile Include="Measurements\General\DoubleMeasurement.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Measurements\Physics\Speed.cs" />
     <Compile Include="Measurements\Physics\Temperature.cs" />
     <Compile Include="Measurements\Physics\Time.cs" />
+    <Compile Include="Measurements\Physics\Vector.cs" />
     <Compile Include="Measurements\Quantity.cs" />
     <Compile Include="Parser\DoubleMeasurementToken.cs" />
     <Compile Include="Parser\MeasurementParser.cs" />

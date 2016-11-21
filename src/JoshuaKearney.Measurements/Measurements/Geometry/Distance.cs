@@ -1,23 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
     public sealed class Distance : Measurement<Distance>,
+            IMultipliableMeasurement<Force, Energy>,
             IMultipliableMeasurement<Distance, Area>,
             IMultipliableMeasurement<Area, Volume>,
             IDividableMeasurement<Time, Speed>,
             ISquareableMeasurement<Area>,
             ICubableMeasurement<Volume> {
 
-        public static IMeasurementProvider<Distance> Provider { get; } = new LengthProvider();
-
-        public override IMeasurementProvider<Distance> MeasurementProvider => Provider;
-
         public Distance() {
         }
 
         public Distance(double amount, Unit<Distance> unit) : base(amount, unit) {
         }
+
+        public static IMeasurementProvider<Distance> Provider { get; } = new LengthProvider();
+
+        public override IMeasurementProvider<Distance> MeasurementProvider => Provider;
 
         public static Area operator *(Distance length, Distance length2) {
             if (length == null || length2 == null) {
@@ -49,6 +51,12 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public Volume Cube() => this.Multiply(this.Square());
 
+        public Speed Divide(Time time) {
+            Validate.NonNull(time, nameof(time));
+
+            return new Speed(this, time);
+        }
+
         public Area Multiply(Distance length) {
             Validate.NonNull(length, nameof(length));
             return new Area(this, length);
@@ -59,21 +67,19 @@ namespace JoshuaKearney.Measurements {
             return new Volume(this, area);
         }
 
+        public Energy Multiply(Force measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            return new Energy(measurement2, this);
+        }
+
         /// <summary>
         /// Returns a measurement that represents the cube of this instance
         /// </summary>
         /// <returns></returns>
         public Area Square() => this.Multiply(this);
 
-        public Speed Divide(Time time) {
-            Validate.NonNull(time, nameof(time));
-
-            return new Speed(this, time);
-        }
-
         public static class Units {
-            public static PrefixableUnit<Distance> Meter { get; } = MeasurementSystems.Metric.Meter;
-
             public static Unit<Distance> Centimeter { get; } = Prefix.Centi(MeasurementSystems.Metric.Meter);
 
             public static Unit<Distance> Foot { get; } = MeasurementSystems.EnglishLength.Foot;
@@ -81,6 +87,8 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Distance> Inch { get; } = MeasurementSystems.EnglishLength.Inch;
 
             public static Unit<Distance> Kilometer { get; } = Prefix.Kilo(MeasurementSystems.Metric.Meter);
+
+            public static PrefixableUnit<Distance> Meter { get; } = MeasurementSystems.Metric.Meter;
 
             public static Unit<Distance> Mile { get; } = MeasurementSystems.EnglishLength.Mile;
 

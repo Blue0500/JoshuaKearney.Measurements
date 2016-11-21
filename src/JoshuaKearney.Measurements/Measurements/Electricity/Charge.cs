@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JoshuaKearney.Measurements.Measurements.Electricity {
+namespace JoshuaKearney.Measurements {
 
     public sealed class Charge : Measurement<Charge> {
 
@@ -18,7 +18,7 @@ namespace JoshuaKearney.Measurements.Measurements.Electricity {
         public static class Units {
             private static Lazy<Unit<Charge>> coulomb = new Lazy<Unit<Charge>>(() => new Unit<Charge>("Coulomb", "C", 1));
 
-            private static Lazy<Unit<Charge>> electronCharge = new Lazy<Unit<Electricity.Charge>>(() => new Charge(1, Units.ProtonCharge).Multiply(-1).CreateUnit("Electron Charge", "chargeOfElectron"));
+            private static Lazy<Unit<Charge>> electronCharge = new Lazy<Unit<Charge>>(() => new Charge(1, ProtonCharge).Multiply(-1).CreateUnit("Electron Charge", "chargeOfElectron"));
 
             private static Lazy<Unit<Charge>> protonCharge = new Lazy<Unit<Charge>>(() => new Unit<Charge>("Proton Charge", "chargeOfProton", 6.241509e18));
 

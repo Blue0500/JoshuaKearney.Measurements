@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Time : Measurement<Time> {
+    public class Time : Measurement<Time>,
+        IMultipliableMeasurement<Power, Energy> {
 
         public Time(double amount, Unit<Time> unit) : base(amount, unit) {
         }
@@ -16,6 +17,12 @@ namespace JoshuaKearney.Measurements {
 
         public TimeSpan ToTimeSpan() {
             return TimeSpan.FromSeconds(this.ToDouble(Units.Second));
+        }
+
+        public Energy Multiply(Power measurement2) {
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            return new Energy(measurement2, this);
         }
 
         public static IMeasurementProvider<Time> Provider { get; } = new TimeProvider();

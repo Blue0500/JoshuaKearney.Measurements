@@ -6,23 +6,29 @@ namespace JoshuaKearney.Measurements {
     public sealed class Molarity : Ratio<Molarity, ChemicalAmount, Volume>,
         IMultipliableMeasurement<Volume, ChemicalAmount> {
 
-        public static IMeasurementProvider<Molarity> Provider { get; } = new MolarityProvider();
-
-        public override IMeasurementProvider<Molarity> MeasurementProvider => Provider;
         public Molarity() {
         }
 
         public Molarity(double amount, Unit<Molarity> unit) : base(amount, unit) {
         }
 
+        public Molarity(double amount, Unit<ChemicalAmount> chemAmountUnit, Unit<Volume> volumeUnit)
+            : base(amount, chemAmountUnit, volumeUnit) {
+        }
+
         public Molarity(ChemicalAmount amount, Volume volume) : base(amount, volume) {
         }
+
+        public static IMeasurementProvider<Molarity> Provider { get; } = new MolarityProvider();
+
+        public override IMeasurementProvider<Molarity> MeasurementProvider => Provider;
 
         protected override IMeasurementProvider<Volume> DenominatorProvider => Volume.Provider;
 
         protected override IMeasurementProvider<ChemicalAmount> NumeratorProvider => ChemicalAmount.Provider;
 
         public static class Units {
+
             public static Unit<Molarity> MolePerMeterCubed { get; } = new ChemicalAmount(1, ChemicalAmount.Units.Mole)
                 .Divide(new Volume(1, Volume.Units.MeterCubed))
                 .CreateUnit("mole per meter cubed", "mol/cm^3");

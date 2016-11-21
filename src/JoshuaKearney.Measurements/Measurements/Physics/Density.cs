@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public static partial class Extensions {
+    public static partial class MeasurementExtensions {
 
         public static Density ToDensity(this Ratio<Mass, Volume> density) {
             Validate.NonNull(density, nameof(density));
@@ -14,8 +14,6 @@ namespace JoshuaKearney.Measurements {
 
     public sealed class Density : Ratio<Density, Mass, Volume>,
         IMultipliableMeasurement<Volume, Mass> {
-
-        public static IMeasurementProvider<Density> Provider { get; } = new DensityProvider();
 
         public Density() {
         }
@@ -28,6 +26,8 @@ namespace JoshuaKearney.Measurements {
 
         public Density(double amount, Unit<Mass> massDef, Unit<Volume> volumeDef) : base(amount, massDef, volumeDef) {
         }
+
+        public static IMeasurementProvider<Density> Provider { get; } = new DensityProvider();
 
         public override IMeasurementProvider<Density> MeasurementProvider => Provider;
 

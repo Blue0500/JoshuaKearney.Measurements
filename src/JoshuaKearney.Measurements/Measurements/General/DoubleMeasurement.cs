@@ -5,9 +5,6 @@ namespace JoshuaKearney.Measurements {
 
     public sealed class DoubleMeasurement : NumericMeasurement<DoubleMeasurement>,
         IDividableMeasurement<Time, Frequency> {
-        public static IMeasurementProvider<DoubleMeasurement> Provider { get; } = new DoubleMeasurementProvider();
-
-        public override IMeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
 
         public DoubleMeasurement() {
         }
@@ -16,6 +13,18 @@ namespace JoshuaKearney.Measurements {
         }
 
         private DoubleMeasurement(double amount, Unit<DoubleMeasurement> unit) : base(amount, unit) {
+        }
+
+        public static IMeasurementProvider<DoubleMeasurement> Provider { get; } = new DoubleMeasurementProvider();
+
+        public override IMeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
+
+        public static implicit operator DoubleMeasurement(double d) {
+            return new DoubleMeasurement(d);
+        }
+
+        public override double ToDouble() {
+            return this.ToDouble(Units.DefaultUnit);
         }
 
         private static class Units {
@@ -30,14 +39,6 @@ namespace JoshuaKearney.Measurements {
             public DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) {
                 return new DoubleMeasurement(value, unit);
             }
-        }
-
-        public static implicit operator DoubleMeasurement(double d) {
-            return new DoubleMeasurement(d);
-        }
-
-        public override double ToDouble() {
-            return this.ToDouble(Units.DefaultUnit);
         }
     }
 }

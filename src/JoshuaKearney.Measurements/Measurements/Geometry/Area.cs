@@ -2,7 +2,7 @@
 
 namespace JoshuaKearney.Measurements {
 
-    public static partial class Extensions {
+    public static partial class MeasurementExtensions {
 
         public static Area ToArea(this Term<Distance, Distance> area) {
             Validate.NonNull(area, nameof(area));
@@ -15,14 +15,6 @@ namespace JoshuaKearney.Measurements {
         IDividableMeasurement<Distance, Distance>,
         IMultipliableMeasurement<Distance, Volume> {
 
-        public static IMeasurementProvider<Area> Provider { get; } = new AreaProvider();
-
-        protected override IMeasurementProvider<Distance> Item1Provider => Distance.Provider;
-
-        protected override IMeasurementProvider<Distance> Item2Provider => Distance.Provider;
-
-        public override IMeasurementProvider<Area> MeasurementProvider => Provider;
-
         public Area() {
         }
 
@@ -34,6 +26,14 @@ namespace JoshuaKearney.Measurements {
 
         public Area(double amount, Unit<Distance> length1Def, Unit<Distance> length2Def) : base(amount, length1Def, length2Def) {
         }
+
+        public static IMeasurementProvider<Area> Provider { get; } = new AreaProvider();
+
+        public override IMeasurementProvider<Area> MeasurementProvider => Provider;
+
+        protected override IMeasurementProvider<Distance> Item1Provider => Distance.Provider;
+
+        protected override IMeasurementProvider<Distance> Item2Provider => Distance.Provider;
 
         public static Volume operator *(Area area, Distance other) {
             if (area == null || other == null) {

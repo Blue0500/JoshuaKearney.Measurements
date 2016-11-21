@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
 
-    public static partial class Extensions {
+    public static partial class MeasurementExtensions {
 
         public static TNum Simplify<TSelf, TNum, T>(this Ratio<TSelf, TNum, T> measurement)
                 where T : NumericMeasurement<T>

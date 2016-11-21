@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public static partial class Extensions {
+    public static partial class MeasurementExtensions {
 
         public static double SimplifyToDouble<TSelf, T>(this Ratio<TSelf, T, T> measurement)
             where T : Measurement<T>
@@ -79,7 +79,7 @@ namespace JoshuaKearney.Measurements {
 
         public new Ratio<TDenominator, TNumerator> Reciprocal() {
             return new Ratio<TDenominator, TNumerator>(
-                this.DefaultUnits,
+                1 / this.DefaultUnits,
                 this.DenominatorProvider.DefaultUnit.DivideToRatio(this.NumeratorProvider.DefaultUnit),
                 this.DenominatorProvider,
                 this.NumeratorProvider
