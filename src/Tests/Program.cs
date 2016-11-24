@@ -10,7 +10,14 @@ namespace Testing {
         public class Banana { }
 
         public static void Main(string[] args) {
-            Console.WriteLine(new Pressure(.32, Pressure.Units.Pascal).Reciprocal());
+            Angle a = new Angle(50, Angle.Units.Revolution);
+            Vector2d v = new Vector2d(5, 7);
+
+            Frequency f = new Ratio<DoubleMeasurement, Time>(4, new Time(6, Time.Units.Second));
+
+            Console.WriteLine(a);
+            Console.WriteLine(Angle.Cos(a));
+
             Console.Read();
         }
     }
