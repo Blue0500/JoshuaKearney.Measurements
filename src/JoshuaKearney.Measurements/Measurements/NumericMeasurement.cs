@@ -12,28 +12,28 @@ namespace JoshuaKearney.Measurements {
                 where T : NumericMeasurement<T>
                 where TSelf : Ratio<TSelf, TNum, T>
                 where TNum : Measurement<TNum> {
-            return measurement.Simplify((x, y) => x.Divide(y));
+            return measurement.Select((x, y) => x.Divide(y));
         }
 
         public static double SimplifyToDouble<TSelf, T, E>(this TSelf term)
                 where T : NumericMeasurement<T>
                 where E : NumericMeasurement<E>
                 where TSelf : Term<TSelf, T, E> {
-            return term.Simplify((x, y) => x.Divide(y));
+            return term.Select((x, y) => x.Divide(y));
         }
 
         public static TFirst Simplify<TSelf, TFirst, T>(this Term<TSelf, TFirst, T> measurement)
                 where T : NumericMeasurement<T>
                 where TFirst : Measurement<TFirst>
                 where TSelf : Term<TSelf, TFirst, T> {
-            return measurement.Simplify((x, y) => x.Multiply(y));
+            return measurement.Select((x, y) => x.Multiply(y));
         }
 
         public static TSecond Simplify<TSelf, TSecond, T>(this Term<TSelf, T, TSecond> measurement)
                 where T : NumericMeasurement<T>
                 where TSecond : Measurement<TSecond>
                 where TSelf : Term<TSelf, T, TSecond> {
-            return measurement.Simplify((x, y) => y.Multiply(x));
+            return measurement.Select((x, y) => y.Multiply(x));
         }
     }
 

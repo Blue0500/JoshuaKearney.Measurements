@@ -8,7 +8,7 @@ namespace JoshuaKearney.Measurements {
         public static double SimplifyToDouble<TSelf, T>(this Ratio<TSelf, T, T> measurement)
             where T : Measurement<T>
             where TSelf : Ratio<TSelf, T, T> {
-            return measurement.Simplify((x, y) => x.Divide(y));
+            return measurement.Select((x, y) => x.Divide(y));
         }
     }
 
@@ -100,9 +100,21 @@ namespace JoshuaKearney.Measurements {
             DenominatorProvider
         );
 
-        public TNew Simplify<TNew>(Func<TNumerator, TDenominator, TNew> simplifier) {
+        public TNew Select<TNew>(Func<TNumerator, TDenominator, TNew> selector) {
             var oneDenom = DenominatorProvider.CreateMeasurementWithDefaultUnits(1);
-            return simplifier(this.Multiply(oneDenom), oneDenom);
+            return selector(this.Multiply(oneDenom), oneDenom);
+        }
+
+        public Ratio<T, E> Selector<T, E>(Func<TNumerator, T> numSelector, Func<TDenominator, E> denomSelector)
+                 where T : Measurement<T>
+                 where E : Measurement<E> {
+            Validate.NonNull(numSelector, nameof(numSelector));
+            Validate.NonNull(denomSelector, nameof(denomSelector));
+
+            T ret1 = numSelector(NumeratorProvider.CreateMeasurementWithDefaultUnits(this.ToDouble(this.MeasurementProvider.DefaultUnit)));
+            E ret2 = denomSelector(DenominatorProvider.CreateMeasurementWithDefaultUnits(1));
+
+            return new Ratio<T, E>(ret1, ret2);
         }
 
         /// <summary>
@@ -143,17 +155,7 @@ namespace JoshuaKearney.Measurements {
 
         protected override IMeasurementProvider<TNumerator> NumeratorProvider { get; }
 
-        public Ratio<T, E> Simplify<T, E>(Func<TNumerator, T> numConv, Func<TDenominator, E> denomConv)
-                where T : Measurement<T>
-                where E : Measurement<E> {
-            Validate.NonNull(numConv, nameof(numConv));
-            Validate.NonNull(denomConv, nameof(denomConv));
-
-            T ret1 = numConv(NumeratorProvider.CreateMeasurementWithDefaultUnits(this.ToDouble(this.MeasurementProvider.DefaultUnit)));
-            E ret2 = denomConv(DenominatorProvider.CreateMeasurementWithDefaultUnits(1));
-
-            return new Ratio<T, E>(ret1, ret2);
-        }
+        
 
         private class RatioProvider : IMeasurementProvider<Ratio<TNumerator, TDenominator>> {
             private readonly IMeasurementProvider<TDenominator> denomProv;

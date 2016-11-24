@@ -234,7 +234,7 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="that">The other measurement.</param>
         /// <returns></returns>
-        public double Divide(TSelf that) {
+        public DoubleMeasurement Divide(TSelf that) {
             Validate.NonNull(that, nameof(that));
             return this.DefaultUnits / that.DefaultUnits;
         }

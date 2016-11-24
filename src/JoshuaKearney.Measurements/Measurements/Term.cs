@@ -33,10 +33,22 @@ namespace JoshuaKearney.Measurements {
             return term.Divide(term2);
         }
 
-        public TNew Simplify<TNew>(Func<T1, T2, TNew> simplifier) {
+        public TNew Select<TNew>(Func<T1, T2, TNew> selector) {
             T2 oneItem2 = Item2Provider.CreateMeasurementWithDefaultUnits(1);
 
-            return simplifier(this.Divide(oneItem2), oneItem2);
+            return selector(this.Divide(oneItem2), oneItem2);
+        }
+
+        public Term<T, E> Select<T, E>(Func<T1, T> firstSelect, Func<T2, E> secondSelect)
+                where T : Measurement<T>
+                where E : Measurement<E> {
+            Validate.NonNull(firstSelect, nameof(firstSelect));
+            Validate.NonNull(secondSelect, nameof(secondSelect));
+
+            T ret1 = firstSelect(Item1Provider.CreateMeasurementWithDefaultUnits(this.ToDouble(this.MeasurementProvider.DefaultUnit)));
+            E ret2 = secondSelect(Item2Provider.CreateMeasurementWithDefaultUnits(1));
+
+            return new Term<T, E>(ret1, ret2);
         }
 
         public T1 Divide(T2 that) {
@@ -126,18 +138,6 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(first, nameof(first));
 
             return base.DivideToSecond(first);
-        }
-
-        public Term<T, E> Simplify<T, E>(Func<T1, T> t1Conv, Func<T2, E> t2Conv)
-                where T : Measurement<T>
-                where E : Measurement<E> {
-            Validate.NonNull(t1Conv, nameof(t1Conv));
-            Validate.NonNull(t2Conv, nameof(t2Conv));
-
-            T ret1 = t1Conv(Item1Provider.CreateMeasurementWithDefaultUnits(this.ToDouble(this.MeasurementProvider.DefaultUnit)));
-            E ret2 = t2Conv(Item2Provider.CreateMeasurementWithDefaultUnits(1));
-
-            return new Term<T, E>(ret1, ret2);
         }
 
         private class TermProvider : IMeasurementProvider<Term<T1, T2>> {
