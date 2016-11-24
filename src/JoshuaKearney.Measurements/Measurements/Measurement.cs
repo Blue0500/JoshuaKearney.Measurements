@@ -316,14 +316,15 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="that">The other measurement.</param>
         /// <returns></returns>
-        public TSelf Max(TSelf that) {
-            Validate.NonNull(that, nameof(that));
+        public static TSelf Max(TSelf t1, TSelf t2) {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
 
-            if (this >= that) {
-                return this;
+            if (t1 >= t2) {
+                return t1;
             }
             else {
-                return that;
+                return t2;
             }
         }
 
@@ -332,11 +333,11 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="measurements">The other measurements.</param>
         /// <returns></returns>
-        public TSelf Max(params TSelf[] measurements) {
+        public static TSelf Max(params TSelf[] measurements) {
             Validate.NonNull(measurements, nameof(measurements));
             Validate.NonEmpty(measurements, nameof(measurements));
 
-            return measurements.Aggregate((x, y) => x.Max(y));
+            return measurements.Aggregate((x, y) => Max(x, y));
         }
 
         /// <summary>
@@ -344,14 +345,15 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="that">The other measurement.</param>
         /// <returns></returns>
-        public TSelf Min(TSelf that) {
-            Validate.NonNull(that, nameof(that));
+        public static TSelf Min(TSelf t1, TSelf t2) {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
 
-            if (this <= that) {
-                return this;
+            if (t1 <= t2) {
+                return t1;
             }
             else {
-                return that;
+                return t2;
             }
         }
 
@@ -360,11 +362,11 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="measurments">The other measurments.</param>
         /// <returns></returns>
-        public TSelf Min(params TSelf[] measurments) {
+        public static TSelf Min(params TSelf[] measurments) {
             Validate.NonNull(measurments, nameof(measurments));
             Validate.NonEmpty(measurments, nameof(measurments));
 
-            return measurments.Aggregate((x, y) => x.Min(y));
+            return measurments.Aggregate((x, y) => Min(x, y));
         }
 
         /// <summary>

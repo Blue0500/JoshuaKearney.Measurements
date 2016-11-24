@@ -56,6 +56,10 @@ namespace JoshuaKearney.Measurements {
             return measurement2.Multiply(this);
         }
 
+        public new T Reciprocal() {
+            return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(1 / this.DefaultUnits);
+        }
+
         public abstract double ToDouble();
 
         public static implicit operator double(NumericMeasurement<T> measurement) {
