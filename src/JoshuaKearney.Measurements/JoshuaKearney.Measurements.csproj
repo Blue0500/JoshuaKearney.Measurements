@@ -155,11 +155,11 @@
     <Compile Include="Measurements\Physics\Vector.cs" />
     <Compile Include="Measurements\Quantity.cs" />
     <Compile Include="Parser\DoubleMeasurementToken.cs" />
+    <Compile Include="Parser\MeasurementParseException.cs" />
     <Compile Include="Parser\MeasurementParser.cs" />
     <Compile Include="Parser\MeasurementToken.cs" />
     <Compile Include="Parser\Operator.cs" />
     <Compile Include="Parser\Token.cs" />
-    <Compile Include="Parser\Union.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="MeasurementSystems\AvoirdupoisMass.cs" />
     <Compile Include="MeasurementSystems\CustomaryVolume.cs" />

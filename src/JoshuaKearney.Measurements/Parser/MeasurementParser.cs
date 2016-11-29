@@ -12,19 +12,20 @@ namespace JoshuaKearney.Measurements {
 
         private static Dictionary<string, Func<double, MeasurementToken>> dictionary;
 
-        private readonly IMeasurementProvider<T> provider;
+        private static IMeasurementProvider<T> provider;
 
-        public MeasurementParser(IMeasurementProvider<T> provider) {
-            this.provider = provider;
+        public MeasurementParser(IMeasurementProvider<T> p) {
+            if (provider == null) {
+                provider = p;
+            }
 
             if (dictionary == null) {
-                dictionary = GetUnits(this.provider);
+                dictionary = GetUnits(provider);
             }
         }
 
         public T Parse(string input) {
-            var res = EvalPostfix(ToPostfix(EvalInfix(Tokenize(input))));
-
+            var res = EvalPostfix(ToPostfix(EvalInfix(Tokenize(input), input), input), input);
             T ret = default(T);
 
             res.Match(
@@ -35,7 +36,7 @@ namespace JoshuaKearney.Measurements {
             return ret;
         }
 
-        private static Union<T, Exception> EvalPostfix(Union<IEnumerable<Token>, Exception> input) {
+        private static Union<T, MeasurementParseException> EvalPostfix(Union<IEnumerable<Token>, MeasurementParseException> input, string rawInput) {
             return input.Select(
                 list => {
                     // The iterator to use when parsing
@@ -51,7 +52,8 @@ namespace JoshuaKearney.Measurements {
                             toks.Push(tok);
                         }
                         else if (tok is UrnaryOperator) {
-                            return new InvalidOperationException($"Unable to evaluate: Unexpected urnary operator '{tok}'");
+                            return new MeasurementParseException<T>($"Unable to evaluate: Unexpected urnary operator '{tok}'", rawInput, string.Join("", toks));
+                            //return new InvalidOperationException($"Unable to evaluate: Unexpected urnary operator '{tok}'");
                             //UrnaryOperator op = tok as UrnaryOperator;
 
                             //if (toks.Count < 1) {
@@ -80,7 +82,8 @@ namespace JoshuaKearney.Measurements {
 
                             if (toks.Count < 2) {
                                 // Expected a measurement, got nothing
-                                return new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected two measurements, got {toks.Count}");
+                                return new MeasurementParseException<T>($"Unable to evaluate binary operator '{op.ToString()}'. Expected two measurements, received {toks.Count}", rawInput, string.Join("", toks));
+                               // return new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected two measurements, got {toks.Count}");
                             }
 
                             MeasurementToken pop2 = toks.Pop() as MeasurementToken;
@@ -88,19 +91,26 @@ namespace JoshuaKearney.Measurements {
 
                             if (pop1 == null) {
                                 // Expected a measurement, got an operator
-                                return new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, got '{pop1.ToString()}'");
+                                return new MeasurementParseException<T>($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, received '{pop1.ToString()}'", rawInput, string.Join("", toks));
+                                //return new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, got '{pop1.ToString()}'");
                             }
 
                             if (pop2 == null) {
                                 // Expected a measurement, got an operator
-                                return new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, got '{pop2.ToString()}'");
+                                return new MeasurementParseException<T>($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, received '{pop2.ToString()}'", rawInput, string.Join("", toks));
+                                //return new FormatException($"Unable to evaluate binary operator '{op.ToString()}'. Expected a measurement, got '{pop2.ToString()}'");
                             }
 
                             MeasurementToken eval = op.Evaluate(pop1, pop2);
 
                             if (eval == null) {
-                                // Could not evaluate binary operator
-                                return new FormatException($"Unable to evaluate binary operator '{op.ToString()}' on '{pop1.ToString()}' and '{pop2.ToString()}'. The measurements are incompatable");
+                                // Could not evaluate binary operators
+                                return new MeasurementParseException<T>(
+                                    $"Unable to evaluate binary operator '{op.ToString()}' on '{pop1.ToString()}' and '{pop2.ToString()}'. The measurements are incompatable", 
+                                    rawInput, 
+                                    string.Join("", toks)
+                                );
+                                //return new FormatException($"Unable to evaluate binary operator '{op.ToString()}' on '{pop1.ToString()}' and '{pop2.ToString()}'. The measurements are incompatable");
                             }
 
                             toks.Push(eval);
@@ -111,17 +121,25 @@ namespace JoshuaKearney.Measurements {
                     var tFinal = final.GetType();
 
                     if (!typeof(T).GetTypeInfo().IsAssignableFrom(tFinal.GetTypeInfo())) {
+                        if (tFinal == typeof(DoubleMeasurement)) {
+                            double d = final as DoubleMeasurement;
+                            if (double.IsNaN(d) || double.IsInfinity(d)) {
+                                return provider.CreateMeasurementWithDefaultUnits(d);
+                            }
+                        }
+
                         // Bad type
-                        return new FormatException($"Unable to evaluate expression. Expected  a {typeof(T).ToString()}, got a {tFinal.ToString()}");
+                        return new MeasurementParseException<T>($"Unable to evaluate expression. Expected  a {typeof(T).ToString()}, received a {tFinal.ToString()}", rawInput, string.Join("", toks));
+                        //return new FormatException($"Unable to evaluate expression. Expected  a {typeof(T).ToString()}, received a {tFinal.ToString()}");
                     }
 
-                    return new Union<T, Exception>(final as T);
+                    return new Union<T, MeasurementParseException>(final as T);
                 },
                 exception => exception
             );
         }
 
-        private static Union<IEnumerable<Token>, Exception> ToPostfix(Union<IEnumerable<Token>, Exception> input) {
+        private static Union<IEnumerable<Token>, MeasurementParseException> ToPostfix(Union<IEnumerable<Token>, MeasurementParseException> input, string rawInput) {
             return input.Select(
                 list => {
                     Stack<Operator> operatorStack = new Stack<Operator>();
@@ -147,7 +165,8 @@ namespace JoshuaKearney.Measurements {
                             else {
                                 // Mismatched parenthensis
                                 if (operatorStack.Count == 0) {
-                                    return new Union<IEnumerable<Token>, Exception>(new FormatException("Unable to analyze expression: mismatched parenthensis"));
+                                    return new MeasurementParseException<T>("Unable to analyze expression: mismatched parenthensis", rawInput, string.Join("", ret));
+                                    //return new Union<IEnumerable<Token>, Exception>(new FormatException("Unable to analyze expression: mismatched parenthensis"));
                                 }
 
                                 // If the top has a higher priority, pop and print it
@@ -163,13 +182,15 @@ namespace JoshuaKearney.Measurements {
 
                                             // Catch nothing else after this
                                             if (operatorStack.Count == 0) {
-                                                return new Union<IEnumerable<Token>, Exception>(new FormatException("Unable to analyze expression: mismatched parenthensis"));
+                                                return new MeasurementParseException<T>("Unable to analyze expression: mismatched parenthensis", rawInput, string.Join("", ret));
+                                                //return new Union<IEnumerable<Token>, Exception>(new FormatException("Unable to analyze expression: mismatched parenthensis"));
                                             }
                                         }
 
                                         // Catch mismatched parenthensis
                                         if (operatorStack.Peek() != Operator.OpenParen) {
-                                            return new Union<IEnumerable<Token>, Exception>(new FormatException("Unable to analyze expression: mismatched parenthensis"));
+                                            return new MeasurementParseException<T>("Unable to analyze expression: mismatched parenthensis", rawInput, string.Join("", ret));
+                                           // return new Union<IEnumerable<Token>, Exception>(new FormatException("Unable to analyze expression: mismatched parenthensis"));
                                         }
 
                                         operatorStack.Pop();
@@ -186,13 +207,13 @@ namespace JoshuaKearney.Measurements {
                         ret.Add(operatorStack.Pop());
                     }
 
-                    return new Union<IEnumerable<Token>, Exception>(ret);
+                    return ret;
                 },
                 exception => input
             );
         }
 
-        private Union<List<Token>, Exception> Tokenize(string input) {
+        private Union<List<Token>, MeasurementParseException> Tokenize(string input) {
             Validate.NonNull(input, nameof(input));
 
             input = input
@@ -246,14 +267,13 @@ namespace JoshuaKearney.Measurements {
             List<Token> ret = new List<Token>();
             foreach (string item in split) {
                 if (operators.ToCharArray().Any(x => x.ToString() == item)) {
-                    //if (item == "²") {
-                    //    ret.Add(Operator.Square);
-                    //}
-                    //else if (item == "³") {
-                    //    ret.Add(Operator.Cube);
-                    //}
-                    //else
-                    if (item == "*") {
+                    if (item == "²") {
+                        ret.Add(Operator.Square);
+                    }
+                    else if (item == "³") {
+                        ret.Add(Operator.Cube);
+                    }
+                    else if (item == "*") {
                         ret.Add(Operator.Multiply);
                     }
                     else if (item == "/") {
@@ -266,26 +286,35 @@ namespace JoshuaKearney.Measurements {
                         ret.Add(Operator.CloseParen);
                     }
                     else {
-                        return new Union<List<Token>, Exception>(new InvalidOperationException($"Unable to recognize operator '{item}'"));
+                        return new Union<List<Token>, MeasurementParseException>(
+                            new MeasurementParseException<T>($"Unable to recognize operator '{item}'", input, string.Join("", ret))
+                        );
                     }
                 }
                 else if (item.ToCharArray().All(x => char.IsDigit(x) || x == '.')) {
                     double d;
                     if (!double.TryParse(item, out d)) {
-                        return new Union<List<Token>, Exception>(new InvalidOperationException($"Unable to parse double '{item}'"));
+                        return new Union<List<Token>, MeasurementParseException>(
+                            new MeasurementParseException<T>($"Unable to parse double '{item}'", input, string.Join("", ret))    
+                        );
                     }
 
                     ret.Add(new DoubleMeasurementToken(new DoubleMeasurement(d)));
                 }
                 else {
-                    ret.Add(new Token(item));
+                    if (item == double.NaN.ToString()) {
+                        ret.Add(new DoubleMeasurementToken(new DoubleMeasurement(double.NaN)));
+                    }
+                    else {
+                        ret.Add(new Token(item));
+                    }
                 }
             }
 
-            return new Union<List<Token>, Exception>(ret);
+            return new Union<List<Token>, MeasurementParseException>(ret);
         }
 
-        private Union<IEnumerable<Token>, Exception> EvalInfix(Union<List<Token>, Exception> input) {
+        private Union<IEnumerable<Token>, MeasurementParseException> EvalInfix(Union<List<Token>, MeasurementParseException> input, string rawInput) {
             return input.Select(
                 list => {
                     // Apply measurement labels to preceding doubles
@@ -297,7 +326,8 @@ namespace JoshuaKearney.Measurements {
                             // Label value
                             string unit = list[i].Value;
                             if (!dictionary.ContainsKey(unit)) {
-                                return new Union<IEnumerable<Token>, Exception>(new InvalidOperationException($"Unable to recognize unit '{unit}'"));
+                                return new MeasurementParseException<T>($"Unable to recognize unit '{unit}'", rawInput, string.Join("", list));
+                                //return new Union<IEnumerable<Token>, Exception>(new InvalidOperationException($"Unable to recognize unit '{unit}'"));
                             }
 
                             // The token before is a double token, in which case the measurement must be applied to it
@@ -315,34 +345,36 @@ namespace JoshuaKearney.Measurements {
                     }
 
                     // Apply squares and cubes to measurements
-                    //for (int i = 0; i < list.Count; i++) {
-                    //    var item = list[i];
+                    for (int i = 0; i < list.Count; i++) {
+                        var item = list[i];
 
-                    //    if (item is UrnaryOperator) {
-                    //        UrnaryOperator op = item as UrnaryOperator;
+                        if (item is UrnaryOperator) {
+                            UrnaryOperator op = item as UrnaryOperator;
 
-                    //        if (i > 0 && list[i - 1] is MeasurementToken) {
-                    //            MeasurementToken tok = list[i - 1] as MeasurementToken;
-                    //            MeasurementToken res = op.Evaluate(tok);
+                            if (i > 0 && list[i - 1] is MeasurementToken) {
+                                MeasurementToken tok = list[i - 1] as MeasurementToken;
+                                MeasurementToken res = op.Evaluate(tok);
 
-                    //            if (res == null) {
-                    //                return new Union<IEnumerable<Token>, Exception>(new InvalidOperationException($"Unable to apply urnary operator '{op}' on measurement '{tok.MeasurementValue}'"));
-                    //            }
-                    //            else {
-                    //                list[i - 1] = res;
-                    //                list.RemoveAt(i);
-                    //                i--;
-                    //            }
-                    //        }
-                    //        else {
-                    //            return new Union<IEnumerable<Token>, Exception>(new InvalidOperationException($"Unable to apply urnary operator '{op}', no preceding measurement"));
-                    //        }
-                    //    }
-                    //}
+                                if (res == null) {
+                                    return new MeasurementParseException<T>($"Unable to apply urnary operator '{op}' on measurement '{tok.MeasurementValue}'", rawInput, string.Join("", list));
+                                    //return new InvalidOperationException($"Unable to apply urnary operator '{op}' on measurement '{tok.MeasurementValue}'");
+                                }
+                                else {
+                                    list[i - 1] = res;
+                                    list.RemoveAt(i);
+                                    i--;
+                                }
+                            }
+                            else {
+                                return new MeasurementParseException<T>($"Unable to apply urnary operator '{op}', no preceding measurement", rawInput, string.Join("", list));
+                                //return new InvalidOperationException($"Unable to apply urnary operator '{op}', no preceding measurement");
+                            }
+                        }
+                    }
 
-                    return new Union<IEnumerable<Token>, Exception>(list);
+                    return new Union<IEnumerable<Token>, MeasurementParseException>(list);
                 },
-                exception => new Union<IEnumerable<Token>, Exception>(exception)
+                exception => exception
             );
         }
 

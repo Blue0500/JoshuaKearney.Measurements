@@ -369,6 +369,22 @@ namespace JoshuaKearney.Measurements {
             return measurments.Aggregate((x, y) => Min(x, y));
         }
 
+        public static bool IsNan(TSelf measurement) {
+            return double.IsNaN(measurement.DefaultUnits);
+        }
+
+        public static bool IsPositiveInfinity(TSelf measurement) {
+            return double.IsPositiveInfinity(measurement.DefaultUnits);
+        }
+
+        public static bool IsNegativeInfinity(TSelf measurement) {
+            return double.IsNegativeInfinity(measurement.DefaultUnits);
+        }
+
+        public static bool IsInfinity(TSelf measurement) {
+            return double.IsInfinity(measurement.DefaultUnits);
+        }
+
         /// <summary>
         /// Multiplies this instance by the specified double.
         /// </summary>
@@ -452,7 +468,11 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(unit, nameof(unit));
             Validate.NonNull(format, nameof(format));
 
-            return (this.ToDouble(unit).ToString(format) + " " + unit.ToString()).Trim();
+            string unitStr = IsInfinity(this) || IsNan(this)
+                ? ""
+                : " " + unit.ToString();
+
+            return (this.ToDouble(unit).ToString(format) + unitStr).Trim();
         }
 
         /// <summary>

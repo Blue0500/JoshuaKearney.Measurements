@@ -14,7 +14,7 @@ namespace JoshuaKearney.Measurements.Parser {
             return result;
         });
 
-        public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), x, y));
+        public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), x, y) ?? DivideToRatio(x, y));
 
         public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
 
@@ -26,6 +26,12 @@ namespace JoshuaKearney.Measurements.Parser {
 
         // Higher is higher priortiy
         public int Priority { get; }
+
+        private static MeasurementToken DivideToRatio(MeasurementToken x, MeasurementToken y) {
+            var divideToRatio = x.MeasurementValue.GetType().GetRuntimeMethods().Where(z => z.Name == "DivideToRatio").First().MakeGenericMethod(y.MeasurementValue.GetType());
+
+            return new MeasurementToken(divideToRatio.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
+        }
 
         private static MethodInfo GetArithmeticInterfaceMethod(Type tInterface, MeasurementToken x, MeasurementToken y) {
             Type tFirst = x.MeasurementValue.GetType();

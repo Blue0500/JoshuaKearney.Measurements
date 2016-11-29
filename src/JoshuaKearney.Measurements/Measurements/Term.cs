@@ -113,13 +113,13 @@ namespace JoshuaKearney.Measurements {
         public Term(double amount, Unit<Term<T1, T2>> unit, IMeasurementProvider<T1> t1Prov, IMeasurementProvider<T2> t2Prov) : base(amount, unit) {
             this.Item1Provider = t1Prov;
             this.Item2Provider = t2Prov;
-            this.MeasurementProvider = new TermProvider(this.Item1Provider, this.Item2Provider);
+            this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
         }
 
         public Term(T1 item1, T2 item2) : base(item1, item2) {
             this.Item1Provider = item1.MeasurementProvider;
             this.Item2Provider = item2.MeasurementProvider;
-            this.MeasurementProvider = new TermProvider(this.Item1Provider, this.Item2Provider);
+            this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
         }
 
         public override IMeasurementProvider<Term<T1, T2>> MeasurementProvider { get; }
@@ -140,7 +140,17 @@ namespace JoshuaKearney.Measurements {
             return base.DivideToSecond(first);
         }
 
-        private class TermProvider : IMeasurementProvider<Term<T1, T2>> {
+        private static IMeasurementProvider<Term<T1, T2>> provider;
+
+        public static IMeasurementProvider<Term<T1, T2>> GetProvider(IMeasurementProvider<T1> numProvider, IMeasurementProvider<T2> denomProvider) {
+            if (provider == null) {
+                provider = new TermProvider(numProvider, denomProvider);
+            }
+
+            return provider;
+        }
+
+        private class TermProvider : IMeasurementProvider<Term<T1, T2>>, IComplexMeasurementProvider<T1, T2> {
             private readonly IMeasurementProvider<T1> t1Prov;
             private readonly IMeasurementProvider<T2> t2Prov;
 
@@ -151,6 +161,10 @@ namespace JoshuaKearney.Measurements {
             }
 
             public IEnumerable<Unit<Term<T1, T2>>> AllUnits { get; } = new Unit<Term<T1, T2>>[] { };
+
+            public IMeasurementProvider<T1> Component1Provider => t1Prov;
+
+            public IMeasurementProvider<T2> Component2Provider => t2Prov;
 
             public Unit<Term<T1, T2>> DefaultUnit { get; }
 

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://raw.githubusercontent.com/Blue0500/JoshuaKearney.Measurements/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Units Conversion</tags>
+
+    <dependencies>
+      <dependency id="JoshuaKearney.Core" version="1.0.2" />
+      <dependency id="CsvHelper" version="2.16.3" />
+    </dependencies>
+  </metadata>
+</package>

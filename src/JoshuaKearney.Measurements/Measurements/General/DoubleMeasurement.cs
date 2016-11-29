@@ -23,6 +23,10 @@ namespace JoshuaKearney.Measurements {
             return new DoubleMeasurement(d);
         }
 
+        public static implicit operator double(DoubleMeasurement d) {
+            return d.ToDouble();
+        }
+
         public override double ToDouble() {
             return this.ToDouble(Units.DefaultUnit);
         }

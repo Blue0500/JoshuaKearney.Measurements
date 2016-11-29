@@ -40,6 +40,7 @@ namespace JoshuaKearney.Measurements {
 
         protected abstract IMeasurementProvider<TNumerator> NumeratorProvider { get; }
 
+
         public static implicit operator Ratio<TNumerator, TDenominator>(Ratio<TSelf, TNumerator, TDenominator> ratio) {
             return ratio.ToRatio();
         }
@@ -140,13 +141,13 @@ namespace JoshuaKearney.Measurements {
         public Ratio(double amount, Unit<Ratio<TNumerator, TDenominator>> unit, IMeasurementProvider<TNumerator> t1Prov, IMeasurementProvider<TDenominator> t2Prov) : base(amount, unit) {
             this.NumeratorProvider = t1Prov;
             this.DenominatorProvider = t2Prov;
-            this.MeasurementProvider = new RatioProvider(this.NumeratorProvider, this.DenominatorProvider);
+            this.MeasurementProvider = GetProvider(this.NumeratorProvider, this.DenominatorProvider);
         }
 
         public Ratio(TNumerator item1, TDenominator item2) : base(item1, item2) {
             this.NumeratorProvider = item1.MeasurementProvider;
             this.DenominatorProvider = item2.MeasurementProvider;
-            this.MeasurementProvider = new RatioProvider(this.NumeratorProvider, this.DenominatorProvider);
+            this.MeasurementProvider = GetProvider(this.NumeratorProvider, this.DenominatorProvider);
         }
 
         public override IMeasurementProvider<Ratio<TNumerator, TDenominator>> MeasurementProvider { get; }
@@ -155,9 +156,18 @@ namespace JoshuaKearney.Measurements {
 
         protected override IMeasurementProvider<TNumerator> NumeratorProvider { get; }
 
-        
 
-        private class RatioProvider : IMeasurementProvider<Ratio<TNumerator, TDenominator>> {
+        private static IMeasurementProvider<Ratio<TNumerator, TDenominator>> provider;
+
+        public static IMeasurementProvider<Ratio<TNumerator, TDenominator>> GetProvider(IMeasurementProvider<TNumerator> numProvider, IMeasurementProvider<TDenominator> denomProvider) {
+            if (provider == null) {
+                provider = new RatioProvider(numProvider, denomProvider);
+            }
+
+            return provider;
+        }
+
+        private class RatioProvider : IMeasurementProvider<Ratio<TNumerator, TDenominator>>, IComplexMeasurementProvider<TNumerator, TDenominator> {
             private readonly IMeasurementProvider<TDenominator> denomProv;
             private readonly IMeasurementProvider<TNumerator> numProv;
 
@@ -168,6 +178,10 @@ namespace JoshuaKearney.Measurements {
             }
 
             public IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> AllUnits => new Unit<Ratio<TNumerator, TDenominator>>[] { };
+
+            public IMeasurementProvider<TNumerator> Component1Provider => numProv;
+
+            public IMeasurementProvider<TDenominator> Component2Provider => denomProv;
 
             public Unit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
 

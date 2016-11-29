@@ -1,0 +1,1 @@
+nuget pack JoshuaKearney.Measurements/JoshuaKearney.Measurements.csproj
