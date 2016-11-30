@@ -11,22 +11,22 @@ namespace JoshuaKearney.Measurements {
         public DigitalSize(double amount, Unit<DigitalSize> unit) : base(amount, unit) {
         }
 
-        public static IMeasurementProvider<DigitalSize> Provider { get; } = new DigitalSizeProvider();
+        public static Lazy<IMeasurementProvider<DigitalSize>> Provider { get; } = new Lazy<IMeasurementProvider<DigitalSize>>(() => new DigitalSizeProvider());
 
-        public override IMeasurementProvider<DigitalSize> MeasurementProvider => Provider;
+        public override Lazy<IMeasurementProvider<DigitalSize>> MeasurementProvider => Provider;
 
         public static class Units {
 
             private static Lazy<PrefixableUnit<DigitalSize>> bit = new Lazy<PrefixableUnit<DigitalSize>>(() => new PrefixableUnit<DigitalSize>(
-                name: "bit",
                 symbol: "bit",
-                unitsPerDefault: 8
+                defaultsPerUnit: 1d / 8,
+                provider: Provider
             ));
 
             private static Lazy<PrefixableUnit<DigitalSize>> sizeByte = new Lazy<PrefixableUnit<DigitalSize>>(() => new PrefixableUnit<DigitalSize>(
-                name: "byte",
                 symbol: "B",
-                unitsPerDefault: 1
+                defaultsPerUnit: 1,
+                provider: Provider
             ));
 
             public static Unit<DigitalSize> Exabyte { get; } = Prefix.Exa(Octet);
@@ -38,9 +38,9 @@ namespace JoshuaKearney.Measurements {
             public static Unit<DigitalSize> Megabyte { get; } = Prefix.Mega(Octet);
 
             public static Unit<DigitalSize> Nybble { get; } = new Unit<DigitalSize>(
-                name: "nybble",
                 symbol: "Nybble",
-                unitsPerDefault: 2d
+                defaultsPerUnit: .5,
+                provider: Provider
             );
 
             public static Unit<DigitalSize> Petabyte { get; } = Prefix.Peta(Octet);
