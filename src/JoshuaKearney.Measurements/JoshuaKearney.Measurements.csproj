@@ -155,6 +155,7 @@
     <Compile Include="Measurements\Physics\Vector.cs" />
     <Compile Include="Measurements\Quantity.cs" />
     <Compile Include="Parser\DoubleMeasurementToken.cs" />
+    <Compile Include="Parser\UnitToken.cs" />
     <Compile Include="Parser\MeasurementParseException.cs" />
     <Compile Include="Parser\MeasurementParser.cs" />
     <Compile Include="Parser\MeasurementToken.cs" />
