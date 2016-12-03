@@ -12,9 +12,9 @@ namespace JoshuaKearney.Measurements {
 
         private static Dictionary<string, Func<double, MeasurementToken>> dictionary;
 
-        private static IMeasurementProvider<T> provider;
+        private static Lazy<IMeasurementProvider<T>> provider;
 
-        public MeasurementParser(IMeasurementProvider<T> p) {
+        public MeasurementParser(Lazy<IMeasurementProvider<T>> p) {
             if (provider == null) {
                 provider = p;
             }
@@ -390,9 +390,9 @@ namespace JoshuaKearney.Measurements {
             );
         }
 
-        private static Dictionary<string, Func<double, MeasurementToken>> GetUnits<E>(IMeasurementProvider<E> provider) where E : Measurement<E> {
+        private static Dictionary<string, Func<double, MeasurementToken>> GetUnits<E>(Lazy<IMeasurementProvider<E>> provider) where E : Measurement<E> {
             Dictionary<string, Func<double, MeasurementToken>> ret = provider
-                .AllUnits
+                .GetAllUnits()
                 .SelectMany(x => {
                     if (x is PrefixableUnit<E>) {
                         return Prefix.All(x as PrefixableUnit<E>).Concat(new[] { x });

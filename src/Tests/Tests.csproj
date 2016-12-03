@@ -58,6 +58,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\JoshuaKearney.Measurements.Csv\JoshuaKearney.Measurements.Csv.csproj">
+      <Project>{84b1912c-e0af-44ee-a80d-723e491c1841}</Project>
+      <Name>JoshuaKearney.Measurements.Csv</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JoshuaKearney.Measurements\JoshuaKearney.Measurements.csproj">
       <Project>{9b98820d-4b85-46a2-9ed0-8fa071f2ec8b}</Project>
       <Name>JoshuaKearney.Measurements</Name>

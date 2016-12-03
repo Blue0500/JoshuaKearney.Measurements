@@ -1,178 +1,72 @@
-﻿namespace JoshuaKearney.Measurements {
+﻿using System;
+
+namespace JoshuaKearney.Measurements {
 
     public static partial class MeasurementExtensions {
 
-        /// <summary>
-        /// Casts the specified unit to a different type of measurement. This can result in unchecked, bad conversions. Only use this if you know what you're doing
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="unit">The unit.</param>
-        /// <returns></returns>
-        public static Unit<TResult> Cast<T, TResult>(this Unit<T> unit)
-                where T : Measurement<T>
-                where TResult : Measurement<TResult> {
-            return new Unit<TResult>(
-                name: unit.Name,
-                symbol: unit.Symbol,
-                unitsPerDefault: unit.UnitsPerDefault
+        public static Unit<T> ToUnit<T>(this Measurement<T> self, string symbol) where T : Measurement<T> {
+            return new Unit<T>(symbol, self.DefaultUnits, self.MeasurementProvider);
+        }
+
+        // Term unit extensions
+        public static Unit<Term<T1, T2>> MultiplyToTermUnit<T1, T2>(this Unit<T1> unit1, Unit<T2> unit2)
+            where T1 : Measurement<T1>
+            where T2 : Measurement<T2> {
+            return new Unit<Term<T1, T2>>(
+                unit1.Symbol + "*" + unit2.Symbol,
+                unit1.DefaultUnits * unit2.DefaultUnits,
+                Term<T1, T2>.GetProvider(unit1.MeasurementProvider, unit2.MeasurementProvider)
             );
         }
 
-        /// <summary>
-        /// Cubes this unit.
-        /// </summary>
-        /// <typeparam name="TSelf">The type of this unit.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="unit">The unit.</param>
-        /// <returns></returns>
-        public static Unit<TResult> Cube<TSelf, TResult>(this Unit<TSelf> unit)
-                where TSelf : Measurement<TSelf>//, ICubableMeasurement<TResult>
-                where TResult : Measurement<TResult> {
-            Validate.NonNull(unit, nameof(unit));
+        public static Unit<TSelf> ToTermUnit<TSelf, T1, T2>(this Unit<Term<T1, T2>> unit, Lazy<IMeasurementProvider<TSelf>> provider)
+            where T1 : Measurement<T1>
+            where T2 : Measurement<T2>
+            where TSelf : Term<TSelf, T1, T2> {
+            return new Unit<TSelf>(unit.Symbol, unit.DefaultUnits, provider);
+        }
 
-            return new Unit<TResult>(
-                name: unit.Name + " cubed",
-                symbol: unit.Symbol + "³",
-                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault * unit.UnitsPerDefault
+        public static Unit<Term<T1, T2>> ToTermUnit<TSelf, T1, T2>(this Unit<TSelf> unit)
+            where T1 : Measurement<T1>
+            where T2 : Measurement<T2>
+            where TSelf : Term<TSelf, T1, T2> {
+            TSelf self = unit;
+
+            return new Unit<Term<T1, T2>>(
+                unit.Symbol,
+                unit.DefaultUnits,
+                Term<T1, T2>.GetProvider(self.Item1Provider, self.Item2Provider)
             );
         }
 
-        /// <summary>
-        /// Divides this unit by the specified unit
-        /// </summary>
-        /// <typeparam name="TSelf">The type of this unit.</typeparam>
-        /// <typeparam name="TThat">The type of the that.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="unit">The unit.</param>
-        /// <param name="that">The that.</param>
-        /// <returns></returns>
-        public static Unit<TResult> Divide<TSelf, TThat, TResult>(this Unit<TSelf> unit, Unit<TThat> that)
-                where TSelf : Measurement<TSelf>//, IDividableMeasurement<TThat, TResult>
-                where TThat : Measurement<TThat>
-                where TResult : Measurement<TResult> {
-            Validate.NonNull(unit, nameof(unit));
-            Validate.NonNull(that, nameof(that));
-
-            return unit.DivideTo<TSelf, TThat, TResult>(that);
-        }
-
-        /// <summary>
-        /// Divides this unit by another unit, making a unit of a ratio.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TThat">The type of the that.</typeparam>
-        /// <param name="unit">The unit.</param>
-        /// <param name="that">The that.</param>
-        /// <returns></returns>
-        public static Unit<Ratio<T, TThat>> DivideToRatio<T, TThat>(this Unit<T> unit, Unit<TThat> that)
-                where T : Measurement<T>
-                where TThat : Measurement<TThat> {
-            Validate.NonNull(unit, nameof(unit));
-            Validate.NonNull(that, nameof(that));
-
-            return unit.DivideTo<T, TThat, Ratio<T, TThat>>(that);
-        }
-
-        /// <summary>
-        /// Multiplies this unit with another unit.
-        /// </summary>
-        /// <typeparam name="TSelf">The type of the self.</typeparam>
-        /// <typeparam name="TThat">The type of the that.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="unit">The unit.</param>
-        /// <param name="that">The that.</param>
-        /// <returns></returns>
-        public static Unit<TResult> Multiply<TSelf, TThat, TResult>(this Unit<TSelf> unit, Unit<TThat> that)
-                where TSelf : Measurement<TSelf>//, IMultipliableMeasurement<TThat, TResult>
-                where TThat : Measurement<TThat>
-                where TResult : Measurement<TResult> {
-            Validate.NonNull(unit, nameof(unit));
-            Validate.NonNull(that, nameof(that));
-
-            return unit.MultiplyTo<TSelf, TThat, TResult>(that);
-        }
-
-        /// <summary>
-        /// Multiplies this unit with another unit, making a unit of a term
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TThat">The type of the that.</typeparam>
-        /// <param name="unit">The unit.</param>
-        /// <param name="that">The that.</param>
-        /// <returns></returns>
-        public static Unit<Term<T, TThat>> MultiplyToTerm<T, TThat>(this Unit<T> unit, Unit<TThat> that)
-                where T : Measurement<T>
-                where TThat : Measurement<TThat> {
-            Validate.NonNull(unit, nameof(unit));
-            Validate.NonNull(that, nameof(that));
-
-            return unit.MultiplyTo<T, TThat, Term<T, TThat>>(that);
-        }
-
-        /// <summary>
-        /// Squares this unit.
-        /// </summary>
-        /// <typeparam name="TSelf">The type of the self.</typeparam>
-        /// <typeparam name="TResult">The type of the result.</typeparam>
-        /// <param name="unit">The unit.</param>
-        /// <returns></returns>
-        public static Unit<TResult> Square<TSelf, TResult>(this Unit<TSelf> unit)
-                where TSelf : Measurement<TSelf>//, ISquareableMeasurement<TResult>
-                where TResult : Measurement<TResult> {
-            Validate.NonNull(unit, nameof(unit));
-
-            return new Unit<TResult>(
-                name: unit.Name + " squared",
-                symbol: unit.Symbol + "²",
-                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault
+        // Ratio unit extensions
+        public static Unit<Ratio<TNumerator, TDenominator>> DivideToRatioUnit<TNumerator, TDenominator>(this Unit<TNumerator> unit1, Unit<TDenominator> unit2)
+            where TNumerator : Measurement<TNumerator>
+            where TDenominator : Measurement<TDenominator> {
+            return new Unit<Ratio<TNumerator, TDenominator>>(
+                unit1.Symbol + "/" + unit2.Symbol,
+                unit1.DefaultUnits / unit2.DefaultUnits,
+                Ratio<TNumerator, TDenominator>.GetProvider(unit1.MeasurementProvider, unit2.MeasurementProvider)
             );
         }
 
-        private static Unit<TResult> CubeTo<TIn, TResult>(this Unit<TIn> unit)
-                where TIn : Measurement<TIn>
-                where TResult : Measurement<TResult> {
-            return new Unit<TResult>(
-                name: unit.Name + " cubed",
-                symbol: $"({unit.Symbol}^3)",
-                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault * unit.UnitsPerDefault
-            );
+        public static Unit<TSelf> ToRatioUnit<TSelf, TNumerator, TDenominator>(this Unit<Ratio<TNumerator, TDenominator>> unit, Lazy<IMeasurementProvider<TSelf>> provider)
+            where TNumerator : Measurement<TNumerator>
+            where TDenominator : Measurement<TDenominator>
+            where TSelf : Ratio<TSelf, TNumerator, TDenominator> {
+            return new Unit<TSelf>(unit.Symbol, unit.DefaultUnits, provider);
         }
 
-        private static Unit<TResult> DivideTo<TIn, TIn2, TResult>(this Unit<TIn> unit, Unit<TIn2> that)
-                where TIn : Measurement<TIn>
-                where TIn2 : Measurement<TIn2>
-                where TResult : Measurement<TResult> {
-            return new Unit<TResult>(
-                name: $"{unit.Name} per {that.Name}",
-                symbol: $"({unit.Symbol}/({that.Symbol}))",
-                unitsPerDefault: unit.UnitsPerDefault / that.UnitsPerDefault
-            );
-        }
+        public static Unit<Ratio<TNumerator, TDenominator>> ToRatioUnit<TSelf, TNumerator, TDenominator>(this Unit<TSelf> unit)
+            where TNumerator : Measurement<TNumerator>
+            where TDenominator : Measurement<TDenominator>
+            where TSelf : Ratio<TSelf, TNumerator, TDenominator> {
+            TSelf self = unit;
 
-        private static Unit<TResult> MultiplyTo<TIn, TIn2, TResult>(this Unit<TIn> unit, Unit<TIn2> that)
-                where TIn : Measurement<TIn>
-                where TIn2 : Measurement<TIn2>
-                where TResult : Measurement<TResult> {
-            if (object.ReferenceEquals(unit, that)) {
-                return unit.SquareTo<TIn, TResult>();
-            }
-            else {
-                return new Unit<TResult>(
-                    name: $"{unit.Name} {that.Name}",
-                    symbol: $"({unit.Symbol}*{that.Symbol})",
-                    unitsPerDefault: unit.UnitsPerDefault * that.UnitsPerDefault
-                );
-            }
-        }
-
-        private static Unit<TResult> SquareTo<TIn, TResult>(this Unit<TIn> unit)
-                where TIn : Measurement<TIn>
-                where TResult : Measurement<TResult> {
-            return new Unit<TResult>(
-                name: unit.Name + " squared",
-                symbol: $"({unit.Symbol}^2)",
-                unitsPerDefault: unit.UnitsPerDefault * unit.UnitsPerDefault
+            return new Unit<Ratio<TNumerator, TDenominator>>(
+                unit.Symbol,
+                unit.DefaultUnits,
+                Ratio<TNumerator, TDenominator>.GetProvider(self.NumeratorProvider, self.DenominatorProvider)
             );
         }
     }
@@ -191,7 +85,7 @@
         /// <param name="name">The name of the unit. Ex: foot</param>
         /// <param name="symbol">The symbol of the unit. Ex: ft</param>
         /// <param name="unitsPerDefault">The units per default unit for this type of measurement. Ex: 3.2808399 ft/m (meter is the default unit for length)</param>
-        public PrefixableUnit(string name, string symbol, double unitsPerDefault) : base(name, symbol, unitsPerDefault) {
+        public PrefixableUnit(string symbol, double defaultsPerUnit, Lazy<IMeasurementProvider<T>> provider) : base(symbol, defaultsPerUnit, provider) {
         }
     }
 
@@ -200,22 +94,11 @@
     /// be found in dedicated unit classes. Ex: <see cref="Distance.Units"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Unit<T> where T : Measurement<T> {
-
-        /// <summary>
-        /// Gets the name of this unit.
-        /// </summary>
-        public string Name { get; }
-
+    public class Unit<T> : Measurement<T> where T : Measurement<T> {
         /// <summary>
         /// Gets the symbol of this unit.
         /// </summary>
         public string Symbol { get; }
-
-        /// <summary>
-        /// Gets the units per default unit for this measurement. Ex: 3.2808399 ft/m (meter is the default unit for length)
-        /// </summary>
-        public double UnitsPerDefault { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Unit{T}"/> class.
@@ -223,10 +106,9 @@
         /// <param name="name">The name.</param>
         /// <param name="symbol">The symbol.</param>
         /// <param name="unitsPerDefault">The units per default unit for this measurement.</param>
-        public Unit(string name, string symbol, double unitsPerDefault) {
-            this.Name = name;
+        public Unit(string symbol, double defaultsPerUnit, Lazy<IMeasurementProvider<T>> provider) : base(defaultsPerUnit) {
             this.Symbol = symbol;
-            this.UnitsPerDefault = unitsPerDefault;
+            this.MeasurementProvider = provider;
         }
 
         /// <summary>
@@ -239,6 +121,6 @@
             return this.Symbol;
         }
 
-        public static Unit<T> Default { get; } = new Unit<T>("default unit", "default", 1d);
+        public override Lazy<IMeasurementProvider<T>> MeasurementProvider { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace JoshuaKearney.Measurements {
+namespace JoshuaKearney.Measurements {
     /// <summary>
     /// Represents a measurement that can be cubed into another type of measurement
     /// </summary>
