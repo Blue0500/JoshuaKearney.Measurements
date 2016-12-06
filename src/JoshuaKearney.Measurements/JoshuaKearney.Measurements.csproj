@@ -129,8 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
-    <Compile Include="IComplexMeasurementProvider.cs" />
-    <Compile Include="IMeasurementProvider.cs" />
+    <Compile Include="MeasurementProvider.cs" />
     <Compile Include="MeasurementExtensions.cs" />
     <Compile Include="Measurements\Disabled\Acceleration.cs" />
     <Compile Include="Measurements\Disabled\Charge.cs" />

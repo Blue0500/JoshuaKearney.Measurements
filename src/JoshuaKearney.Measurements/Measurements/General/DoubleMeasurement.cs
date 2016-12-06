@@ -56,7 +56,7 @@ namespace JoshuaKearney.Measurements {
 
         public static double ToDouble(this Measurement<DoubleMeasurement> d) {
             Validate.NonNull(d, nameof(d));
-            return (DoubleMeasurement)d;
+            return d.DefaultUnits;
         }
 
     }
@@ -72,9 +72,9 @@ namespace JoshuaKearney.Measurements {
         private DoubleMeasurement(double amount, Unit<DoubleMeasurement> unit) : base(amount, unit) {
         }
 
-        public static Lazy<IMeasurementProvider<DoubleMeasurement>> Provider { get; } = new Lazy<IMeasurementProvider<DoubleMeasurement>>(() => new DoubleMeasurementProvider());
+        public static MeasurementProvider<DoubleMeasurement> Provider { get; } = new DoubleMeasurementProvider();
 
-        public override Lazy<IMeasurementProvider<DoubleMeasurement>> MeasurementProvider => Provider;
+        public override MeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
 
         public new DoubleMeasurement Reciprocal() {
             return new DoubleMeasurement(1 / this.ToDouble());
@@ -93,14 +93,12 @@ namespace JoshuaKearney.Measurements {
             public static Unit<DoubleMeasurement> DefaultUnit { get; } = new Unit<DoubleMeasurement>("", 1, Provider);
         }
 
-        private class DoubleMeasurementProvider : IMeasurementProvider<DoubleMeasurement> {
-            public IEnumerable<Unit<DoubleMeasurement>> AllUnits => new[] { Units.DefaultUnit };
+        private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {
+            protected override Lazy<Unit<DoubleMeasurement>> LazyDefaultUnit { get; } = new Lazy<Unit<DoubleMeasurement>>(() => Units.DefaultUnit);
 
-            public Unit<DoubleMeasurement> DefaultUnit => Units.DefaultUnit;
+            protected override Lazy<IEnumerable<Unit<DoubleMeasurement>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<DoubleMeasurement>>>(() => new[] { Units.DefaultUnit });
 
-            public DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) {
-                return new DoubleMeasurement(value, unit);
-            }
+            public override DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) => new DoubleMeasurement(value, Units.DefaultUnit);
         }
     }
 }

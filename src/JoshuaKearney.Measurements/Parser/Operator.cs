@@ -10,7 +10,7 @@ namespace JoshuaKearney.Measurements.Parser {
         public static Operator OpenParen { get; } = new Operator("(", 100);
 
         public static BinaryOperator Multiply { get; } = new BinaryOperator("*", 5, (x, y) => {
-            var result = ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), x, y) ?? ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), y, x);
+            var result = ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), x, y) ?? ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), y, x) ?? MultiplyToTerm(x, y);
             return result;
         });
 
@@ -28,10 +28,28 @@ namespace JoshuaKearney.Measurements.Parser {
         public int Priority { get; }
 
         private static MeasurementToken DivideToRatio(MeasurementToken x, MeasurementToken y) {
-            var divideToRatio = x.MeasurementValue.GetType().GetRuntimeMethods().Where(z => z.Name == "DivideToRatio").First().MakeGenericMethod(y.MeasurementValue.GetType());
+            var methodInfo = x.MeasurementValue.GetType().GetRuntimeMethods().Where(z => z.Name == "DivideToRatio").First();
 
-            return new MeasurementToken(divideToRatio.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
+            if (methodInfo.GetGenericArguments().Count() != 1) {
+                return null;
+            }
+            else {
+                var divideToRatio = methodInfo.MakeGenericMethod(y.MeasurementValue.GetType());
+                return new MeasurementToken(divideToRatio.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
+            }
         }
+        private static MeasurementToken MultiplyToTerm(MeasurementToken x, MeasurementToken y) {
+            var methodInfo = x.MeasurementValue.GetType().GetRuntimeMethods().Where(z => z.Name == "MultiplyToTerm").First();
+
+            if (methodInfo.GetGenericArguments().Count() != 1) {
+                return null;
+            }
+            else {
+                var multiplyToTerm = methodInfo.MakeGenericMethod(y.MeasurementValue.GetType());
+                return new MeasurementToken(multiplyToTerm.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
+            }
+        }
+
 
         private static MethodInfo GetArithmeticInterfaceMethod(Type tInterface, MeasurementToken x, MeasurementToken y) {
             Type tFirst = x.MeasurementValue.GetType();

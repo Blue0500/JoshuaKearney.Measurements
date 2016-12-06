@@ -23,24 +23,24 @@ namespace JoshuaKearney.Measurements {
         protected Ratio() {
         }
 
-        protected Ratio(TNumerator numerator, TDenominator denominator, Lazy<IMeasurementProvider<TSelf>> provider) : this(
+        protected Ratio(TNumerator numerator, TDenominator denominator, MeasurementProvider<TSelf> provider) : this(
             numerator.DefaultUnits / denominator.DefaultUnits,
-            numerator.MeasurementProvider.Value.DefaultUnit,
-            denominator.MeasurementProvider.Value.DefaultUnit,
+            numerator.MeasurementProvider.DefaultUnit,
+            denominator.MeasurementProvider.DefaultUnit,
             provider
         ) { }
 
         protected Ratio(double amount, Unit<TSelf> unit) : base(amount, unit) {
         }
 
-        protected Ratio(double amount, Unit<TNumerator> numDef, Unit<TDenominator> denomDef, Lazy<IMeasurementProvider<TSelf>> provider) : this(
+        protected Ratio(double amount, Unit<TNumerator> numDef, Unit<TDenominator> denomDef, MeasurementProvider<TSelf> provider) : this(
             amount,
             numDef.DivideToRatioUnit(denomDef).ToRatioUnit(provider)
         ) { }
 
-        public abstract Lazy<IMeasurementProvider<TDenominator>> DenominatorProvider { get; }
+        public abstract MeasurementProvider<TDenominator> DenominatorProvider { get; }
 
-        public abstract Lazy<IMeasurementProvider<TNumerator>> NumeratorProvider { get; }
+        public abstract MeasurementProvider<TNumerator> NumeratorProvider { get; }
 
 
         public static implicit operator Ratio<TNumerator, TDenominator>(Ratio<TSelf, TNumerator, TDenominator> ratio) {
@@ -56,7 +56,7 @@ namespace JoshuaKearney.Measurements {
         public Ratio<TThatDenom, TDenominator> DivideToRatio<TThatDenom, E>(Ratio<E, TNumerator, TThatDenom> that)
                 where TThatDenom : Measurement<TThatDenom>
                 where E : Ratio<E, TNumerator, TThatDenom> {
-            return that.DenominatorProvider.Value.CreateMeasurement(this.DefaultUnits, that.DenominatorProvider.Value.DefaultUnit).DivideToRatio(
+            return that.DenominatorProvider.CreateMeasurement(this.DefaultUnits, that.DenominatorProvider.DefaultUnit).DivideToRatio(
                 this.DenominatorProvider.CreateMeasurementWithDefaultUnits(that.DefaultUnits)
             );
         }
@@ -75,7 +75,7 @@ namespace JoshuaKearney.Measurements {
         public new Ratio<TDenominator, TNumerator> Reciprocal() {
             return new Ratio<TDenominator, TNumerator>(
                 1 / this.DefaultUnits,
-                this.DenominatorProvider.GetDefaultUnit().DivideToRatioUnit(this.NumeratorProvider.GetDefaultUnit()),
+                this.DenominatorProvider.DefaultUnit.DivideToRatioUnit(this.NumeratorProvider.DefaultUnit),
                 this.DenominatorProvider,
                 this.NumeratorProvider
             );
@@ -90,14 +90,13 @@ namespace JoshuaKearney.Measurements {
 
         public new Ratio<TNumerator, TDenominator> ToRatio() => new Ratio<TNumerator, TDenominator>(
             this.DefaultUnits,
-            this.MeasurementProvider.Value.DefaultUnit.ToRatioUnit<TSelf, TNumerator, TDenominator>(),
+            this.MeasurementProvider.DefaultUnit.ToRatioUnit<TSelf, TNumerator, TDenominator>(),
             NumeratorProvider,
             DenominatorProvider
         );
 
         public TNew Select<TNew>(Func<TNumerator, TDenominator, TNew> selector) {
-            var oneDenom = DenominatorProvider.CreateMeasurementWithDefaultUnits(1);
-            return selector(this.Multiply(oneDenom), oneDenom);
+            return selector(this.Multiply(DenominatorProvider.DefaultUnit), DenominatorProvider.DefaultUnit);
         }
 
         public Ratio<T, E> Select<T, E>(Func<TNumerator, T> numSelector, Func<TDenominator, E> denomSelector)
@@ -106,8 +105,8 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(numSelector, nameof(numSelector));
             Validate.NonNull(denomSelector, nameof(denomSelector));
 
-            T ret1 = numSelector(NumeratorProvider.CreateMeasurementWithDefaultUnits(this.ToDouble(this.MeasurementProvider.Value.DefaultUnit)));
-            E ret2 = denomSelector(DenominatorProvider.CreateMeasurementWithDefaultUnits(1));
+            T ret1 = numSelector(this.Multiply(this.DenominatorProvider.DefaultUnit));
+            E ret2 = denomSelector(DenominatorProvider.DefaultUnit);
 
             return new Ratio<T, E>(ret1, ret2);
         }
@@ -132,7 +131,7 @@ namespace JoshuaKearney.Measurements {
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator> {
 
-        public Ratio(double amount, Unit<Ratio<TNumerator, TDenominator>> unit, Lazy<IMeasurementProvider<TNumerator>> t1Prov, Lazy<IMeasurementProvider<TDenominator>> t2Prov) : base(amount, unit) {
+        public Ratio(double amount, Unit<Ratio<TNumerator, TDenominator>> unit, MeasurementProvider<TNumerator> t1Prov, MeasurementProvider<TDenominator> t2Prov) : base(amount, unit) {
             this.NumeratorProvider = t1Prov;
             this.DenominatorProvider = t2Prov;
             this.MeasurementProvider = GetProvider(this.NumeratorProvider, this.DenominatorProvider);
@@ -144,43 +143,43 @@ namespace JoshuaKearney.Measurements {
             this.MeasurementProvider = GetProvider(this.NumeratorProvider, this.DenominatorProvider);
         }
 
-        public override Lazy<IMeasurementProvider<Ratio<TNumerator, TDenominator>>> MeasurementProvider { get; }
+        public override MeasurementProvider<Ratio<TNumerator, TDenominator>> MeasurementProvider { get; }
 
-        public override Lazy<IMeasurementProvider<TDenominator>> DenominatorProvider { get; }
+        public override MeasurementProvider<TDenominator> DenominatorProvider { get; }
 
-        public override Lazy<IMeasurementProvider<TNumerator>> NumeratorProvider { get; }
+        public override MeasurementProvider<TNumerator> NumeratorProvider { get; }
 
 
-        private static Lazy<IMeasurementProvider<Ratio<TNumerator, TDenominator>>> provider;
+        private static MeasurementProvider<Ratio<TNumerator, TDenominator>> provider;
 
-        public static Lazy<IMeasurementProvider<Ratio<TNumerator, TDenominator>>> GetProvider(Lazy<IMeasurementProvider<TNumerator>> numProvider, Lazy<IMeasurementProvider<TDenominator>> denomProvider) {
+        public static MeasurementProvider<Ratio<TNumerator, TDenominator>> GetProvider(MeasurementProvider<TNumerator> numProvider, MeasurementProvider<TDenominator> denomProvider) {
             if (provider == null) {
-                provider = new Lazy<IMeasurementProvider<Ratio<TNumerator, TDenominator>>>(() => new RatioProvider(numProvider, denomProvider));
+                provider = new RatioProvider(numProvider, denomProvider);
             }
 
             return provider;
         }
 
-        private class RatioProvider : IMeasurementProvider<Ratio<TNumerator, TDenominator>>, IComplexMeasurementProvider<TNumerator, TDenominator> {
-            private readonly Lazy<IMeasurementProvider<TDenominator>> denomProv;
-            private readonly Lazy<IMeasurementProvider<TNumerator>> numProv;
-
-            public RatioProvider(Lazy<IMeasurementProvider<TNumerator>> t1Prov, Lazy<IMeasurementProvider<TDenominator>> t2Prov) {
-                this.numProv = t1Prov;
-                this.denomProv = t2Prov;
-                this.DefaultUnit = numProv.Value.DefaultUnit.DivideToRatioUnit(denomProv.Value.DefaultUnit);
+        private class RatioProvider : ComplexMeasurementProvider<Ratio<TNumerator, TDenominator>, TNumerator, TDenominator> {
+            public RatioProvider(MeasurementProvider<TNumerator> t1Prov, MeasurementProvider<TDenominator> t2Prov) {
+                this.Component1Provider = t1Prov;
+                this.Component2Provider = t2Prov;
+                this.LazyDefaultUnit = new Lazy<Unit<Ratio<TNumerator, TDenominator>>>(() => t1Prov.DefaultUnit.DivideToRatioUnit(t2Prov.DefaultUnit));
             }
 
             public IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> AllUnits => new Unit<Ratio<TNumerator, TDenominator>>[] { };
 
-            public Lazy<IMeasurementProvider<TNumerator>> Component1Provider => numProv;
+            public override MeasurementProvider<TNumerator> Component1Provider { get; }
 
-            public Lazy<IMeasurementProvider<TDenominator>> Component2Provider => denomProv;
+            public override MeasurementProvider<TDenominator> Component2Provider { get; }
 
-            public Unit<Ratio<TNumerator, TDenominator>> DefaultUnit { get; }
+            protected override Lazy<Unit<Ratio<TNumerator, TDenominator>>> LazyDefaultUnit { get; }
 
-            public Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
-                return new Ratio<TNumerator, TDenominator>(value, unit, numProv, denomProv);
+            protected override Lazy<IEnumerable<Unit<Ratio<TNumerator, TDenominator>>>> LazyParsableUnits { get; } = 
+                new Lazy<IEnumerable<Unit<Ratio<TNumerator, TDenominator>>>>(() => new Unit<Ratio<TNumerator, TDenominator>>[] { });
+
+            public override Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
+                return new Ratio<TNumerator, TDenominator>(value, unit, Component1Provider, Component2Provider);
             }
         }
     }

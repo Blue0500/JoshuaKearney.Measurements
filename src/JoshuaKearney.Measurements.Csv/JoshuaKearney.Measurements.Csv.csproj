@@ -40,7 +40,9 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AngleConverter.cs" />
     <Compile Include="AreaConverter.cs" />
+    <Compile Include="DigitalSizeConverter.cs" />
     <Compile Include="DistanceConverter.cs" />
     <Compile Include="MassConverter.cs" />
     <Compile Include="MeasurementConverter.cs" />
@@ -48,6 +50,12 @@
     <Compile Include="RatioConverter.cs" />
     <Compile Include="TermProvider.cs" />
     <Compile Include="VolumeConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JoshuaKearney.Measurements\JoshuaKearney.Measurements.csproj">
+      <Project>{9b98820d-4b85-46a2-9ed0-8fa071f2ec8b}</Project>
+      <Name>JoshuaKearney.Measurements</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

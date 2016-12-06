@@ -5,9 +5,9 @@ namespace JoshuaKearney.Measurements {
 
     public sealed class Mass : Measurement<Mass> {
 
-        public static Lazy<IMeasurementProvider<Mass>> Provider { get; } = new Lazy<IMeasurementProvider<Mass>>(() => new MassProvider());
+        public static MeasurementProvider<Mass> Provider { get; } = new MassProvider();
 
-        public override Lazy<IMeasurementProvider<Mass>> MeasurementProvider => Provider;
+        public override MeasurementProvider<Mass> MeasurementProvider => Provider;
 
         public Mass() {
         }
@@ -16,29 +16,43 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static class Units {
-            public static PrefixableUnit<Mass> Gram { get; } = new PrefixableUnit<Mass>(
+            private static Lazy<PrefixableUnit<Mass>> gram = new Lazy<PrefixableUnit<Mass>>(() => new PrefixableUnit<Mass>(
                 "g", .001, Provider
-            );
+            ));
 
-            public static Unit<Mass> Kilogram { get; } = Prefix.Kilo(Gram);
+            private static Lazy<Unit<Mass>> kilogram  = new Lazy<Unit<Mass>>(() => Prefix.Kilo(Gram));
 
-            public static Unit<Mass> MetricTon { get; } = Kilogram.Multiply(1000).ToUnit("t");
+            private static Lazy<Unit<Mass>> metricTon = new Lazy<Unit<Mass>>(() => Kilogram.Multiply(1000).ToUnit("t"));
 
-            public static Unit<Mass> Milligram { get; } = Prefix.Milli(Gram);
+            private static Lazy<Unit<Mass>> milligram = new Lazy<Unit<Mass>>(() => Prefix.Milli(Gram));
 
-            //public static Unit<Mass> Ounce { get; } = Kilogram
+            private static Lazy<Unit<Mass>> ounce = new Lazy<Unit<Mass>>(() => Pound.Divide(12).ToUnit("oz"));
 
-            //public static Unit<Mass> Pound { get; } = MeasurementSystems.AvoirdupoisMass.Pound;
+            private static Lazy<Unit<Mass>> pound = new Lazy<Unit<Mass>>(() => Kilogram.Multiply(0.45359237).ToUnit("lb"));
+
+            //private static Lazy<Unit<Mass>> shortTon = new Lazy<Unit<Mass>>(() => Pound.Multiply(2000).ToUnit());
+
+            public static PrefixableUnit<Mass> Gram => gram.Value;
+
+            public static Unit<Mass> Kilogram => kilogram.Value;
+
+            public static Unit<Mass> MetricTon => metricTon.Value;
+
+            public static Unit<Mass> Milligram => milligram.Value;
+
+            public static Unit<Mass> Ounce => ounce.Value;
+
+            public static Unit<Mass> Pound => pound.Value;
 
             //public static Unit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
         }
 
-        private class MassProvider : IMeasurementProvider<Mass> {
-            public IEnumerable<Unit<Mass>> AllUnits { get; } = new[] { Units.Gram, Units.MetricTon };
+        private class MassProvider : MeasurementProvider<Mass> {
+            protected override Lazy<Unit<Mass>> LazyDefaultUnit { get; } = new Lazy<Unit<Mass>>(() => Units.Kilogram);
 
-            public Unit<Mass> DefaultUnit => Units.Kilogram;
+            protected override Lazy<IEnumerable<Unit<Mass>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<Mass>>>(() => new[] { Units.Gram, Units.MetricTon, Units.Kilogram, Units.Milligram });
 
-            public Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
+            public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
         }
     }
 }

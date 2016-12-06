@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static JoshuaKearney.Measurements.Area.Units;
 
 namespace JoshuaKearney.Measurements {
 
@@ -28,13 +29,13 @@ namespace JoshuaKearney.Measurements {
         public Area(double amount, Unit<Distance> length1Def, Unit<Distance> length2Def) : base(amount, length1Def, length2Def, Provider) {
         }
 
-        public static Lazy<IMeasurementProvider<Area>> Provider { get; } = new Lazy<IMeasurementProvider<Area>>(() => new AreaProvider());
+        public static MeasurementProvider<Area> Provider { get; } = new AreaProvider();
 
-        public override Lazy<IMeasurementProvider<Area>> MeasurementProvider => Provider;
+        public override MeasurementProvider<Area> MeasurementProvider => Provider;
 
-        public override Lazy<IMeasurementProvider<Distance>> Item1Provider => Distance.Provider;
+        public override MeasurementProvider<Distance> Item1Provider => Distance.Provider;
 
-        public override Lazy<IMeasurementProvider<Distance>> Item2Provider => Distance.Provider;
+        public override MeasurementProvider<Distance> Item2Provider => Distance.Provider;
 
         Volume IMultipliableMeasurement<Distance, Volume>.Multiply(Distance measurement2) => this.Multiply(measurement2);
 
@@ -80,18 +81,16 @@ namespace JoshuaKearney.Measurements {
 
         }
 
-        private class AreaProvider : IMeasurementProvider<Area>, IComplexMeasurementProvider<Distance, Distance> {
-            private Lazy<IEnumerable<Unit<Area>>> allUnits = new Lazy<IEnumerable<Unit<Area>>>(() => new[] { Units.Acre });
+        private class AreaProvider : ComplexMeasurementProvider<Area, Distance, Distance> {
+            public override MeasurementProvider<Distance> Component1Provider => Distance.Provider;
 
-            public IEnumerable<Unit<Area>> AllUnits => allUnits.Value;
+            public override MeasurementProvider<Distance> Component2Provider => Distance.Provider;
 
-            public Lazy<IMeasurementProvider<Distance>> Component1Provider => Distance.Provider;
+            protected override Lazy<Unit<Area>> LazyDefaultUnit { get; } = new Lazy<Unit<Area>>(() => MeterSquared);
 
-            public Lazy<IMeasurementProvider<Distance>> Component2Provider => Distance.Provider;
+            protected override Lazy<IEnumerable<Unit<Area>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<Area>>>(() => new[] { Acre });
 
-            public Unit<Area> DefaultUnit => Units.MeterSquared;
-
-            public Area CreateMeasurement(double value, Unit<Area> unit) => new Area(value, unit);
+            public override Area CreateMeasurement(double value, Unit<Area> unit) => new Area(value, unit);
         }
     }
 }

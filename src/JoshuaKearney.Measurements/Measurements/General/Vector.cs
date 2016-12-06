@@ -5,25 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
-
-    public class Vector2d : Vector2d<DoubleMeasurement> {
-        public Vector2d(double xComp, double yComp) : base(xComp, yComp) { } 
-
-        public Vector2d(double magnitude, Angle angle) : base(magnitude, angle) {
-        }
-    }
-
     public class Vector2d<T> where T : Measurement<T> {
         public T Magnitude { get; }
 
         public Angle Angle { get; }
 
         public Vector2d(T horizontalComp, T verticalComp) {
-            this.Magnitude = horizontalComp.MeasurementProvider.CreateMeasurementWithDefaultUnits(
+            this.Magnitude = horizontalComp.MeasurementProvider.CreateMeasurement(
                 Math.Sqrt(
                     horizontalComp.DefaultUnits * horizontalComp.DefaultUnits +
-                    verticalComp.DefaultUnits + verticalComp.DefaultUnits
-                )
+                    verticalComp.DefaultUnits * verticalComp.DefaultUnits
+                ),
+                horizontalComp.MeasurementProvider.DefaultUnit
             );
             this.Angle = new Angle(Math.Atan2(horizontalComp.DefaultUnits, verticalComp.DefaultUnits), Angle.Units.Radian);
         }
@@ -33,9 +26,9 @@ namespace JoshuaKearney.Measurements {
             this.Angle = angle;
         }
 
-        public T VerticleComponent => this.Magnitude.Multiply(Math.Sin(this.Angle.ToDouble(Angle.Units.Radian)));
+        public T VerticleComponent => this.Magnitude.Multiply(Angle.Sin(this.Angle));
 
-        public T HorizontalComponent => this.Magnitude.Multiply(Math.Cos(this.Angle.ToDouble(Angle.Units.Radian)));
+        public T HorizontalComponent => this.Magnitude.Multiply(Angle.Cos(this.Angle));
 
         public Vector2d<T> Add(Vector2d<T> that) {
             return new Vector2d<T>(

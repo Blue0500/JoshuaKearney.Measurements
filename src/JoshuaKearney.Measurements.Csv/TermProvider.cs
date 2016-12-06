@@ -9,7 +9,7 @@ namespace JoshuaKearney.Measurements.Csv {
         where TNumerator : Measurement<TNumerator>
         where TDenominator : Measurement<TDenominator> {
 
-        public TermConverter(IMeasurementProvider<TNumerator> numProvider, IMeasurementProvider<TDenominator> denomProvider)
+        public TermConverter(MeasurementProvider<TNumerator> numProvider, MeasurementProvider<TDenominator> denomProvider)
             : base(Term<TNumerator, TDenominator>.GetProvider(numProvider, denomProvider)) {
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static JoshuaKearney.Measurements.DigitalSize.Units;
 
 namespace JoshuaKearney.Measurements {
 
@@ -11,9 +12,9 @@ namespace JoshuaKearney.Measurements {
         public DigitalSize(double amount, Unit<DigitalSize> unit) : base(amount, unit) {
         }
 
-        public static Lazy<IMeasurementProvider<DigitalSize>> Provider { get; } = new Lazy<IMeasurementProvider<DigitalSize>>(() => new DigitalSizeProvider());
+        public static MeasurementProvider<DigitalSize> Provider { get; } = new DigitalSizeProvider();
 
-        public override Lazy<IMeasurementProvider<DigitalSize>> MeasurementProvider => Provider;
+        public override MeasurementProvider<DigitalSize> MeasurementProvider => Provider;
 
         public static class Units {
 
@@ -52,12 +53,12 @@ namespace JoshuaKearney.Measurements {
             public static PrefixableUnit<DigitalSize> Octet => sizeByte.Value;
         }
 
-        private class DigitalSizeProvider : IMeasurementProvider<DigitalSize> {
-            public IEnumerable<Unit<DigitalSize>> AllUnits { get; } = new[] { Units.Bit, Units.Octet };
+        private class DigitalSizeProvider : MeasurementProvider<DigitalSize> {
+            protected override Lazy<Unit<DigitalSize>> LazyDefaultUnit { get; } = new Lazy<Unit<DigitalSize>>(() => Octet);
 
-            public Unit<DigitalSize> DefaultUnit => Units.Octet;
+            protected override Lazy<IEnumerable<Unit<DigitalSize>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<DigitalSize>>>(() => new[] { Octet, Bit, Nybble });
 
-            public DigitalSize CreateMeasurement(double value, Unit<DigitalSize> unit) => new DigitalSize(value, unit);
+            public override DigitalSize CreateMeasurement(double value, Unit<DigitalSize> unit) => new DigitalSize(value, unit);
         }
     }
 }

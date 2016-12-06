@@ -15,7 +15,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(distance1, nameof(distance1));
             Validate.NonNull(distance2, nameof(distance2));
 
-            return new Area(distance1, distance1);
+            return new Area(distance1, distance2);
         }
 
         public static Volume Multiply(this Measurement<Distance> distance, Measurement<Area> area) {
@@ -44,9 +44,9 @@ namespace JoshuaKearney.Measurements {
         public Distance(double amount, Unit<Distance> unit) : base(amount, unit) {
         }
 
-        public static Lazy<IMeasurementProvider<Distance>> Provider { get; } = new Lazy<IMeasurementProvider<Distance>>(() => new DistanceProvider());
+        public static MeasurementProvider<Distance> Provider { get; } = new DistanceProvider();
 
-        public override Lazy<IMeasurementProvider<Distance>> MeasurementProvider => Provider;
+        public override MeasurementProvider<Distance> MeasurementProvider => Provider;
 
         Volume ICubableMeasurement<Volume>.Cube() => this.Cube();
 
@@ -100,17 +100,15 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Distance> Yard => yard.Value;
         }
 
-        private class DistanceProvider : IMeasurementProvider<Distance> {
+        private class DistanceProvider : MeasurementProvider<Distance> {
 
-            private Lazy<IEnumerable<Unit<Distance>>> allUnits = new Lazy<IEnumerable<Unit<Distance>>>(
-                () => new[] { Units.Centimeter, Units.Kilometer, Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard, Units.Millimeter }
-            );
+            protected override Lazy<Unit<Distance>> LazyDefaultUnit { get; } = new Lazy<Unit<Distance>>(() => Units.Meter);
 
-            public IEnumerable<Unit<Distance>> AllUnits => allUnits.Value;
+            protected override Lazy<IEnumerable<Unit<Distance>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<Distance>>>(() => new[] {
+                Units.Centimeter, Units.Kilometer, Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard, Units.Millimeter
+            });
 
-            public Unit<Distance> DefaultUnit => Units.Meter;
-
-            public Distance CreateMeasurement(double value, Unit<Distance> unit) => new Distance(value, unit);
+            public override Distance CreateMeasurement(double value, Unit<Distance> unit) => new Distance(value, unit);
         }
     }
 }
