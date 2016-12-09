@@ -374,7 +374,7 @@ namespace JoshuaKearney.Measurements {
                 )                
                 .ToDictionary(x => x.Item1, y => y.Item2);
 
-            if (provider.GetType().GetTypeInfo().BaseType != null && provider.GetType().GetTypeInfo().BaseType.GetGenericTypeDefinition() == typeof(ComplexMeasurementProvider<,,>)) {
+            if (provider.GetType().GetTypeInfo().BaseType != null && provider.GetType().GetTypeInfo().BaseType.GetGenericTypeDefinition() == typeof(CompoundMeasurementProvider<,,>)) {
                 MethodInfo info = typeof(MeasurementParser<T>).GetRuntimeMethods().First(x => x.Name == nameof(GetUnits));
 
                 object provider1 = provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider);

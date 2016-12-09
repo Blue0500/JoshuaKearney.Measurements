@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public sealed class Mass : Measurement<Mass> {
+    public sealed class Mass : Measurement<Mass>, IDividableMeasurement<Volume, Density> {
 
         public static MeasurementProvider<Mass> Provider { get; } = new MassProvider();
 
@@ -16,9 +16,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static class Units {
-            private static Lazy<PrefixableUnit<Mass>> gram = new Lazy<PrefixableUnit<Mass>>(() => new PrefixableUnit<Mass>(
-                "g", .001, Provider
-            ));
+            private static Lazy<PrefixableUnit<Mass>> gram = new Lazy<PrefixableUnit<Mass>>(() => CreatePrefixableUnit("g", Provider));
 
             private static Lazy<Unit<Mass>> kilogram  = new Lazy<Unit<Mass>>(() => Prefix.Kilo(Gram));
 
@@ -29,8 +27,6 @@ namespace JoshuaKearney.Measurements {
             private static Lazy<Unit<Mass>> ounce = new Lazy<Unit<Mass>>(() => Pound.Divide(12).ToUnit("oz"));
 
             private static Lazy<Unit<Mass>> pound = new Lazy<Unit<Mass>>(() => Kilogram.Multiply(0.45359237).ToUnit("lb"));
-
-            //private static Lazy<Unit<Mass>> shortTon = new Lazy<Unit<Mass>>(() => Pound.Multiply(2000).ToUnit());
 
             public static PrefixableUnit<Mass> Gram => gram.Value;
 
@@ -43,16 +39,23 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Mass> Ounce => ounce.Value;
 
             public static Unit<Mass> Pound => pound.Value;
-
-            //public static Unit<Mass> ShortTon { get; } = MeasurementSystems.AvoirdupoisMass.ShortTon;
         }
 
         private class MassProvider : MeasurementProvider<Mass> {
-            protected override Lazy<Unit<Mass>> LazyDefaultUnit { get; } = new Lazy<Unit<Mass>>(() => Units.Kilogram);
-
-            protected override Lazy<IEnumerable<Unit<Mass>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<Mass>>>(() => new[] { Units.Gram, Units.MetricTon, Units.Kilogram, Units.Milligram });
-
             public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
+
+            protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram };
+        }
+
+        public Density Divide(Volume measurement2) => this.Divide(measurement2);
+    }
+
+    public static partial class MeasurementExtensions {
+        public static Density Divide(this Measurement<Mass> mass, Measurement<Volume> volume) {
+            Validate.NonNull(mass, nameof(mass));
+            Validate.NonNull(volume, nameof(volume));
+
+            return new Density(mass, volume);
         }
     }
 }

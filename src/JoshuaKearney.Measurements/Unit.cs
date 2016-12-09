@@ -3,22 +3,13 @@
 namespace JoshuaKearney.Measurements {
 
     public static partial class MeasurementExtensions {
-
-        public static Unit<T> ToUnit<T>(this Measurement<T> self, string symbol) where T : Measurement<T> {
-            return new Unit<T>(symbol, self.DefaultUnits, self.MeasurementProvider);
-        }
-        public static PrefixableUnit<T> ToPrefixableUnit<T>(this Measurement<T> self, string symbol) where T : Measurement<T> {
-            return new PrefixableUnit<T>(symbol, self.DefaultUnits, self.MeasurementProvider);
-        }
-
-
         // Term unit extensions
         public static Unit<Term<T1, T2>> MultiplyToTermUnit<T1, T2>(this Unit<T1> unit1, Unit<T2> unit2)
             where T1 : Measurement<T1>
             where T2 : Measurement<T2> {
             return new Unit<Term<T1, T2>>(
                 $"{unit1.Symbol}*{unit2.Symbol}",
-                unit1.DefaultUnits * unit2.DefaultUnits,
+                unit1.DefaultsPerUnit * unit2.DefaultsPerUnit,
                 Term<T1, T2>.GetProvider(unit1.MeasurementProvider, unit2.MeasurementProvider)
             );
         }
@@ -27,7 +18,7 @@ namespace JoshuaKearney.Measurements {
             where T1 : Measurement<T1>
             where T2 : Measurement<T2>
             where TSelf : Term<TSelf, T1, T2> {
-            return new Unit<TSelf>(unit.Symbol, unit.DefaultUnits, provider);
+            return new Unit<TSelf>(unit.Symbol, unit.DefaultsPerUnit, provider);
         }
 
         public static Unit<Term<T1, T2>> ToTermUnit<TSelf, T1, T2>(this Unit<TSelf> unit)
@@ -38,7 +29,7 @@ namespace JoshuaKearney.Measurements {
 
             return new Unit<Term<T1, T2>>(
                 unit.Symbol,
-                unit.DefaultUnits,
+                unit.DefaultsPerUnit,
                 Term<T1, T2>.GetProvider(self.Item1Provider, self.Item2Provider)
             );
         }
@@ -49,7 +40,7 @@ namespace JoshuaKearney.Measurements {
             where TDenominator : Measurement<TDenominator> {
             return new Unit<Ratio<TNumerator, TDenominator>>(
                 $"{unit1.Symbol}/{unit2.Symbol}",
-                unit1.DefaultUnits / unit2.DefaultUnits,
+                unit1.DefaultsPerUnit / unit2.DefaultsPerUnit,
                 Ratio<TNumerator, TDenominator>.GetProvider(unit1.MeasurementProvider, unit2.MeasurementProvider)
             );
         }
@@ -58,7 +49,7 @@ namespace JoshuaKearney.Measurements {
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator>
             where TSelf : Ratio<TSelf, TNumerator, TDenominator> {
-            return new Unit<TSelf>(unit.Symbol, unit.DefaultUnits, provider);
+            return new Unit<TSelf>(unit.Symbol, unit.DefaultsPerUnit, provider);
         }
 
         public static Unit<Ratio<TNumerator, TDenominator>> ToRatioUnit<TSelf, TNumerator, TDenominator>(this Unit<TSelf> unit)
@@ -69,7 +60,7 @@ namespace JoshuaKearney.Measurements {
             TSelf self = unit.ToMeasurement();
             return new Unit<Ratio<TNumerator, TDenominator>>(
                 unit.Symbol,
-                unit.DefaultUnits,
+                unit.DefaultsPerUnit,
                 Ratio<TNumerator, TDenominator>.GetProvider(self.NumeratorProvider, self.DenominatorProvider)
             );
         }
@@ -89,8 +80,7 @@ namespace JoshuaKearney.Measurements {
         /// <param name="name">The name of the unit. Ex: foot</param>
         /// <param name="symbol">The symbol of the unit. Ex: ft</param>
         /// <param name="unitsPerDefault">The units per default unit for this type of measurement. Ex: 3.2808399 ft/m (meter is the default unit for length)</param>
-        public PrefixableUnit(string symbol, double defaultsPerUnit, MeasurementProvider<T> provider) : base(symbol, defaultsPerUnit, provider) {
-        }
+        internal PrefixableUnit(string symbol, double defaultsPerUnit, MeasurementProvider<T> provider) : base(symbol, defaultsPerUnit, provider) { }
     }
 
     /// <summary>
@@ -104,13 +94,15 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         public string Symbol { get; }
 
+        public double DefaultsPerUnit => this.Value;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Unit{T}"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="symbol">The symbol.</param>
         /// <param name="unitsPerDefault">The units per default unit for this measurement.</param>
-        public Unit(string symbol, double defaultsPerUnit, MeasurementProvider<T> provider) : base(defaultsPerUnit) {
+        internal Unit(string symbol, double defaultsPerUnit, MeasurementProvider<T> provider) : base(defaultsPerUnit) {
             this.Symbol = $"({symbol})";
             this.MeasurementProvider = provider;
         }
@@ -126,7 +118,7 @@ namespace JoshuaKearney.Measurements {
         public override string ToString() => this.Symbol.Substring(1, this.Symbol.Length - 2);
 
         public bool Equals(Unit<T> other) {
-            return this.DefaultUnits == other.DefaultUnits && this.Symbol == other.Symbol;
+            return this.Value == other.Value && this.Symbol == other.Symbol;
         }
 
         public override bool Equals(object that) {

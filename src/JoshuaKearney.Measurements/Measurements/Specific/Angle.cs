@@ -32,28 +32,32 @@ namespace JoshuaKearney.Measurements {
             return 1 / Tan(a);
         }
 
-        public static Angle ArcSin(double d) {
+        public static Angle Asin(double d) {
             return new Angle(Math.Asin(d), Radian);
         }
 
-        public static Angle ArcCos(double d) {
+        public static Angle Acos(double d) {
             return new Angle(Math.Acos(d), Radian);
         }
 
-        public static Angle ArcTan(double d) {
+        public static Angle Atan(double d) {
             return new Angle(Math.Atan(d), Radian);
         }
 
-        public static Angle ArcSec(double d) {
-            return ArcCos(1 / d);
+        public static Angle Atan2(double y, double x) {
+            return new Angle(Math.Atan2(y, x), Radian);
         }
 
-        public static Angle ArcCsc(double d) {
-            return ArcSin(1 / d);
+        public static Angle Asec(double d) {
+            return Acos(1 / d);
         }
 
-        public static Angle ArcCot(double d) {
-            return ArcTan(1 / d);
+        public static Angle Acsc(double d) {
+            return Asin(1 / d);
+        }
+
+        public static Angle Acot(double d) {
+            return Atan(1 / d);
         }
 
         public Angle() {
@@ -67,7 +71,7 @@ namespace JoshuaKearney.Measurements {
         public override MeasurementProvider<Angle> MeasurementProvider => Provider;
 
         public class Units {
-            private static Lazy<Unit<Angle>> radian = new Lazy<Unit<Angle>>(() => new Unit<Angle>("rad", 1, Provider));
+            private static Lazy<PrefixableUnit<Angle>> radian = new Lazy<PrefixableUnit<Angle>>(() => CreatePrefixableUnit("rad", Provider));
 
             private static Lazy<Unit<Angle>> degree = new Lazy<Unit<Angle>>(() => Radian.Multiply(Math.PI / 180).ToUnit("deg"));
 
@@ -93,9 +97,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class AngleProvider : MeasurementProvider<Angle> {
-            protected override Lazy<Unit<Angle>> LazyDefaultUnit { get; } = new Lazy<Unit<Angle>>(() => Radian);
-
-            protected override Lazy<IEnumerable<Unit<Angle>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<Angle>>>(() => new[] { Radian, Degree, Revolution, Gradian });
+            protected override IEnumerable<Unit<Angle>> GetParsableUnits() => new[] { Radian, Degree, Revolution, Gradian };
 
             public override Angle CreateMeasurement(double value, Unit<Angle> unit) => new Angle(value, unit);
         }

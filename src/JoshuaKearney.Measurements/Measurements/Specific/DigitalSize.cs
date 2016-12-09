@@ -18,17 +18,9 @@ namespace JoshuaKearney.Measurements {
 
         public static class Units {
 
-            private static Lazy<PrefixableUnit<DigitalSize>> bit = new Lazy<PrefixableUnit<DigitalSize>>(() => new PrefixableUnit<DigitalSize>(
-                symbol: "bit",
-                defaultsPerUnit: 1d / 8,
-                provider: Provider
-            ));
+            private static Lazy<PrefixableUnit<DigitalSize>> bit = new Lazy<PrefixableUnit<DigitalSize>>(() => Octet.Multiply(1d / 8).ToPrefixableUnit("b"));
 
-            private static Lazy<PrefixableUnit<DigitalSize>> sizeByte = new Lazy<PrefixableUnit<DigitalSize>>(() => new PrefixableUnit<DigitalSize>(
-                symbol: "B",
-                defaultsPerUnit: 1,
-                provider: Provider
-            ));
+            private static Lazy<PrefixableUnit<DigitalSize>> sizeByte = new Lazy<PrefixableUnit<DigitalSize>>(() => CreatePrefixableUnit("B", Provider));
 
             public static Unit<DigitalSize> Exabyte { get; } = Prefix.Exa(Octet);
 
@@ -38,11 +30,11 @@ namespace JoshuaKearney.Measurements {
 
             public static Unit<DigitalSize> Megabyte { get; } = Prefix.Mega(Octet);
 
-            public static Unit<DigitalSize> Nybble { get; } = new Unit<DigitalSize>(
-                symbol: "Nybble",
-                defaultsPerUnit: .5,
-                provider: Provider
-            );
+            //public static Unit<DigitalSize> Nybble { get; } = new Unit<DigitalSize>(
+            //    symbol: "Nybble",
+            //    defaultsPerUnit: .5,
+            //    provider: Provider
+            //);
 
             public static Unit<DigitalSize> Petabyte { get; } = Prefix.Peta(Octet);
 
@@ -54,11 +46,9 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class DigitalSizeProvider : MeasurementProvider<DigitalSize> {
-            protected override Lazy<Unit<DigitalSize>> LazyDefaultUnit { get; } = new Lazy<Unit<DigitalSize>>(() => Octet);
-
-            protected override Lazy<IEnumerable<Unit<DigitalSize>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<DigitalSize>>>(() => new[] { Octet, Bit, Nybble });
-
             public override DigitalSize CreateMeasurement(double value, Unit<DigitalSize> unit) => new DigitalSize(value, unit);
+
+            protected override IEnumerable<Unit<DigitalSize>> GetParsableUnits() => new[] { Octet, Bit };
         }
     }
 }

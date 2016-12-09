@@ -13,12 +13,13 @@ namespace JoshuaKearney.Measurements {
         public Vector2d(T horizontalComp, T verticalComp) {
             this.Magnitude = horizontalComp.MeasurementProvider.CreateMeasurement(
                 Math.Sqrt(
-                    horizontalComp.DefaultUnits * horizontalComp.DefaultUnits +
-                    verticalComp.DefaultUnits * verticalComp.DefaultUnits
+                    Math.Pow(horizontalComp.ToDouble(horizontalComp.MeasurementProvider.DefaultUnit), 2) +
+                    Math.Pow(verticalComp.ToDouble(horizontalComp.MeasurementProvider.DefaultUnit), 2)
                 ),
                 horizontalComp.MeasurementProvider.DefaultUnit
             );
-            this.Angle = new Angle(Math.Atan2(horizontalComp.DefaultUnits, verticalComp.DefaultUnits), Angle.Units.Radian);
+
+            this.Angle = Angle.Atan2(verticalComp.ToDouble(verticalComp.MeasurementProvider.DefaultUnit), horizontalComp.ToDouble(verticalComp.MeasurementProvider.DefaultUnit));
         }
 
         public Vector2d(T magnitude, Angle angle) {

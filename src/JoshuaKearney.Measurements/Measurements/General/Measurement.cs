@@ -17,20 +17,44 @@ namespace JoshuaKearney.Measurements {
 
         // For unit
         internal Measurement(double amount) {
-            this.DefaultUnits = amount;
+            this.Value = amount;
         }
 
         protected Measurement(double amount, Unit<TSelf> unit) {
-            this.DefaultUnits = amount * unit.DefaultUnits;
+            Validate.NonNull(unit, nameof(unit));
+
+            this.Value = amount * unit.Value;
+        }
+
+        private static bool hasUnit = false;
+
+        protected static Unit<TSelf> CreateUnit(string symbol, MeasurementProvider<TSelf> provider) {
+            if (hasUnit) {
+                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
+            }
+            else {
+                hasUnit = true;
+                return new Unit<TSelf>(symbol, 1, provider);
+            }
+        }
+
+        protected static PrefixableUnit<TSelf> CreatePrefixableUnit(string symbol, MeasurementProvider<TSelf> provider) {
+            if (hasUnit) {
+                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
+            }
+            else {
+                hasUnit = true;
+                return new PrefixableUnit<TSelf>(symbol, 1, provider);
+            }
         }
 
         protected Measurement() {
-            this.DefaultUnits = 0;
+            this.Value = 0;
         }
 
         public abstract MeasurementProvider<TSelf> MeasurementProvider { get; }
 
-        protected internal double DefaultUnits { get; }
+        protected double Value { get; }
 
         public static implicit operator Ratio<TSelf, DoubleMeasurement>(Measurement<TSelf> measurement) {
             if (measurement == null) {
@@ -38,6 +62,14 @@ namespace JoshuaKearney.Measurements {
             }
 
             return measurement.ToRatio();
+        }
+
+        public Unit<TSelf> ToUnit(string symbol) {
+            return new Unit<TSelf>(symbol, this.Value, this.MeasurementProvider);
+        }
+        public PrefixableUnit<TSelf> ToPrefixableUnit(string symbol) {
+            Validate.NonNull(symbol, nameof(symbol));
+            return new PrefixableUnit<TSelf>(symbol, this.Value, this.MeasurementProvider);
         }
 
         public static implicit operator TSelf(Measurement<TSelf> measurement) {
@@ -49,23 +81,26 @@ namespace JoshuaKearney.Measurements {
         }
 
         public TSelf ToMeasurement() {
-            return this as TSelf ?? this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits);
+            return this as TSelf ?? this.MeasurementProvider.CreateMeasurement(
+                this.Value, 
+                this.MeasurementProvider.DefaultUnit
+            );
         }
 
         public static bool IsInfinity(Measurement<TSelf> measurement) {
-            return double.IsInfinity(measurement.DefaultUnits);
+            return double.IsInfinity(measurement.Value);
         }
 
         public static bool IsNan(Measurement<TSelf> measurement) {
-            return double.IsNaN(measurement.DefaultUnits);
+            return double.IsNaN(measurement.Value);
         }
 
         public static bool IsNegativeInfinity(Measurement<TSelf> measurement) {
-            return double.IsNegativeInfinity(measurement.DefaultUnits);
+            return double.IsNegativeInfinity(measurement.Value);
         }
 
         public static bool IsPositiveInfinity(Measurement<TSelf> measurement) {
-            return double.IsPositiveInfinity(measurement.DefaultUnits);
+            return double.IsPositiveInfinity(measurement.Value);
         }
 
         /// <summary>
@@ -255,7 +290,7 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <returns></returns>
 
-        public TSelf Abs() => this.MeasurementProvider.CreateMeasurementWithDefaultUnits(Math.Abs(this.DefaultUnits));
+        public TSelf Abs() => this.MeasurementProvider.CreateMeasurement(Math.Abs(this.Value), this.MeasurementProvider.DefaultUnit);
 
         /// <summary>
         /// Adds this instance to the specified measurement.
@@ -264,7 +299,10 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public TSelf Add(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
-            return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits + that.DefaultUnits);
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value + that.Value, 
+                this.MeasurementProvider.DefaultUnit
+            );
         }
 
         /// <summary>
@@ -279,7 +317,7 @@ namespace JoshuaKearney.Measurements {
                 return 1;
             }
 
-            return this.DefaultUnits.CompareTo(that.DefaultUnits);
+            return this.Value.CompareTo(that.Value);
         }
 
         /// <summary>
@@ -330,7 +368,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public DoubleMeasurement Divide(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
-            return this.DefaultUnits / that.DefaultUnits;
+            return this.Value / that.Value;
         }
 
         /// <summary>
@@ -339,7 +377,10 @@ namespace JoshuaKearney.Measurements {
         /// <param name="factor">The factor.</param>
         /// <returns></returns>
         public TSelf Divide(double factor) {
-            return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits / factor);
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value / factor, 
+                this.MeasurementProvider.DefaultUnit
+            );
         }
 
         /// <summary>
@@ -385,7 +426,7 @@ namespace JoshuaKearney.Measurements {
                 return false;
             }
             else {
-                return this.DefaultUnits.Equals(that.DefaultUnits);
+                return this.Value.Equals(that.Value);
             }
         }
 
@@ -395,7 +436,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode() => this.DefaultUnits.GetHashCode();
+        public override int GetHashCode() => this.Value.GetHashCode();
 
         TSelf IDividableMeasurement<DoubleMeasurement, TSelf>.Divide(DoubleMeasurement measurement2) {
             return this.Divide(measurement2.ToDouble());
@@ -411,7 +452,10 @@ namespace JoshuaKearney.Measurements {
         /// <param name="factor">The double to multiply by.</param>
         /// <returns></returns>
         public TSelf Multiply(double factor) {
-            return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits * factor);
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value * factor, 
+                this.MeasurementProvider.DefaultUnit
+            );
         }
 
         public T Multiply<T, E>(Ratio<E, T, TSelf> ratio)
@@ -436,7 +480,10 @@ namespace JoshuaKearney.Measurements {
         /// Negates this instance.
         /// </summary>
         /// <returns></returns>
-        public TSelf Negate() => this.MeasurementProvider.CreateMeasurementWithDefaultUnits(-this.DefaultUnits);
+        public TSelf Negate() => this.MeasurementProvider.CreateMeasurement(
+            -this.Value,
+            this.MeasurementProvider.DefaultUnit
+        );
 
         public Ratio<DoubleMeasurement, TSelf> Reciprocal() {
             return new Ratio<DoubleMeasurement, TSelf>(1, this);
@@ -450,7 +497,10 @@ namespace JoshuaKearney.Measurements {
         public TSelf Subtract(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
 
-            return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(this.DefaultUnits - that.DefaultUnits);
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value - that.Value,
+                this.MeasurementProvider.DefaultUnit
+            );
         }
 
         /// <summary>
@@ -461,7 +511,7 @@ namespace JoshuaKearney.Measurements {
         public double ToDouble(Unit<TSelf> unit) {
             Validate.NonNull(unit, nameof(unit));
 
-            return this.DefaultUnits / unit.DefaultUnits;
+            return this.Value / unit.Value;
         }
 
         public Ratio<TSelf, DoubleMeasurement> ToRatio() {
@@ -475,7 +525,7 @@ namespace JoshuaKearney.Measurements {
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString() {
-            return this.ToString(this.MeasurementProvider.DefaultUnit);
+            return this.ToString(this.MeasurementProvider.ParsableUnits.First());
         }
 
         /// <summary>
@@ -509,16 +559,16 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(units, nameof(units));
 
             units = units.Concat(new[] { unit1 }).OrderBy(x => this.ToDouble(x)).ToArray();
-            var unit = units.FirstOrDefault(x => this.ToDouble(x) >= 1) ?? units.FirstOrDefault() ?? this.MeasurementProvider.DefaultUnit;
+            var unit = units.FirstOrDefault(x => this.ToDouble(x) >= 1) ?? units.FirstOrDefault() ?? this.MeasurementProvider.ParsableUnits.FirstOrDefault();
 
             return this.ToString(unit, "0.##");
         }
 
-        //protected TSelf Select(Func<double, double> func) {
-        //    Validate.NonNull(func, nameof(func));
+        protected TSelf Select(Func<double, double> func) {
+            Validate.NonNull(func, nameof(func));
 
-        //    return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(func(this.DefaultUnits));
-        //}
+            return this.MeasurementProvider.CreateMeasurement(func(this.Value), this.MeasurementProvider.DefaultUnit);
+        }
 
         //public TSelf Divide(DoubleMeasurement measurement2) {
         //    return this.Divide(measurement2.ToDouble());

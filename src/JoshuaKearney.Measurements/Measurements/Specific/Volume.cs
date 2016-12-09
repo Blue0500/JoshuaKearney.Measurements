@@ -31,10 +31,6 @@ namespace JoshuaKearney.Measurements {
             : this(dist1, dist2.Multiply(dist3)) {
         }
 
-        public Volume(double amount, Unit<Distance> lengthDef, Unit<Area> areaDef)
-            : base(amount, lengthDef, areaDef, Provider) {
-        }
-
         public Volume(double amount, Unit<Distance> dist1Unit, Unit<Distance> dist2Unit, Unit<Distance> dist3Unit)
             : this(dist1Unit.Multiply(amount), dist2Unit, dist3Unit) { }
 
@@ -102,17 +98,14 @@ namespace JoshuaKearney.Measurements {
             //public static Unit<Volume> YardCubed { get; } = MeasurementSystems.EnglishLength.Yard.Cube().ToUnit("yd^3");
         }
 
-        private class VolumeProvider : ComplexMeasurementProvider<Volume, Area, Distance> {
-            public override MeasurementProvider<Area> Component1Provider => Area.Provider;
+        private class VolumeProvider : CompoundMeasurementProvider<Volume, Distance, Area> {
+            public override MeasurementProvider<Area> Component2Provider => Area.Provider;
 
-            public override MeasurementProvider<Distance> Component2Provider => Distance.Provider;
-
-            protected override Lazy<Unit<Volume>> LazyDefaultUnit { get; } = new Lazy<Unit<Volume>>(() => MeterCubed);
-
-            protected override Lazy<IEnumerable<Unit<Volume>>> LazyParsableUnits { get; } 
-                = new Lazy<IEnumerable<Unit<Volume>>>(() => new[] { CentimeterCubed, FootCubed, InchCubed, KilometerCubed, Liter, MeterCubed, MileCubed, MillimeterCubed });
+            public override MeasurementProvider<Distance> Component1Provider => Distance.Provider;
 
             public override Volume CreateMeasurement(double value, Unit<Volume> unit) => new Volume(value, unit);
+
+            protected override IEnumerable<Unit<Volume>> GetParsableUnits() => new[] { MeterCubed, CentimeterCubed, FootCubed, InchCubed, KilometerCubed, Liter, MileCubed, MillimeterCubed };
         }
     }
 }

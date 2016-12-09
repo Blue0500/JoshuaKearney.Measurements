@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
     public static partial class MeasurementExtensions {
-       
+       // Content in other files
     }
 }

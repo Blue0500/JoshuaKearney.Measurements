@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
+    <Compile Include="ExtendedMeasurementProvider.cs" />
     <Compile Include="MeasurementProvider.cs" />
     <Compile Include="MeasurementExtensions.cs" />
     <Compile Include="Measurements\Disabled\Acceleration.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Measurements\General\Vector.cs" />
     <Compile Include="Measurements\Specific\Angle.cs" />
     <Compile Include="Measurements\Specific\Area.cs" />
+    <Compile Include="Measurements\Specific\Density.cs" />
     <Compile Include="Measurements\Specific\DigitalSize.cs" />
     <Compile Include="Measurements\Specific\Distance.cs" />
     <Compile Include="Measurements\Specific\Mass.cs" />

@@ -56,7 +56,7 @@ namespace JoshuaKearney.Measurements {
 
         public static double ToDouble(this Measurement<DoubleMeasurement> d) {
             Validate.NonNull(d, nameof(d));
-            return d.DefaultUnits;
+            return d.ToDouble(DoubleMeasurement.Units.DefaultUnit);
         }
 
     }
@@ -89,14 +89,12 @@ namespace JoshuaKearney.Measurements {
             return d.ToDouble();
         }
 
-        private static class Units {
-            public static Unit<DoubleMeasurement> DefaultUnit { get; } = new Unit<DoubleMeasurement>("", 1, Provider);
+        public static class Units {
+            public static Unit<DoubleMeasurement> DefaultUnit { get; } = CreateUnit("", Provider);
         }
 
         private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {
-            protected override Lazy<Unit<DoubleMeasurement>> LazyDefaultUnit { get; } = new Lazy<Unit<DoubleMeasurement>>(() => Units.DefaultUnit);
-
-            protected override Lazy<IEnumerable<Unit<DoubleMeasurement>>> LazyParsableUnits { get; } = new Lazy<IEnumerable<Unit<DoubleMeasurement>>>(() => new[] { Units.DefaultUnit });
+            protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit };
 
             public override DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) => new DoubleMeasurement(value, Units.DefaultUnit);
         }

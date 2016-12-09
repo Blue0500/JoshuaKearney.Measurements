@@ -290,7 +290,7 @@ namespace JoshuaKearney.Measurements {
         private static Unit<T> PrefixIUnit<T>(PrefixableUnit<T> unit, double multiplier, string namePrefix, string symbolPrefix) where T : Measurement<T> {
             return new Unit<T>(
                 symbol: symbolPrefix + unit.ToString(),
-                defaultsPerUnit: unit.DefaultUnits * multiplier,
+                defaultsPerUnit: unit.DefaultsPerUnit * multiplier,
                 provider: unit.MeasurementProvider
             );
         }
