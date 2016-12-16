@@ -18,13 +18,13 @@
 //            : base(amount, massUnit, subsUnit) {
 //        }
 
-//        public static IMeasurementProvider<MolarMass> Provider { get; } = new MolarMassProvider();
+//        public static IMeasurementSupplier<MolarMass> Provider { get; } = new MolarMassProvider();
 
-//        public override IMeasurementProvider<MolarMass> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<MolarMass> MeasurementSupplier => Provider;
 
-//        protected override IMeasurementProvider<ChemicalAmount> DenominatorProvider => ChemicalAmount.Provider;
+//        protected override IMeasurementSupplier<ChemicalAmount> DenominatorProvider => ChemicalAmount.Provider;
 
-//        protected override IMeasurementProvider<Mass> NumeratorProvider => Mass.Provider;
+//        protected override IMeasurementSupplier<Mass> NumeratorProvider => Mass.Provider;
 
 //        public static class Units {
 //            public static Unit<MolarMass> GramsPerMole { get; } = new Mass(1, Mass.Units.Gram).Divide(new ChemicalAmount(1, ChemicalAmount.Units.Mole)).CreateUnit("gram per mole", "g/mol");
@@ -32,7 +32,7 @@
 //            public static Unit<MolarMass> KilgoramsPerMole { get; } = new Mass(1, Mass.Units.Kilogram).Divide(new ChemicalAmount(1, ChemicalAmount.Units.Mole)).CreateUnit("kilogram per mole", "kg/mol");
 //        }
 
-//        private class MolarMassProvider : IMeasurementProvider<MolarMass> {
+//        private class MolarMassProvider : IMeasurementSupplier<MolarMass> {
 //            public IEnumerable<Unit<MolarMass>> AllUnits => new[] { Units.GramsPerMole, Units.KilgoramsPerMole };
 
 //            public Unit<MolarMass> DefaultUnit => Units.KilgoramsPerMole;

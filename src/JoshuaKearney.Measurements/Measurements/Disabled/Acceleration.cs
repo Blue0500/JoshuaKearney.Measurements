@@ -20,13 +20,13 @@
 
 //        public static Acceleration Gravity { get; } = new Acceleration(9.80665, Acceleration.Units.MetersPerSecondSquared);
 
-//        public static IMeasurementProvider<Acceleration> Provider { get; } = new AccelerationProvider();
+//        public static IMeasurementSupplier<Acceleration> Provider { get; } = new AccelerationProvider();
 
-//        public override IMeasurementProvider<Acceleration> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Acceleration> MeasurementSupplier => Provider;
 
-//        protected override IMeasurementProvider<Time> DenominatorProvider => Time.Provider;
+//        protected override IMeasurementSupplier<Time> DenominatorProvider => Time.Provider;
 
-//        protected override IMeasurementProvider<Speed> NumeratorProvider => Speed.Provider;
+//        protected override IMeasurementSupplier<Speed> NumeratorProvider => Speed.Provider;
 
 //        public static Force operator *(Acceleration first, Mass measurement2) {
 //            if (first == null || measurement2 == null) {
@@ -49,12 +49,12 @@
 //            public static Unit<Acceleration> MetersPerSecondSquared => metersPerSecondSquared;
 //        }
 
-//        private class AccelerationProvider : IMeasurementProvider<Acceleration>, IComplexMeasurementProvider<Speed, Time> {
+//        private class AccelerationProvider : IMeasurementSupplier<Acceleration>, IComplexMeasurementSupplier<Speed, Time> {
 //            public IEnumerable<Unit<Acceleration>> AllUnits => new Unit<Acceleration>[] { };
 
-//            public IMeasurementProvider<Speed> Component1Provider => Speed.Provider;
+//            public IMeasurementSupplier<Speed> Component1Provider => Speed.Provider;
 
-//            public IMeasurementProvider<Time> Component2Provider => Time.Provider;
+//            public IMeasurementSupplier<Time> Component2Provider => Time.Provider;
 
 //            public Unit<Acceleration> DefaultUnit => Units.MetersPerSecondSquared;
 

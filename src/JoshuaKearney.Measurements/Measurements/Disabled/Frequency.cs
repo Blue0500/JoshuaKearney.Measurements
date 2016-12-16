@@ -13,13 +13,13 @@
 //        public Frequency(double amount, Time time) : base(amount, time) {
 //        }
 
-//        public override IMeasurementProvider<Frequency> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Frequency> MeasurementSupplier => Provider;
 
-//        public IMeasurementProvider<Frequency> Provider { get; } = new FrequencyProvider();
+//        public IMeasurementSupplier<Frequency> Provider { get; } = new FrequencyProvider();
 
-//        protected override IMeasurementProvider<Time> DenominatorProvider => Time.Provider;
+//        protected override IMeasurementSupplier<Time> DenominatorProvider => Time.Provider;
 
-//        protected override IMeasurementProvider<DoubleMeasurement> NumeratorProvider => DoubleMeasurement.Provider;
+//        protected override IMeasurementSupplier<DoubleMeasurement> NumeratorProvider => DoubleMeasurement.Provider;
 
 //        public static class Units {
 //            private static PrefixableUnit<Frequency> hertz = new PrefixableUnit<Frequency>("Hertz", "Hz", 1);
@@ -31,7 +31,7 @@
 //            public static PrefixableUnit<Frequency> Hertz => hertz;
 //        }
 
-//        private class FrequencyProvider : IMeasurementProvider<Frequency> {
+//        private class FrequencyProvider : IMeasurementSupplier<Frequency> {
 //            public IEnumerable<Unit<Frequency>> AllUnits { get; } = new[] { Units.Hertz };
 
 //            public Unit<Frequency> DefaultUnit => Units.Hertz;

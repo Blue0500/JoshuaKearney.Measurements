@@ -38,18 +38,18 @@
 //        }
 
 //        public Energy(Power power, Time time)
-//            : base(power.DefaultUnits * time.DefaultUnits, power.MeasurementProvider.DefaultUnit.Multiply<Power, Time, Energy>(time.MeasurementProvider.DefaultUnit)) {
+//            : base(power.DefaultUnits * time.DefaultUnits, power.MeasurementSupplier.DefaultUnit.Multiply<Power, Time, Energy>(time.MeasurementSupplier.DefaultUnit)) {
 //        }
 
 //        public Energy(double amount, Unit<Charge> chargeUnit, Unit<ElectricPotential> elecPotentialUnit) : this() { }
 
-//        public static IMeasurementProvider<Energy> Provider { get; } = new EnergyProvider();
+//        public static IMeasurementSupplier<Energy> Provider { get; } = new EnergyProvider();
 
-//        public override IMeasurementProvider<Energy> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Energy> MeasurementSupplier => Provider;
 
-//        protected override IMeasurementProvider<Force> Item1Provider => Force.Provider;
+//        protected override IMeasurementSupplier<Force> Item1Provider => Force.Provider;
 
-//        protected override IMeasurementProvider<Distance> Item2Provider => Distance.Provider;
+//        protected override IMeasurementSupplier<Distance> Item2Provider => Distance.Provider;
 
 //        public ElectricPotential Divide(Charge measurement2) {
 //            Validate.NonNull(measurement2, nameof(measurement2));
@@ -71,7 +71,7 @@
 //            public static Unit<Energy> Kilocalorie { get; } = Prefix.Kilo(Calorie);
 //        }
 
-//        private class EnergyProvider : IMeasurementProvider<Energy> {
+//        private class EnergyProvider : IMeasurementSupplier<Energy> {
 //            public IEnumerable<Unit<Energy>> AllUnits => new[] { Units.Joule };
 
 //            public Unit<Energy> DefaultUnit => Units.Joule;

@@ -11,9 +11,9 @@
 //        public Charge() : base() {
 //        }
 
-//        public static IMeasurementProvider<Charge> Provider { get; } = new ChargeProvider();
+//        public static IMeasurementSupplier<Charge> Provider { get; } = new ChargeProvider();
 
-//        public override IMeasurementProvider<Charge> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Charge> MeasurementSupplier => Provider;
 
 //        public static class Units {
 //            private static Lazy<Unit<Charge>> coulomb = new Lazy<Unit<Charge>>(() => new Unit<Charge>("Coulomb", "C", 1));
@@ -29,7 +29,7 @@
 //            public static Unit<Charge> ProtonCharge => protonCharge.Value;
 //        }
 
-//        private class ChargeProvider : IMeasurementProvider<Charge> {
+//        private class ChargeProvider : IMeasurementSupplier<Charge> {
 //            public IEnumerable<Unit<Charge>> AllUnits => new Unit<Charge>[] { Units.Coulomb, Units.ProtonCharge };
 
 //            public Unit<Charge> DefaultUnit => Units.Coulomb;

@@ -3,8 +3,8 @@ namespace JoshuaKearney.Measurements {
     /// Represents a measurement that can be cubed into another type of measurement
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public interface ICubableMeasurement<out TResult>
-        where TResult : Measurement<TResult> {
+    public interface ICubableMeasurement<TResult>
+        where TResult : IMeasurement<TResult> {
         /// <summary>
         /// Returns a measurement that represents the cube of this instance
         /// </summary>
@@ -17,9 +17,9 @@ namespace JoshuaKearney.Measurements {
     /// </summary>
     /// <typeparam name="TIn">The type of the divisor.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public interface IDividableMeasurement<in TIn, out TResult>
-        where TResult : Measurement<TResult>
-        where TIn : Measurement<TIn> {
+    public interface IDividableMeasurement<TIn, TResult>
+        where TResult : IMeasurement<TResult>
+        where TIn : IMeasurement<TIn> {
         /// <summary>
         /// Returns a measurement that represents the division of this instance by another measurement
         /// </summary>
@@ -33,9 +33,9 @@ namespace JoshuaKearney.Measurements {
     /// </summary>
     /// <typeparam name="TIn">The type of the 2nd term.</typeparam>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public interface IMultipliableMeasurement<in TIn, out TResult>
-        where TResult : Measurement<TResult>
-        where TIn : Measurement<TIn> {
+    public interface IMultipliableMeasurement<TIn, TResult>
+        where TResult : IMeasurement<TResult>
+        where TIn : IMeasurement<TIn> {
         /// <summary>
         /// Returns a measurement that represents the multiplication of this instance by another measurement
         /// </summary>
@@ -48,8 +48,8 @@ namespace JoshuaKearney.Measurements {
     /// Represents a measurement that can be squared into another type of measurement
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public interface ISquareableMeasurement<out TResult>
-        where TResult : Measurement<TResult> {
+    public interface ISquareableMeasurement<TResult>
+        where TResult : IMeasurement<TResult> {
         /// <summary>
         /// Returns a measurement that represents the cube of this instance
         /// </summary>

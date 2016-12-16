@@ -7,9 +7,9 @@
 //namespace JoshuaKearney.Measurements {
 
 //    public sealed class Temperature : Measurement<Temperature> {
-//        public static IMeasurementProvider<Temperature> Provider { get; } = new TemperatureProvider();
+//        public static IMeasurementSupplier<Temperature> Provider { get; } = new TemperatureProvider();
 
-//        public override IMeasurementProvider<Temperature> MeasurementProvider { get; } = Provider;
+//        public override IMeasurementSupplier<Temperature> MeasurementSupplier { get; } = Provider;
 
 //        public Temperature() {
 //        }
@@ -44,7 +44,7 @@
 //            public static PrefixableUnit<Temperature> Kelvin { get; } = new PrefixableUnit<Temperature>("kelvin", "K", 1d);
 //        }
 
-//        private class TemperatureProvider : IMeasurementProvider<Temperature> {
+//        private class TemperatureProvider : IMeasurementSupplier<Temperature> {
 //            public IEnumerable<Unit<Temperature>> AllUnits { get; } = new[] { Units.Kelvin };
 
 //            public Unit<Temperature> DefaultUnit {

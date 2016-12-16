@@ -5,94 +5,43 @@ using System.Linq;
 
 namespace JoshuaKearney.Measurements {
 
-    public abstract class MeasurementProvider<T> where T : Measurement<T> {
-        private IEnumerable<Unit<T>> parsableUnits;
+    // public delegate T MeasurementSupplier<T>(double value, Unit<T> unit) where T : IMeasurement<T>;
 
-        public abstract T CreateMeasurement(double value, Unit<T> unit);
+    public class MeasurementSupplier<T> where T : IMeasurement<T> {
+        private Func<double, Unit<T>, T> createMeasurement;
 
-        protected abstract IEnumerable<Unit<T>> GetParsableUnits();
+        public MeasurementSupplier(Func<double, Unit<T>, T> func) {
+            this.createMeasurement = func;
 
-        public MeasurementProvider<T> AppendParsableUnits(params Unit<T>[] units) {
-            Validate.NonNull(units, nameof(units));
-
-            IEnumerable<Unit<T>> par = this.GetParsableUnits();
-            return new ExtendedMeasurementProvider<T>(
-                this.CreateMeasurement,
-                () => par.Concat(units)
-            );
-        }
-
-        public MeasurementProvider() {
             this.DefaultUnit = new Unit<T>("", 1, this);
+            this.nan = new Lazy<T>(() => this.CreateMeasurement(double.NaN, this.DefaultUnit));
+            this.negInf = new Lazy<T>(() => this.CreateMeasurement(double.NegativeInfinity, this.DefaultUnit));
+            this.posInf = new Lazy<T>(() => this.CreateMeasurement(double.PositiveInfinity, this.DefaultUnit));
+            this.minValue = new Lazy<T>(() => this.CreateMeasurement(double.MinValue, this.DefaultUnit));
+            this.maxValue = new Lazy<T>(() => this.CreateMeasurement(double.MaxValue, this.DefaultUnit));
+            this.epsilon = new Lazy<T>(() => this.CreateMeasurement(double.Epsilon, this.DefaultUnit));
         }
 
-        public IEnumerable<Unit<T>> ParsableUnits {
-            get {
-                if (this.parsableUnits == null) {
-                    this.parsableUnits = this.GetParsableUnits().Where(x => x != null);
-                }
+        public T CreateMeasurement(double value, Unit<T> unit) {
+            Validate.NonNull(unit, nameof(unit));
 
-                if (this.parsableUnits.Count() <= 0) {
-                    throw new Exception($"Invalid measurement provider for type '{typeof(T).ToString()}': There are no parsable units");
-                }
-                else {
-                    return this.parsableUnits;
-                }
-            }
+            return this.createMeasurement(value, unit);
         }
 
         public Unit<T> DefaultUnit { get; }
-    }
 
-    public abstract class CompoundMeasurementProvider<T, TComp1, TComp2> : MeasurementProvider<T>
-        where T : Measurement<T>
-        where TComp1 : Measurement<TComp1>
-        where TComp2 : Measurement<TComp2> {
+        private Lazy<T> nan, posInf, negInf, minValue, maxValue, epsilon;
 
-        public new CompoundMeasurementProvider<T, TComp1, TComp2> AppendParsableUnits(params Unit<T>[] units) {
-            Validate.NonNull(units, nameof(units));
+        public T NaN => nan.Value;
 
-            return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
-                this.Component1Provider,
-                this.Component2Provider,
-                this.CreateMeasurement,
-                () => this.GetParsableUnits().Concat(units)
-            );
-        }
+        public T PositiveInfinity => posInf.Value;
 
-        //public CompoundMeasurementProvider<T, TComp1, TComp2> AppendComponent1ParsableUnits(params Unit<TComp1>[] units) {
-        //    Validate.NonNull(units, nameof(units));
+        public T NegativeInfinity => negInf.Value;
 
-        //    return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
-        //        this.Component1Provider.AppendParsableUnits(units),
-        //        this.Component2Provider,
-        //        this.CreateMeasurement,
-        //        () => this.GetParsableUnits()
-        //    );
-        //}
+        public T MinValue => minValue.Value;
 
-        //public CompoundMeasurementProvider<T, TComp1, TComp2> AppendComponent2ParsableUnits(params Unit<TComp2>[] units) {
-        //    Validate.NonNull(units, nameof(units));
+        public T MaxValue => maxValue.Value;
 
-        //    return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
-        //        this.Component1Provider,
-        //        this.Component2Provider.AppendParsableUnits(units),
-        //        this.CreateMeasurement,
-        //        () => this.GetParsableUnits()
-        //    );
-        //}
-
-        //public CompoundMeasurementProvider<T, TComp1, TComp2> Select(Func<MeasurementProvider<TComp1>, MeasurementProvider<TComp1>> compProvider1Select, Func<MeasurementProvider<TComp2>, MeasurementProvider<TComp2>> compProvider2Select) {
-        //    return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
-        //        compProvider1Select(this.Component1Provider),
-        //        compProvider2Select(this.Component2Provider),
-        //        this.CreateMeasurement,
-        //        () => this.GetParsableUnits()
-        //    );
-        //}
-
-        public abstract MeasurementProvider<TComp1> Component1Provider { get; }
-
-        public abstract MeasurementProvider<TComp2> Component2Provider { get; }
+        public T Epsilon => epsilon.Value;
     }
 }

@@ -8,13 +8,13 @@
 
 //    public sealed class Power : Ratio<Power, Energy, Time>,
 //        IMultipliableMeasurement<Time, Energy> {
-//        public IMeasurementProvider<Power> Provider { get; } = new PowerProvider();
+//        public IMeasurementSupplier<Power> Provider { get; } = new PowerProvider();
 
-//        public override IMeasurementProvider<Power> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Power> MeasurementSupplier => Provider;
 
-//        protected override IMeasurementProvider<Energy> NumeratorProvider => Energy.Provider;
+//        protected override IMeasurementSupplier<Energy> NumeratorProvider => Energy.Provider;
 
-//        protected override IMeasurementProvider<Time> DenominatorProvider => Time.Provider;
+//        protected override IMeasurementSupplier<Time> DenominatorProvider => Time.Provider;
 
 //        public Power() {
 //        }
@@ -32,7 +32,7 @@
 //            public static Unit<Power> Watt { get; } = new Unit<Power>("Watt", "W", 1);
 //        }
 
-//        private class PowerProvider : IMeasurementProvider<Power> {
+//        private class PowerProvider : IMeasurementSupplier<Power> {
 //            public IEnumerable<Unit<Power>> AllUnits => new[] { Units.Watt };
 
 //            public Unit<Power> DefaultUnit => Units.Watt;

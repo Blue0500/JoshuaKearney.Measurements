@@ -52,9 +52,9 @@
 //    //}
 
 //    public sealed class Quantity<T> : Measurement<Quantity<T>> {
-//        public static IMeasurementProvider<Quantity<T>> Provider { get; } = new QuantityProvider();
+//        public static IMeasurementSupplier<Quantity<T>> Provider { get; } = new QuantityProvider();
 
-//        public override IMeasurementProvider<Quantity<T>> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Quantity<T>> MeasurementSupplier => Provider;
 
 //        public Quantity(double amount) {
 //        }
@@ -76,7 +76,7 @@
 //            public static Unit<Quantity<T>> BakersDozen { get; } = new Unit<Quantity<T>>("b. dozen", "b. dozen", 1d / 13d);
 //        }
 
-//        private class QuantityProvider : IMeasurementProvider<Quantity<T>> {
+//        private class QuantityProvider : IMeasurementSupplier<Quantity<T>> {
 //            public IEnumerable<Unit<Quantity<T>>> AllUnits { get; } = new Unit<Quantity<T>>[] { Units.Dozen, Units.BakersDozen, Units.Gross };
 
 //            public Unit<Quantity<T>> DefaultUnit => Units.DefaultUnit;

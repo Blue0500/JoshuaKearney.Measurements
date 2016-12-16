@@ -21,9 +21,9 @@
 //        public Force(double amount, Unit<Mass> massDef, Unit<Acceleration> accelDef) : base(amount, massDef, accelDef) {
 //        }
 
-//        public static IMeasurementProvider<Force> Provider { get; } = new ForceProvider();
+//        public static IMeasurementSupplier<Force> Provider { get; } = new ForceProvider();
 
-//        public override IMeasurementProvider<Force> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Force> MeasurementSupplier => Provider;
 
 //        public static class Units {
 //            private static Unit<Force> newton = new Unit<Force>("newton", "N", 1);
@@ -33,9 +33,9 @@
 //            public static Unit<Force> Newton => newton;
 //        }
 
-//        protected override IMeasurementProvider<Mass> Item1Provider => Mass.Provider;
+//        protected override IMeasurementSupplier<Mass> Item1Provider => Mass.Provider;
 
-//        protected override IMeasurementProvider<Acceleration> Item2Provider => Acceleration.Provider;
+//        protected override IMeasurementSupplier<Acceleration> Item2Provider => Acceleration.Provider;
 
 //        public static Acceleration operator /(Force force, Mass mass) {
 //            if (force == null || mass == null) {
@@ -64,12 +64,12 @@
 //            return new Energy(this, measurement2);
 //        }
 
-//        private class ForceProvider : IMeasurementProvider<Force>, IComplexMeasurementProvider<Mass, Acceleration> {
+//        private class ForceProvider : IMeasurementSupplier<Force>, IComplexMeasurementSupplier<Mass, Acceleration> {
 //            public IEnumerable<Unit<Force>> AllUnits { get; } = new[] { Units.Newton, Units.PoundForce };
 
-//            public IMeasurementProvider<Mass> Component1Provider => Mass.Provider;
+//            public IMeasurementSupplier<Mass> Component1Provider => Mass.Provider;
 
-//            public IMeasurementProvider<Acceleration> Component2Provider => Acceleration.Provider;
+//            public IMeasurementSupplier<Acceleration> Component2Provider => Acceleration.Provider;
 
 //            public Unit<Force> DefaultUnit => Units.Newton;
 

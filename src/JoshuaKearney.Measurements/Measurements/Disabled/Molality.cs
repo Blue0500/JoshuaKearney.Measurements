@@ -18,19 +18,19 @@
 //        public Molality(ChemicalAmount moles, Mass mass) : base(moles, mass) {
 //        }
 
-//        public override IMeasurementProvider<Molality> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Molality> MeasurementSupplier => Provider;
 
-//        public IMeasurementProvider<Molality> Provider { get; } = new MolalityProvider();
+//        public IMeasurementSupplier<Molality> Provider { get; } = new MolalityProvider();
 
-//        protected override IMeasurementProvider<Mass> DenominatorProvider => Mass.Provider;
+//        protected override IMeasurementSupplier<Mass> DenominatorProvider => Mass.Provider;
 
-//        protected override IMeasurementProvider<ChemicalAmount> NumeratorProvider => ChemicalAmount.Provider;
+//        protected override IMeasurementSupplier<ChemicalAmount> NumeratorProvider => ChemicalAmount.Provider;
 
 //        public static class Units {
 //            public static Unit<Molality> MolePerKilogram { get; } = new Unit<Molality>("mole per kilogram", "mol/kg", 1);
 //        }
 
-//        private class MolalityProvider : IMeasurementProvider<Molality> {
+//        private class MolalityProvider : IMeasurementSupplier<Molality> {
 //            public IEnumerable<Unit<Molality>> AllUnits => new[] { Units.MolePerKilogram };
 
 //            public Unit<Molality> DefaultUnit => Units.MolePerKilogram;

@@ -5,9 +5,9 @@ namespace JoshuaKearney.Measurements {
 
     public sealed class Mass : Measurement<Mass>, IDividableMeasurement<Volume, Density> {
 
-        public static MeasurementProvider<Mass> Provider { get; } = new MassProvider();
+        public static MeasurementSupplier<Mass> Provider { get; } = new MeasurementSupplier<Mass>((value, unit) => new Mass(value, unit));
 
-        public override MeasurementProvider<Mass> MeasurementProvider => Provider;
+        public override MeasurementSupplier<Mass> MeasurementSupplier => Provider;
 
         public Mass() {
         }
@@ -41,11 +41,11 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Mass> Pound => pound.Value;
         }
 
-        private class MassProvider : MeasurementProvider<Mass> {
-            public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
+        //private class MassProvider : MeasurementSupplier<Mass> {
+        //    public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
 
-            protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram };
-        }
+        //    protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram };
+        //}
 
         public Density Divide(Volume measurement2) => this.Divide(measurement2);
     }

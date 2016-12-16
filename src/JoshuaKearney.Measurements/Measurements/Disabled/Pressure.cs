@@ -22,13 +22,13 @@
 //        public Pressure(double amount, Unit<Force> forceUnit, Unit<Area> areaUnit) : base(amount, forceUnit, areaUnit) {
 //        }
 
-//        public static IMeasurementProvider<Pressure> Provider { get; } = new PressureProvider();
+//        public static IMeasurementSupplier<Pressure> Provider { get; } = new PressureProvider();
 
-//        public override IMeasurementProvider<Pressure> MeasurementProvider => Provider;
+//        public override IMeasurementSupplier<Pressure> MeasurementSupplier => Provider;
 
-//        protected override IMeasurementProvider<Area> DenominatorProvider => Area.Provider;
+//        protected override IMeasurementSupplier<Area> DenominatorProvider => Area.Provider;
 
-//        protected override IMeasurementProvider<Force> NumeratorProvider => Force.Provider;
+//        protected override IMeasurementSupplier<Force> NumeratorProvider => Force.Provider;
 
 //        public Energy Multiply(Volume measurement2) {
 //            Validate.NonNull(measurement2, nameof(measurement2));
@@ -57,12 +57,12 @@
 //            //  public static Unit<Pressure> Torr { get; } = Atmosphere.Divide(760).CreateUnit("torr", "torr");
 //        }
 
-//        private class PressureProvider : IMeasurementProvider<Pressure>, IComplexMeasurementProvider<Force, Area> {
+//        private class PressureProvider : IMeasurementSupplier<Pressure>, IComplexMeasurementSupplier<Force, Area> {
 //            public IEnumerable<Unit<Pressure>> AllUnits { get; } = new[] { Units.Pascal };//, Units.Bar, Units.Atmosphere, Units.Torr, Units.PoundsPerSquareInch };
 
-//            public IMeasurementProvider<Force> Component1Provider => Force.Provider;
+//            public IMeasurementSupplier<Force> Component1Provider => Force.Provider;
 
-//            public IMeasurementProvider<Area> Component2Provider => Area.Provider;
+//            public IMeasurementSupplier<Area> Component2Provider => Area.Provider;
 
 //            public Unit<Pressure> DefaultUnit => Units.Pascal;
 

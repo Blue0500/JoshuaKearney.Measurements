@@ -4,10 +4,26 @@ using JoshuaKearney.Measurements;
 using static JoshuaKearney.Measurements.Distance.Units;
 using static JoshuaKearney.Measurements.Volume.Units;
 using static JoshuaKearney.Measurements.Area.Units;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace JoshuaKearney.Measurements.Tests {
+    class A : IEnumerable<A>, IEnumerable<string> {
+        public IEnumerator<A> GetEnumerator() {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<string> IEnumerable<string>.GetEnumerator() {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            throw new NotImplementedException();
+        }
+    }
+
     [TestClass]
-    public class AngleTests {
+    public class AngleTests {   
         [TestMethod]
         public void TestInitialization() {
             Angle distance = new Angle();
