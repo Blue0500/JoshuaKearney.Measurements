@@ -17,9 +17,9 @@
 //        public Concentration(double amount, Unit<Concentration> unit) : base(amount, unit) {
 //        }
 
-//        public static IMeasurementSupplier<Concentration> Provider { get; } = new ConcentrationProvider();
+//        public static IMeasurementProvider<Concentration> Provider { get; } = new ConcentrationProvider();
 
-//        public override IMeasurementSupplier<Concentration> MeasurementSupplier => Provider;
+//        public override IMeasurementProvider<Concentration> MeasurementProvider => Provider;
 
 //        public override double ToDouble() {
 //            return this.ToDouble(Units.Percent) / 100;
@@ -41,7 +41,7 @@
 //            public static Unit<Concentration> Percent { get; } = new Unit<Concentration>("percent", "%", 1);
 //        }
 
-//        private class ConcentrationProvider : IMeasurementSupplier<Concentration> {
+//        private class ConcentrationProvider : IMeasurementProvider<Concentration> {
 //            public IEnumerable<Unit<Concentration>> AllUnits { get; } = new[] { Units.Percent, Units.PartsPerThousand, Units.PartsPerMillion, Units.PartsPerBillion, Units.ParsPerTrillion };
 
 //            public Unit<Concentration> DefaultUnit => Units.Percent;

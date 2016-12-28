@@ -5,24 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
-    public class Vector2d<T> where T : IMeasurement<T> {
+    public class Vector2d<T> where T : Measurement<T> {
         public T Magnitude { get; }
 
         public Angle Angle { get; }
 
         public Vector2d(T horizontalComp, T verticalComp) {
-            this.Magnitude = horizontalComp.MeasurementSupplier.CreateMeasurement(
+            this.Magnitude = horizontalComp.MeasurementProvider.CreateMeasurement(
                 Math.Sqrt(
-                    Math.Pow(horizontalComp.ToDouble(horizontalComp.MeasurementSupplier.DefaultUnit), 2) +
-                    Math.Pow(verticalComp.ToDouble(horizontalComp.MeasurementSupplier.DefaultUnit), 2)
+                    Math.Pow(horizontalComp.ToDouble(horizontalComp.MeasurementProvider.DefaultUnit), 2) +
+                    Math.Pow(verticalComp.ToDouble(horizontalComp.MeasurementProvider.DefaultUnit), 2)
                 ),
-                horizontalComp.MeasurementSupplier.DefaultUnit
+                horizontalComp.MeasurementProvider.DefaultUnit
             );
 
-            this.Angle = Angle.Atan2(
-                verticalComp.ToDouble(verticalComp.MeasurementSupplier.DefaultUnit), 
-                horizontalComp.ToDouble(verticalComp.MeasurementSupplier.DefaultUnit)
-            );
+            this.Angle = Angle.Atan2(verticalComp.ToDouble(verticalComp.MeasurementProvider.DefaultUnit), horizontalComp.ToDouble(verticalComp.MeasurementProvider.DefaultUnit));
         }
 
         public Vector2d(T magnitude, Angle angle) {
@@ -36,15 +33,15 @@ namespace JoshuaKearney.Measurements {
 
         public Vector2d<T> Add(Vector2d<T> that) {
             return new Vector2d<T>(
-                this.HorizontalComponent.Add(that.HorizontalComponent), 
-                this.VerticleComponent.Add(that.VerticleComponent)
+                this.HorizontalComponent + that.HorizontalComponent, 
+                this.VerticleComponent + that.VerticleComponent
             );
         }
 
         public Vector2d<T> Subtract(Vector2d<T> that) {
             return new Vector2d<T>(
-                this.HorizontalComponent.Subtract(that.HorizontalComponent), 
-                this.VerticleComponent.Subtract(that.VerticleComponent)
+                this.HorizontalComponent - that.HorizontalComponent, 
+                this.VerticleComponent - that.VerticleComponent
             );
         }
 

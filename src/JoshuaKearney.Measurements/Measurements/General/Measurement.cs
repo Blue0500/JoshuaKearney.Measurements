@@ -10,12 +10,10 @@ namespace JoshuaKearney.Measurements {
     /// <seealso cref="System.IEquatable{TSelf}" />
     /// <seealso cref="System.IComparable{TSelf}" />
     /// <seealso cref="System.IComparable" />
-    public abstract class Measurement<TSelf> : IEquatable<IMeasurement<TSelf>>, IComparable<IMeasurement<TSelf>>, IComparable, IMeasurement<TSelf>,
+    public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable,
         IMultipliableMeasurement<DoubleMeasurement, TSelf>,
         IDividableMeasurement<DoubleMeasurement, TSelf>
-        where TSelf : IMeasurement<TSelf> {
-
-        private static bool hasUnit = false;
+        where TSelf : Measurement<TSelf> {
 
         // For unit
         internal Measurement(double amount) {
@@ -27,11 +25,34 @@ namespace JoshuaKearney.Measurements {
 
             this.Value = amount * unit.Value;
         }
+
+        private static bool hasUnit = false;
+
+        protected static Unit<TSelf> CreateUnit(string symbol, MeasurementProvider<TSelf> provider) {
+            if (hasUnit) {
+                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
+            }
+            else {
+                hasUnit = true;
+                return new Unit<TSelf>(symbol, 1, provider);
+            }
+        }
+
+        protected static PrefixableUnit<TSelf> CreatePrefixableUnit(string symbol, MeasurementProvider<TSelf> provider) {
+            if (hasUnit) {
+                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
+            }
+            else {
+                hasUnit = true;
+                return new PrefixableUnit<TSelf>(symbol, 1, provider);
+            }
+        }
+
         protected Measurement() {
             this.Value = 0;
         }
 
-        public abstract MeasurementSupplier<TSelf> MeasurementSupplier { get; }
+        public abstract MeasurementProvider<TSelf> MeasurementProvider { get; }
 
         protected double Value { get; }
 
@@ -43,36 +64,43 @@ namespace JoshuaKearney.Measurements {
             return measurement.ToRatio();
         }
 
+        public Unit<TSelf> ToUnit(string symbol) {
+            return new Unit<TSelf>(symbol, this.Value, this.MeasurementProvider);
+        }
+        public PrefixableUnit<TSelf> ToPrefixableUnit(string symbol) {
+            Validate.NonNull(symbol, nameof(symbol));
+            return new PrefixableUnit<TSelf>(symbol, this.Value, this.MeasurementProvider);
+        }
+
         public static implicit operator TSelf(Measurement<TSelf> measurement) {
             if (measurement == null) {
-                return default(TSelf);
+                return null;
             }
 
             return measurement.ToMeasurement();
         }
 
-        public static bool IsInfinity(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return double.IsInfinity(measurement.ToDouble(measurement.MeasurementSupplier.DefaultUnit));
+        public TSelf ToMeasurement() {
+            return this as TSelf ?? this.MeasurementProvider.CreateMeasurement(
+                this.Value, 
+                this.MeasurementProvider.DefaultUnit
+            );
         }
 
-        public static bool IsNan(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return double.IsNaN(measurement.ToDouble(measurement.MeasurementSupplier.DefaultUnit));
+        public static bool IsInfinity(Measurement<TSelf> measurement) {
+            return double.IsInfinity(measurement.Value);
         }
 
-        public static bool IsNegativeInfinity(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return double.IsNegativeInfinity(measurement.ToDouble(measurement.MeasurementSupplier.DefaultUnit));
+        public static bool IsNan(Measurement<TSelf> measurement) {
+            return double.IsNaN(measurement.Value);
         }
 
-        public static bool IsPositiveInfinity(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
+        public static bool IsNegativeInfinity(Measurement<TSelf> measurement) {
+            return double.IsNegativeInfinity(measurement.Value);
+        }
 
-            return double.IsPositiveInfinity(measurement.ToDouble(measurement.MeasurementSupplier.DefaultUnit));
+        public static bool IsPositiveInfinity(Measurement<TSelf> measurement) {
+            return double.IsPositiveInfinity(measurement.Value);
         }
 
         /// <summary>
@@ -80,11 +108,11 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="that">The other measurement.</param>
         /// <returns></returns>
-        public static TSelf Max(IMeasurement<TSelf> t1, IMeasurement<TSelf> t2) {
+        public static TSelf Max(Measurement<TSelf> t1, Measurement<TSelf> t2) {
             Validate.NonNull(t1, nameof(t1));
             Validate.NonNull(t2, nameof(t2));
 
-            if (t1.ToDouble(t1.MeasurementSupplier.DefaultUnit) >= t2.ToDouble(t1.MeasurementSupplier.DefaultUnit)) {
+            if (t1 >= t2) {
                 return t1.ToMeasurement();
             }
             else {
@@ -97,7 +125,7 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="measurements">The other measurements.</param>
         /// <returns></returns>
-        public static TSelf Max(params IMeasurement<TSelf>[] measurements) {
+        public static TSelf Max(params Measurement<TSelf>[] measurements) {
             Validate.NonNull(measurements, nameof(measurements));
             Validate.NonEmpty(measurements, nameof(measurements));
 
@@ -109,15 +137,15 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="that">The other measurement.</param>
         /// <returns></returns>
-        public static TSelf Min(IMeasurement<TSelf> t1, IMeasurement<TSelf> t2) {
+        public static TSelf Min(Measurement<TSelf> t1, Measurement<TSelf> t2) {
             Validate.NonNull(t1, nameof(t1));
             Validate.NonNull(t2, nameof(t2));
 
-            if (t1.ToDouble(t1.MeasurementSupplier.DefaultUnit) <= t2.ToDouble(t1.MeasurementSupplier.DefaultUnit)) {
-                return t1.ToMeasurement();
+            if (t1 <= t2) {
+                return t1;
             }
             else {
-                return t2.ToMeasurement();
+                return t2;
             }
         }
 
@@ -126,30 +154,30 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="measurments">The other measurments.</param>
         /// <returns></returns>
-        public static TSelf Min(params IMeasurement<TSelf>[] measurments) {
+        public static TSelf Min(params Measurement<TSelf>[] measurments) {
             Validate.NonNull(measurments, nameof(measurments));
             Validate.NonEmpty(measurments, nameof(measurments));
 
-            return measurments.Aggregate((x, y) => Min(x, y)).ToMeasurement();
+            return measurments.Aggregate((x, y) => Min(x, y));
         }
 
         public static TSelf operator -(Measurement<TSelf> measurement) {
             if (measurement == null) {
-                return default(TSelf);
+                return null;
             }
 
-            return measurement.Negate().ToMeasurement();
+            return measurement.Negate();
         }
 
-        public static TSelf operator -(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static TSelf operator -(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (measurement == null || measurement2 == null) {
-                return default(TSelf);
+                return null;
             }
 
-            return measurement.Subtract(measurement2).ToMeasurement();
+            return measurement.Subtract(measurement2);
         }
 
-        public static bool operator !=(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static bool operator !=(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (object.ReferenceEquals(measurement, null)) {
                 if (object.ReferenceEquals(measurement2, null)) {
                     return false;
@@ -164,7 +192,7 @@ namespace JoshuaKearney.Measurements {
 
         public static TSelf operator *(Measurement<TSelf> measurement, double factor) {
             if (measurement == null) {
-                return default(TSelf);
+                return null;
             }
 
             return measurement.Multiply(factor);
@@ -172,7 +200,7 @@ namespace JoshuaKearney.Measurements {
 
         public static TSelf operator *(double factor, Measurement<TSelf> measurement) {
             if (measurement == null) {
-                return default(TSelf);
+                return null;
             }
 
             return measurement.Multiply(factor);
@@ -180,16 +208,15 @@ namespace JoshuaKearney.Measurements {
 
         public static TSelf operator /(Measurement<TSelf> measurement, double factor) {
             if (measurement == null) {
-                return default(TSelf);
+                return null;
             }
-            else {
-                return measurement.Divide(factor);
-            }
+
+            return measurement.Divide(factor);
         }
 
-        public static TSelf operator +(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static TSelf operator +(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (measurement == null || measurement2 == null) {
-                return default(TSelf);
+                return null;
             }
 
             return measurement.Add(measurement2);
@@ -197,13 +224,13 @@ namespace JoshuaKearney.Measurements {
 
         public static TSelf operator +(Measurement<TSelf> measurement) {
             if (measurement == null) {
-                return default(TSelf);
+                return null;
             }
 
-            return measurement.ToMeasurement();
+            return measurement as TSelf;
         }
 
-        public static bool operator <(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static bool operator <(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (measurement == null) {
                 if (measurement2 == null) {
                     return false;
@@ -216,7 +243,7 @@ namespace JoshuaKearney.Measurements {
             return measurement.CompareTo(measurement2) < 0;
         }
 
-        public static bool operator <=(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static bool operator <=(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (measurement == null) {
                 return true;
             }
@@ -224,7 +251,7 @@ namespace JoshuaKearney.Measurements {
             return measurement.CompareTo(measurement2) <= 0;
         }
 
-        public static bool operator ==(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static bool operator ==(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (object.ReferenceEquals(measurement, null)) {
                 if (object.ReferenceEquals(measurement2, null)) {
                     return true;
@@ -237,7 +264,7 @@ namespace JoshuaKearney.Measurements {
             return measurement.Equals(measurement2);
         }
 
-        public static bool operator >(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static bool operator >(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (measurement == null) {
                 return false;
             }
@@ -245,7 +272,7 @@ namespace JoshuaKearney.Measurements {
             return measurement.CompareTo(measurement2) > 0;
         }
 
-        public static bool operator >=(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        public static bool operator >=(Measurement<TSelf> measurement, Measurement<TSelf> measurement2) {
             if (measurement == null) {
                 if (measurement2 == null) {
                     return true;
@@ -259,18 +286,38 @@ namespace JoshuaKearney.Measurements {
         }
 
         /// <summary>
+        /// Returns the absolute value of this instance
+        /// </summary>
+        /// <returns></returns>
+
+        public TSelf Abs() => this.MeasurementProvider.CreateMeasurement(Math.Abs(this.Value), this.MeasurementProvider.DefaultUnit);
+
+        /// <summary>
+        /// Adds this instance to the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
+        public TSelf Add(Measurement<TSelf> that) {
+            Validate.NonNull(that, nameof(that));
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value + that.Value, 
+                this.MeasurementProvider.DefaultUnit
+            );
+        }
+
+        /// <summary>
         /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
         /// </summary>
         /// <param name="obj">An object to compare with this instance.</param>
         /// <returns>
         /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
         /// </returns>
-        public int CompareTo(IMeasurement<TSelf> that) {
+        public int CompareTo(TSelf that) {
             if (that == null) {
                 return 1;
             }
 
-            return this.ToDouble(this.MeasurementSupplier.DefaultUnit).CompareTo(that.ToDouble(this.MeasurementSupplier.DefaultUnit));
+            return this.Value.CompareTo(that.Value);
         }
 
         /// <summary>
@@ -281,12 +328,72 @@ namespace JoshuaKearney.Measurements {
         /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
         /// </returns>
         public int CompareTo(object obj) {
-            if (obj is IMeasurement<TSelf>) {
-                return this.CompareTo(((IMeasurement<TSelf>)obj).ToMeasurement());
-            }
-            else {
+            TSelf measurement = obj as TSelf;
+
+            if (measurement == null) {
                 return 1;
             }
+            else {
+                return this.CompareTo(measurement);
+            }
+        }
+
+        ///// <summary>
+        ///// Creates a unit with the given name and symbol from this measurement's value
+        ///// </summary>
+        ///// <param name="name">The name.</param>
+        ///// <param name="symbol">The symbol.</param>
+        ///// <returns></returns>
+        //public Unit<TSelf> CreateUnit(string name, string symbol) {
+        //    return new Unit<TSelf>(name, symbol, 1 / this.DefaultUnits);
+        //}
+
+        /// <summary>
+        /// Divides this instance by the specified ratio.
+        /// </summary>
+        /// <typeparam name="E"></typeparam>
+        /// <typeparam name="F"></typeparam>
+        /// <param name="ratio">The ratio.</param>
+        /// <returns></returns>
+        public E Divide<E, F>(Ratio<F, TSelf, E> ratio)
+                where F : Ratio<F, TSelf, E>
+                where E : Measurement<E> {
+            return ratio.Reciprocal().Multiply(this);
+        }
+
+        /// <summary>
+        /// Divides this instance by the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
+        public DoubleMeasurement Divide(Measurement<TSelf> that) {
+            Validate.NonNull(that, nameof(that));
+            return this.Value / that.Value;
+        }
+
+        /// <summary>
+        /// Divides this instance by the specified double.
+        /// </summary>
+        /// <param name="factor">The factor.</param>
+        /// <returns></returns>
+        public TSelf Divide(double factor) {
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value / factor, 
+                this.MeasurementProvider.DefaultUnit
+            );
+        }
+
+        /// <summary>
+        /// Divides this instance by another type of measurement to create a ratio.
+        /// </summary>
+        /// <typeparam name="E"></typeparam>
+        /// <param name="that">The that.</param>
+        /// <returns></returns>
+        public Ratio<TSelf, E> DivideToRatio<E>(Measurement<E> that)
+                where E : Measurement<E> {
+            Validate.NonNull(that, nameof(that));
+
+            return new Ratio<TSelf, E>(this, that);
         }
 
         /// <summary>
@@ -297,8 +404,10 @@ namespace JoshuaKearney.Measurements {
         ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object that) {
-            if (that is IMeasurement<TSelf>) {
-                return this.Equals((IMeasurement<TSelf>)that);
+            TSelf cast = that as TSelf;
+
+            if (cast != null) {
+                return this.Equals(cast);
             }
             else {
                 return false;
@@ -312,12 +421,12 @@ namespace JoshuaKearney.Measurements {
         /// <returns>
         ///   <c>true</c> if the specified measurement> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(IMeasurement<TSelf> that) {
+        public bool Equals(TSelf that) {
             if (object.ReferenceEquals(that, null)) {
                 return false;
             }
             else {
-                return this.ToDouble(this.MeasurementSupplier.DefaultUnit).Equals(that.ToDouble(this.MeasurementSupplier.DefaultUnit));
+                return this.Value.Equals(that.Value);
             }
         }
 
@@ -337,8 +446,61 @@ namespace JoshuaKearney.Measurements {
             return this.Multiply(measurement2.ToDouble());
         }
 
+        /// <summary>
+        /// Multiplies this instance by the specified double.
+        /// </summary>
+        /// <param name="factor">The double to multiply by.</param>
+        /// <returns></returns>
+        public TSelf Multiply(double factor) {
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value * factor, 
+                this.MeasurementProvider.DefaultUnit
+            );
+        }
+
+        public T Multiply<T, E>(Ratio<E, T, TSelf> ratio)
+            where E : Ratio<E, T, TSelf>
+            where T : Measurement<T> {
+            return ratio.Multiply(this);
+        }
+
+        /// <summary>
+        /// Multiplies this instance by another type of measurement, creating a term
+        /// </summary>
+        /// <typeparam name="E"></typeparam>
+        /// <param name="that">The that.</param>
+        /// <returns></returns>
+        public Term<TSelf, E> MultiplyToTerm<E>(Measurement<E> that) where E : Measurement<E> {
+            Validate.NonNull(that, nameof(that));
+
+            return new Term<TSelf, E>(this, that);
+        }
+
+        /// <summary>
+        /// Negates this instance.
+        /// </summary>
+        /// <returns></returns>
+        public TSelf Negate() => this.MeasurementProvider.CreateMeasurement(
+            -this.Value,
+            this.MeasurementProvider.DefaultUnit
+        );
+
         public Ratio<DoubleMeasurement, TSelf> Reciprocal() {
-            return new Ratio<DoubleMeasurement, TSelf>(new DoubleMeasurement(1), this);
+            return new Ratio<DoubleMeasurement, TSelf>(1, this);
+        }
+
+        /// <summary>
+        /// Subtracts the this instance by another measurement
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
+        public TSelf Subtract(Measurement<TSelf> that) {
+            Validate.NonNull(that, nameof(that));
+
+            return this.MeasurementProvider.CreateMeasurement(
+                this.Value - that.Value,
+                this.MeasurementProvider.DefaultUnit
+            );
         }
 
         /// <summary>
@@ -352,6 +514,10 @@ namespace JoshuaKearney.Measurements {
             return this.Value / unit.Value;
         }
 
+        public Ratio<TSelf, DoubleMeasurement> ToRatio() {
+            return new Ratio<TSelf, DoubleMeasurement>(this, 1);
+        }
+
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
@@ -359,27 +525,57 @@ namespace JoshuaKearney.Measurements {
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString() {
-            return this.ToString(this.MeasurementSupplier.ParsableUnits.First());
-        }        
-
-        protected static PrefixableUnit<TSelf> CreatePrefixableUnit(string symbol, MeasurementSupplier<TSelf> provider) {
-            if (hasUnit) {
-                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
-            }
-            else {
-                hasUnit = true;
-                return new PrefixableUnit<TSelf>(symbol, 1, provider);
-            }
+            return this.ToString(this.MeasurementProvider.ParsableUnits.First());
         }
 
-        protected static Unit<TSelf> CreateUnit(string symbol, MeasurementSupplier<TSelf> provider) {
-            if (hasUnit) {
-                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
-            }
-            else {
-                hasUnit = true;
-                return new Unit<TSelf>(symbol, 1, provider);
-            }
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <param name="unit">The unit.</param>
+        /// <param name="format">The format.</param>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public string ToString(Unit<TSelf> unit, string format) {
+            Validate.NonNull(unit, nameof(unit));
+            Validate.NonNull(format, nameof(format));
+
+            string unitStr = IsInfinity(this) || IsNan(this)
+                ? ""
+                : " " + unit.ToString();
+
+            return (this.ToDouble(unit).ToString(format) + unitStr).Trim();
         }
+
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <param name="units">The units.</param>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public string ToString(Unit<TSelf> unit1, params Unit<TSelf>[] units) {
+            Validate.NonNull(unit1, nameof(unit1));
+            Validate.NonNull(units, nameof(units));
+
+            units = units.Concat(new[] { unit1 }).OrderBy(x => this.ToDouble(x)).ToArray();
+            var unit = units.FirstOrDefault(x => this.ToDouble(x) >= 1) ?? units.FirstOrDefault() ?? this.MeasurementProvider.ParsableUnits.FirstOrDefault();
+
+            return this.ToString(unit, "0.##");
+        }
+
+        protected TSelf Select(Func<double, double> func) {
+            Validate.NonNull(func, nameof(func));
+
+            return this.MeasurementProvider.CreateMeasurement(func(this.Value), this.MeasurementProvider.DefaultUnit);
+        }
+
+        //public TSelf Divide(DoubleMeasurement measurement2) {
+        //    return this.Divide(measurement2.ToDouble());
+        //}
+
+        //public TSelf Multiply(DoubleMeasurement measurement2) {
+        //    return this.Multiply(measurement2.ToDouble());
+        //}
     }
 }

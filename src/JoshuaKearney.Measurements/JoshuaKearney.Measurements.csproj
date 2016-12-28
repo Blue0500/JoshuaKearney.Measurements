@@ -130,7 +130,6 @@
   <ItemGroup>
     <Compile Include="ArithmeticInterfaces.cs" />
     <Compile Include="ExtendedMeasurementProvider.cs" />
-    <Compile Include="Measurements\General\IMeasurement.cs" />
     <Compile Include="MeasurementProvider.cs" />
     <Compile Include="MeasurementExtensions.cs" />
     <Compile Include="Measurements\Disabled\Acceleration.cs" />

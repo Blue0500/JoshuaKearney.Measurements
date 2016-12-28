@@ -6,22 +6,34 @@ namespace JoshuaKearney.Measurements {
 
     public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>, IDividableMeasurement<T2, T1>
            where TSelf : Term<TSelf, T1, T2>
-           where T1 : IMeasurement<T1>
-           where T2 : IMeasurement<T2> {
-        public abstract MeasurementSupplier<T1> Item1Provider { get; }
+           where T1 : Measurement<T1>
+           where T2 : Measurement<T2> {
+        public abstract MeasurementProvider<T1> Item1Provider { get; }
 
-        public abstract MeasurementSupplier<T2> Item2Provider { get; }
+        public abstract MeasurementProvider<T2> Item2Provider { get; }
+
+        public T1 Divide(T2 other) {
+            return this.DivideToFirst(other);
+        }
 
         protected Term() {
         }
 
-        protected Term(IMeasurement<T1> item1, IMeasurement<T2> item2, MeasurementSupplier<TSelf> provider) : base(
-            item1.ToDouble(item1.MeasurementSupplier.DefaultUnit) * item2.ToDouble(item2.MeasurementSupplier.DefaultUnit),
-            item1.MeasurementSupplier.DefaultUnit.MultiplyToTermUnit(item2.MeasurementSupplier.DefaultUnit).ToTermUnit(provider)
+        protected Term(T1 item1, T2 item2, MeasurementProvider<TSelf> provider) : base(
+            item1.ToDouble(item1.MeasurementProvider.DefaultUnit) * item2.ToDouble(item2.MeasurementProvider.DefaultUnit),
+            item1.MeasurementProvider.DefaultUnit.MultiplyToTermUnit(item2.MeasurementProvider.DefaultUnit).ToTermUnit(provider)
         ) { }
-    
+        //    item1.ToDouble(item1.MeasurementProvider.DefaultUnit) * item2.ToDouble(item2.MeasurementProvider.DefaultUnit),
+        //    item1.MeasurementProvider.DefaultUnit,
+        //    item2.MeasurementProvider.DefaultUnit, 
+        //    provider
+        //) { }
+
         protected Term(double amount, Unit<TSelf> unit) : base(amount, unit) {
         }
+
+        //protected Term(double amount, Unit<T1> item1Def, Unit<T2> item2Def, MeasurementProvider<TSelf> provider) : base(amount, item1Def.MultiplyToTermUnit(item2Def).ToTermUnit(provider)) {
+        //}
 
         public TNew Select<TNew>(Func<T1, T2, TNew> selector) {
             Validate.NonNull(selector, nameof(selector));
@@ -29,14 +41,13 @@ namespace JoshuaKearney.Measurements {
             return selector(this.Divide(this.Item2Provider.DefaultUnit), this.Item2Provider.DefaultUnit);
         }
 
-        public Term<T, E> Select<T, E>(Func<IMeasurement<T1>, T> firstSelect, Func<IMeasurement<T2>, E> secondSelect)
-                where T : class, IMeasurement<T>
-                where E : class, IMeasurement<E> {
-
+        public Term<T, E> Select<T, E>(Func<T1, T> firstSelect, Func<T2, E> secondSelect)
+                where T : Measurement<T>
+                where E : Measurement<E> {
             Validate.NonNull(firstSelect, nameof(firstSelect));
             Validate.NonNull(secondSelect, nameof(secondSelect));
 
-            var ret1 = firstSelect(
+            T ret1 = firstSelect(
                 this.Divide(this.Item2Provider.DefaultUnit)             
             );
 
@@ -55,7 +66,7 @@ namespace JoshuaKearney.Measurements {
         public double ToDouble(Unit<Term<T1, T2>> unit) {
             Validate.NonNull(unit, nameof(unit));
 
-            return this.ToDouble(unit.ToTermUnit(this.MeasurementSupplier));
+            return this.ToDouble(unit.ToTermUnit(this.MeasurementProvider));
         }
 
         public string ToString(Unit<T1> item1Def, Unit<T2> item2Def) {
@@ -68,12 +79,12 @@ namespace JoshuaKearney.Measurements {
         public string ToString(Unit<Term<T1, T2>> unit) {
             Validate.NonNull(unit, nameof(unit));
 
-            return this.ToString(unit.ToTermUnit(this.MeasurementSupplier));
+            return this.ToString(unit.ToTermUnit(this.MeasurementProvider));
         }
 
         public Term<T1, T2> ToTerm() => new Term<T1, T2>(
-            this.ToDouble(this.MeasurementSupplier.DefaultUnit),
-            this.MeasurementSupplier.DefaultUnit.ToTermUnit<TSelf, T1, T2>(),
+            this.ToDouble(this.MeasurementProvider.DefaultUnit),
+            this.MeasurementProvider.DefaultUnit.ToTermUnit<TSelf, T1, T2>(),
             Item1Provider,
             Item2Provider
         );
@@ -82,75 +93,87 @@ namespace JoshuaKearney.Measurements {
             return term.ToTerm();
         }
 
-        protected T1 DivideToFirst(IMeasurement<T2> that) {
+        protected T1 DivideToFirst(T2 that) {
             Validate.NonNull(that, nameof(that));
 
             return Item1Provider.CreateMeasurement(
-                this.Value / that.ToDouble(that.MeasurementSupplier.DefaultUnit),
+                this.Value / that.ToDouble(that.MeasurementProvider.DefaultUnit),
                 Item1Provider.DefaultUnit
             );
         }
 
-        protected T2 DivideToSecond(IMeasurement<T1> that) {
+        protected T2 DivideToSecond(T1 that) {
             Validate.NonNull(that, nameof(that));
 
             return Item2Provider.CreateMeasurement(
-                this.ToDouble(this.MeasurementSupplier.DefaultUnit) / that.ToDouble(that.MeasurementSupplier.DefaultUnit),
+                this.ToDouble(this.MeasurementProvider.DefaultUnit) / that.ToDouble(that.MeasurementProvider.DefaultUnit),
                 Item2Provider.DefaultUnit
             );
-        }
-
-        T1 IDividableMeasurement<T2, T1>.Divide(T2 measurement2) => this.DivideToFirst(measurement2);
-
-        public T1 Divide(IMeasurement<T2> measurement2) {
-            return this.DivideToFirst(measurement2);
         }
     }
 
     public sealed partial class Term<T1, T2> : Term<Term<T1, T2>, T1, T2>
-            where T1 : IMeasurement<T1>
-            where T2 : IMeasurement<T2> {
+            where T1 : Measurement<T1>
+            where T2 : Measurement<T2> {
 
-        internal Term(double amount, Unit<Term<T1, T2>> unit, MeasurementSupplier<T1> t1Prov, MeasurementSupplier<T2> t2Prov) : base(amount, unit) {
+        internal Term(double amount, Unit<Term<T1, T2>> unit, MeasurementProvider<T1> t1Prov, MeasurementProvider<T2> t2Prov) : base(amount, unit) {
             this.Item1Provider = t1Prov;
             this.Item2Provider = t2Prov;
-            this.MeasurementSupplier = GetProvider(this.Item1Provider, this.Item2Provider);
+            this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
         }
 
         public Term() { }
 
-        public Term(IMeasurement<T1> item1, IMeasurement<T2> item2) : base(item1, item2, GetProvider(item1.MeasurementSupplier, item2.MeasurementSupplier)) {
-            this.Item1Provider = item1.MeasurementSupplier;
-            this.Item2Provider = item2.MeasurementSupplier;
-            this.MeasurementSupplier = GetProvider(this.Item1Provider, this.Item2Provider);
+        public Term(T1 item1, T2 item2) : base(item1, item2, GetProvider(item1.MeasurementProvider, item2.MeasurementProvider)) {
+            this.Item1Provider = item1.MeasurementProvider;
+            this.Item2Provider = item2.MeasurementProvider;
+            this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
         }
 
-        public override MeasurementSupplier<Term<T1, T2>> MeasurementSupplier { get; }
+        public override MeasurementProvider<Term<T1, T2>> MeasurementProvider { get; }
 
-        public override MeasurementSupplier<T1> Item1Provider { get; }
+        public override MeasurementProvider<T1> Item1Provider { get; }
 
-        public override MeasurementSupplier<T2> Item2Provider { get; }
+        public override MeasurementProvider<T2> Item2Provider { get; }
 
-        public new T1 DivideToFirst(IMeasurement<T2> measurement2) {
+        public new T1 DivideToFirst(T2 measurement2) {
             Validate.NonNull(measurement2, nameof(measurement2));
 
             return base.DivideToFirst(measurement2);
         }
 
-        public new T2 DivideToSecond(IMeasurement<T1> first) {
+        public new T2 DivideToSecond(T1 first) {
             Validate.NonNull(first, nameof(first));
 
             return base.DivideToSecond(first);
         }
 
-        private static MeasurementSupplier<Term<T1, T2>> provider;
+        private static MeasurementProvider<Term<T1, T2>> provider;
 
-        public static MeasurementSupplier<Term<T1, T2>> GetProvider(MeasurementSupplier<T1> numProvider, MeasurementSupplier<T2> denomProvider) {
+        public static MeasurementProvider<Term<T1, T2>> GetProvider(MeasurementProvider<T1> numProvider, MeasurementProvider<T2> denomProvider) {
             if (provider == null) {
-                provider = new MeasurementSupplier<Term<T1, T2>>((value, unit) => new Term<T1, T2>(value, unit, numProvider, denomProvider));
+                provider = new TermProvider(numProvider, denomProvider);
             }
 
             return provider;
+        }
+
+        private class TermProvider : CompoundMeasurementProvider<Term<T1, T2>, T1, T2> {
+            public TermProvider(MeasurementProvider<T1> t1Prov, MeasurementProvider<T2> t2Prov) {
+                this.Component1Provider = t1Prov;
+                this.Component2Provider = t2Prov;
+            }
+
+            public override MeasurementProvider<T1> Component1Provider { get; }
+
+            public override MeasurementProvider<T2> Component2Provider { get; }                
+
+            public override Term<T1, T2> CreateMeasurement(double value, Unit<Term<T1, T2>> unit) {
+                return new Term<T1, T2>(value, unit, Component1Provider, Component2Provider);
+            }
+
+            protected override IEnumerable<Unit<Term<T1, T2>>> GetParsableUnits() => 
+                new[] { Component1Provider.ParsableUnits.First().MultiplyToTermUnit(Component2Provider.ParsableUnits.First()) };
         }
     }
 }

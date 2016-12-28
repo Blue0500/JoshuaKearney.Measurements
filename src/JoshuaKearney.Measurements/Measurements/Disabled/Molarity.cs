@@ -19,13 +19,13 @@
 //        public Molarity(ChemicalAmount amount, Volume volume) : base(amount, volume) {
 //        }
 
-//        public static IMeasurementSupplier<Molarity> Provider { get; } = new MolarityProvider();
+//        public static IMeasurementProvider<Molarity> Provider { get; } = new MolarityProvider();
 
-//        public override IMeasurementSupplier<Molarity> MeasurementSupplier => Provider;
+//        public override IMeasurementProvider<Molarity> MeasurementProvider => Provider;
 
-//        protected override IMeasurementSupplier<Volume> DenominatorProvider => Volume.Provider;
+//        protected override IMeasurementProvider<Volume> DenominatorProvider => Volume.Provider;
 
-//        protected override IMeasurementSupplier<ChemicalAmount> NumeratorProvider => ChemicalAmount.Provider;
+//        protected override IMeasurementProvider<ChemicalAmount> NumeratorProvider => ChemicalAmount.Provider;
 
 //        public static class Units {
 
@@ -40,7 +40,7 @@
 //            public static Unit<Molarity> Molar => MolePerMilliliter;
 //        }
 
-//        private class MolarityProvider : IMeasurementSupplier<Molarity> {
+//        private class MolarityProvider : IMeasurementProvider<Molarity> {
 //            public IEnumerable<Unit<Molarity>> AllUnits => new[] { Units.MolePerMeterCubed, Units.MolePerMilliliter };
 
 //            public Unit<Molarity> DefaultUnit => Units.MolePerMeterCubed;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace JoshuaKearney.Measurements {
 
     public static partial class MeasurementExtensions {
-        public static T Multiply<T>(this Measurement<DoubleMeasurement> d, Measurement<T> measurement) where T : IMeasurement<T> {
+        public static T Multiply<T>(this Measurement<DoubleMeasurement> d, Measurement<T> measurement) where T : Measurement<T> {
             Validate.NonNull(d, nameof(d));
             Validate.NonNull(measurement, nameof(measurement));
 
@@ -72,9 +72,9 @@ namespace JoshuaKearney.Measurements {
         private DoubleMeasurement(double amount, Unit<DoubleMeasurement> unit) : base(amount, unit) {
         }
 
-        public static MeasurementSupplier<DoubleMeasurement> Provider { get; } = new MeasurementSupplier<DoubleMeasurement>((value, unit) => new DoubleMeasurement(value, unit));
+        public static MeasurementProvider<DoubleMeasurement> Provider { get; } = new DoubleMeasurementProvider();
 
-        public override MeasurementSupplier<DoubleMeasurement> MeasurementSupplier => Provider;
+        public override MeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
 
         public new DoubleMeasurement Reciprocal() {
             return new DoubleMeasurement(1 / this.ToDouble());
@@ -93,10 +93,10 @@ namespace JoshuaKearney.Measurements {
             public static Unit<DoubleMeasurement> DefaultUnit { get; } = CreateUnit("", Provider);
         }
 
-        //private class DoubleMeasurementSupplier : MeasurementSupplier<DoubleMeasurement> {
-        //    protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit };
+        private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {
+            protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit };
 
-        //    public override DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) => new DoubleMeasurement(value, Units.DefaultUnit);
-        //}
+            public override DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) => new DoubleMeasurement(value, Units.DefaultUnit);
+        }
     }
 }

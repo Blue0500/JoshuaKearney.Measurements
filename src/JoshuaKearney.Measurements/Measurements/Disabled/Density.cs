@@ -8,7 +8,7 @@
 //        public static Density ToDensity(this Ratio<Mass, Volume> density) {
 //            Validate.NonNull(density, nameof(density));
 
-//            return new Density(density.ToDouble(density.MeasurementSupplier.DefaultUnit), density.MeasurementSupplier.DefaultUnit.Cast<Ratio<Mass, Volume>, Density>());
+//            return new Density(density.ToDouble(density.MeasurementProvider.DefaultUnit), density.MeasurementProvider.DefaultUnit.Cast<Ratio<Mass, Volume>, Density>());
 //        }
 //    }
 
@@ -27,13 +27,13 @@
 //        public Density(double amount, Unit<Mass> massDef, Unit<Volume> volumeDef) : base(amount, massDef, volumeDef) {
 //        }
 
-//        public static IMeasurementSupplier<Density> Provider { get; } = new DensityProvider();
+//        public static IMeasurementProvider<Density> Provider { get; } = new DensityProvider();
 
-//        public override IMeasurementSupplier<Density> MeasurementSupplier => Provider;
+//        public override IMeasurementProvider<Density> MeasurementProvider => Provider;
 
-//        protected override IMeasurementSupplier<Volume> DenominatorProvider => Volume.Provider;
+//        protected override IMeasurementProvider<Volume> DenominatorProvider => Volume.Provider;
 
-//        protected override IMeasurementSupplier<Mass> NumeratorProvider => Mass.Provider;
+//        protected override IMeasurementProvider<Mass> NumeratorProvider => Mass.Provider;
 
 //        public static class Units {
 //            public static Unit<Density> GramPerCentimeterCubed { get; } = Mass.Units.Gram.Divide<Mass, Volume, Density>(Volume.Units.CentimeterCubed);
@@ -49,12 +49,12 @@
 //            public static Unit<Density> PoundPerFootCubed { get; } = Mass.Units.Pound.Divide<Mass, Volume, Density>(Volume.Units.FootCubed);
 //        }
 
-//        private class DensityProvider : IMeasurementSupplier<Density>, IComplexMeasurementSupplier<Mass, Volume> {
+//        private class DensityProvider : IMeasurementProvider<Density>, IComplexMeasurementProvider<Mass, Volume> {
 //            public IEnumerable<Unit<Density>> AllUnits => new Unit<Density>[] { };
 
-//            public IMeasurementSupplier<Mass> Component1Provider => Mass.Provider;
+//            public IMeasurementProvider<Mass> Component1Provider => Mass.Provider;
 
-//            public IMeasurementSupplier<Volume> Component2Provider => Volume.Provider;
+//            public IMeasurementProvider<Volume> Component2Provider => Volume.Provider;
 
 //            public Unit<Density> DefaultUnit => Units.KilogramPerMeterCubed;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static JoshuaKearney.Measurements.Distance.Units;
 
 namespace JoshuaKearney.Measurements {
     public sealed class Distance : Measurement<Distance>,
@@ -12,21 +11,20 @@ namespace JoshuaKearney.Measurements {
         public Distance() {
         }
 
-        public Distance(double amount, Unit<Distance> unit) : base(amount, unit) {        
-
+        public Distance(double amount, Unit<Distance> unit) : base(amount, unit) {
         }
 
-        public static MeasurementSupplier<Distance> Provider { get; } = new MeasurementSupplier<Distance>((value, unit) => new Distance(value, unit));
+        public static MeasurementProvider<Distance> Provider { get; } = new DistanceProvider();
 
-        public override MeasurementSupplier<Distance> MeasurementSupplier => Provider;
+        public override MeasurementProvider<Distance> MeasurementProvider => Provider;
 
-        Volume ICubableMeasurement<Volume>.Cube() => this.Cube().ToMeasurement();
+        Volume ICubableMeasurement<Volume>.Cube() => this.Cube();
 
         Volume IMultipliableMeasurement<Area, Volume>.Multiply(Area measurement2) => this.Multiply(measurement2);
 
         Area IMultipliableMeasurement<Distance, Area>.Multiply(Distance measurement2) => this.Multiply(measurement2);
 
-        Area ISquareableMeasurement<Area>.Square() => this.Square().ToMeasurement();
+        Area ISquareableMeasurement<Area>.Square() => this.Square();
 
         public static class Units {
             private static Lazy<Unit<Distance>> centimeter = new Lazy<Unit<Distance>>(() => Prefix.Centi(Meter));
@@ -61,6 +59,15 @@ namespace JoshuaKearney.Measurements {
 
             public static Unit<Distance> Yard => yard.Value;
         }
+
+        private class DistanceProvider : MeasurementProvider<Distance> {
+
+            public override Distance CreateMeasurement(double value, Unit<Distance> unit) => new Distance(value, unit);
+
+            protected override IEnumerable<Unit<Distance>> GetParsableUnits() => new[] {
+                Units.Meter, Units.Centimeter, Units.Kilometer, Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard, Units.Millimeter
+            };
+        }
     }
 
     public static partial class MeasurementExtensions {
@@ -71,23 +78,23 @@ namespace JoshuaKearney.Measurements {
             return distance.Multiply(distance).Multiply(distance);
         }
 
-        public static Area Multiply(this IMeasurement<Distance> distance1, IMeasurement<Distance> distance2) {
+        public static Area Multiply(this Measurement<Distance> distance1, Measurement<Distance> distance2) {
             Validate.NonNull(distance1, nameof(distance1));
             Validate.NonNull(distance2, nameof(distance2));
 
             return new Area(distance1, distance2);
         }
 
-        public static Volume Multiply(this IMeasurement<Distance> distance, IMeasurement<Area> area) {
+        public static Volume Multiply(this Measurement<Distance> distance, Measurement<Area> area) {
             Validate.NonNull(distance, nameof(distance));
             Validate.NonNull(area, nameof(area));
 
             return new Volume(distance, area);
         }
 
-        public static Area Square(this IMeasurement<Distance> distance) {
+        public static Area Square(this Measurement<Distance> distance) {
             Validate.NonNull(distance, nameof(distance));
-            
+
             return distance.Multiply(distance);
         }
     }

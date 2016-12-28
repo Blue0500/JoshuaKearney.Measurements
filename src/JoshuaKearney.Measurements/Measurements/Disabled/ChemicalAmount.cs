@@ -13,9 +13,9 @@
 
 //        public static Ratio<DoubleMeasurement, ChemicalAmount> AvagadroConstant => avagadroConstant.Value;
 
-//        public static IMeasurementSupplier<ChemicalAmount> Provider { get; } = new ChemicalSubstanceProvider();
+//        public static IMeasurementProvider<ChemicalAmount> Provider { get; } = new ChemicalSubstanceProvider();
 
-//        public override IMeasurementSupplier<ChemicalAmount> MeasurementSupplier => Provider;
+//        public override IMeasurementProvider<ChemicalAmount> MeasurementProvider => Provider;
 
 //        public ChemicalAmount() {
 //        }
@@ -29,7 +29,7 @@
 //            public static Unit<ChemicalAmount> RepresentativeParticle { get; } = new Unit<ChemicalAmount>("Rep. Particle", "rep. part.", 6.02214085774e23);
 //        }
 
-//        private class ChemicalSubstanceProvider : IMeasurementSupplier<ChemicalAmount> {
+//        private class ChemicalSubstanceProvider : IMeasurementProvider<ChemicalAmount> {
 //            public IEnumerable<Unit<ChemicalAmount>> AllUnits => new[] { Units.Mole, Units.RepresentativeParticle };
 
 //            public Unit<ChemicalAmount> DefaultUnit => Units.Mole;

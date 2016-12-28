@@ -7,13 +7,13 @@
 //namespace JoshuaKearney.Measurements {
 
 //    public sealed class ElectricPotential : Ratio<ElectricPotential, Energy, Charge> {
-//        public static IMeasurementSupplier<ElectricPotential> Provider { get; } = new ElectricPotentialProvider();
+//        public static IMeasurementProvider<ElectricPotential> Provider { get; } = new ElectricPotentialProvider();
 
-//        public override IMeasurementSupplier<ElectricPotential> MeasurementSupplier => Provider;
+//        public override IMeasurementProvider<ElectricPotential> MeasurementProvider => Provider;
 
-//        protected override IMeasurementSupplier<Charge> DenominatorProvider => Charge.Provider;
+//        protected override IMeasurementProvider<Charge> DenominatorProvider => Charge.Provider;
 
-//        protected override IMeasurementSupplier<Energy> NumeratorProvider => Energy.Provider;
+//        protected override IMeasurementProvider<Energy> NumeratorProvider => Energy.Provider;
 
 //        public ElectricPotential() : base() {
 //        }
@@ -35,7 +35,7 @@
 //            public static Unit<ElectricPotential> Volt => volt.Value;
 //        }
 
-//        private class ElectricPotentialProvider : IMeasurementSupplier<ElectricPotential> {
+//        private class ElectricPotentialProvider : IMeasurementProvider<ElectricPotential> {
 //            public IEnumerable<Unit<ElectricPotential>> AllUnits => new[] { Units.JoulePerSecond, Units.Volt };
 
 //            public Unit<ElectricPotential> DefaultUnit => Units.Volt;

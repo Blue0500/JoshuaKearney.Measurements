@@ -9,7 +9,7 @@ using static JoshuaKearney.Measurements.Density.Units;
 
 namespace JoshuaKearney.Measurements {
     public class Density : Ratio<Density, Mass, Volume> {
-        public static MeasurementSupplier<Density> Provider { get; } = new MeasurementSupplier<Density>((value, unit) => new Density(value, unit));
+        public static MeasurementProvider<Density> Provider { get; } = new DensityProvider();
 
         public Density() : base() { }
 
@@ -17,15 +17,15 @@ namespace JoshuaKearney.Measurements {
 
         public Density(Mass mass, Volume volume) : base(mass, volume, Provider) { }
 
-        public override MeasurementSupplier<Volume> DenominatorProvider => Volume.Provider;
+        public override MeasurementProvider<Volume> DenominatorProvider => Volume.Provider;
 
-        public override MeasurementSupplier<Density> MeasurementSupplier {
+        public override MeasurementProvider<Density> MeasurementProvider {
             get {
                 throw new NotImplementedException();
             }
         }
 
-        public override MeasurementSupplier<Mass> NumeratorProvider => Mass.Provider;
+        public override MeasurementProvider<Mass> NumeratorProvider => Mass.Provider;
 
         public static class Units {
             public static Unit<Density> KilogramPerMeterCubed { get; } = Kilogram.Divide(MeterCubed).ToUnit("kg/m^3");
@@ -33,14 +33,14 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Density> GramPerMilliliter { get; } = Gram.Divide(Milliliter).ToUnit("g/mL");
         }
 
-        //private class DensityProvider : CompoundMeasurementSupplier<Density, Mass, Volume> {
-        //    public override MeasurementSupplier<Mass> Component1Provider => Mass.Provider;
+        private class DensityProvider : CompoundMeasurementProvider<Density, Mass, Volume> {
+            public override MeasurementProvider<Mass> Component1Provider => Mass.Provider;
 
-        //    public override MeasurementSupplier<Volume> Component2Provider => Volume.Provider;
+            public override MeasurementProvider<Volume> Component2Provider => Volume.Provider;
 
-        //    public override Density CreateMeasurement(double value, Unit<Density> unit) => new Density(value, unit);
+            public override Density CreateMeasurement(double value, Unit<Density> unit) => new Density(value, unit);
 
-        //    protected override IEnumerable<Unit<Density>> GetParsableUnits() => new[] { KilogramPerMeterCubed, GramPerMilliliter };
-        //}
+            protected override IEnumerable<Unit<Density>> GetParsableUnits() => new[] { KilogramPerMeterCubed, GramPerMilliliter };
+        }
     }
 }

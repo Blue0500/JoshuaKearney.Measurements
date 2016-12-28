@@ -25,7 +25,7 @@
 //    //    //}
 
 //    //    public new T Reciprocal() {
-//    //        return this.MeasurementSupplier.CreateMeasurementWithDefaultUnits(1 / this.DefaultUnits);
+//    //        return this.MeasurementProvider.CreateMeasurementWithDefaultUnits(1 / this.DefaultUnits);
 //    //    }
 
 //    //    public abstract double ToDouble();

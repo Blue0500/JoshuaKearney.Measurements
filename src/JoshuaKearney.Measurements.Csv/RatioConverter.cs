@@ -9,7 +9,7 @@ namespace JoshuaKearney.Measurements.Csv {
         where TNumerator : Measurement<TNumerator>
         where TDenominator : Measurement<TDenominator> {
 
-        public RatioConverter(MeasurementSupplier<TNumerator> numProvider, MeasurementSupplier<TDenominator> denomProvider) 
+        public RatioConverter(MeasurementProvider<TNumerator> numProvider, MeasurementProvider<TDenominator> denomProvider) 
             : base(Ratio<TNumerator, TDenominator>.GetProvider(numProvider, denomProvider)) {
         }
     }

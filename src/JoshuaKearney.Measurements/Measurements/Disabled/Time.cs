@@ -25,9 +25,9 @@
 //            return new Energy(measurement2, this);
 //        }
 
-//        public static IMeasurementSupplier<Time> Provider { get; } = new TimeProvider();
+//        public static IMeasurementProvider<Time> Provider { get; } = new TimeProvider();
 
-//        public override IMeasurementSupplier<Time> MeasurementSupplier => Provider;
+//        public override IMeasurementProvider<Time> MeasurementProvider => Provider;
 
 //        public static class Units {
 //            private static Lazy<PrefixableUnit<Time>> measurement2 = new Lazy<PrefixableUnit<Time>>(() => new PrefixableUnit<Time>("measurement2", "s", 1));
@@ -51,7 +51,7 @@
 //            return new Time(span);
 //        }
 
-//        private class TimeProvider : IMeasurementSupplier<Time> {
+//        private class TimeProvider : IMeasurementProvider<Time> {
 //            public IEnumerable<Unit<Time>> AllUnits { get; } = new[] { Units.Hour, Units.Second, Units.Minute, Units.Day };
 
 //            public Unit<Time> DefaultUnit => Units.Second;

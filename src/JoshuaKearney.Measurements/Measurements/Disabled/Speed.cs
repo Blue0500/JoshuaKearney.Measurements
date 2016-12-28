@@ -7,17 +7,17 @@
 //        IDividableMeasurement<Time, Acceleration>, 
 //        IDividableMeasurement<Distance, Frequency> {
 
-//        public static IMeasurementSupplier<Speed> Provider { get; } = new SpeedProvider();
+//        public static IMeasurementProvider<Speed> Provider { get; } = new SpeedProvider();
 
 //        public static Speed SpeedOfSound { get; } = new Speed(340.29, Units.MetersPerSecond);
 
 //        public static Speed SpeedOfLight { get; } = new Speed(299792458, Units.MetersPerSecond);
 
-//        public override IMeasurementSupplier<Speed> MeasurementSupplier => Provider;
+//        public override IMeasurementProvider<Speed> MeasurementProvider => Provider;
 
-//        protected override IMeasurementSupplier<Time> DenominatorProvider => Time.Provider;
+//        protected override IMeasurementProvider<Time> DenominatorProvider => Time.Provider;
 
-//        protected override IMeasurementSupplier<Distance> NumeratorProvider => Distance.Provider;
+//        protected override IMeasurementProvider<Distance> NumeratorProvider => Distance.Provider;
 
 //        public Speed() {
 //        }
@@ -39,12 +39,12 @@
 //            public static Unit<Speed> KilometersPerSecond { get; } = Distance.Units.Kilometer.Divide<Distance, Time, Speed>(Time.Units.Second);
 //        }
 
-//        private class SpeedProvider : IMeasurementSupplier<Speed>, IComplexMeasurementSupplier<Distance, Time> {
+//        private class SpeedProvider : IMeasurementProvider<Speed>, IComplexMeasurementProvider<Distance, Time> {
 //            public IEnumerable<Unit<Speed>> AllUnits { get; } = new Unit<Speed>[] { };
 
-//            public IMeasurementSupplier<Distance> Component1Provider => Distance.Provider;
+//            public IMeasurementProvider<Distance> Component1Provider => Distance.Provider;
 
-//            public IMeasurementSupplier<Time> Component2Provider => Time.Provider;
+//            public IMeasurementProvider<Time> Component2Provider => Time.Provider;
 
 //            public Unit<Speed> DefaultUnit => Units.MetersPerSecond;
 
