@@ -7,11 +7,11 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 
-namespace JoshuaKearney.Measurements.Csv {
-    public abstract class MeasurementConverter<T> : DefaultTypeConverter where T : Measurement<T> {
+namespace JoshuaKearney.Measurements.CsvConverters {
+    public abstract class CsvMeasurementConverter<T> : DefaultTypeConverter where T : Measurement<T> {
         public static MeasurementParser<T> Parser { get; private set; } = null;
 
-        public MeasurementConverter(MeasurementProvider<T> provider) {
+        public CsvMeasurementConverter(MeasurementProvider<T> provider) {
             if (Parser == null) {
                 Parser = new MeasurementParser<T>(provider);
             }

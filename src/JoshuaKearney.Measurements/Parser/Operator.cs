@@ -50,7 +50,6 @@ namespace JoshuaKearney.Measurements.Parser {
             }
         }
 
-
         private static MethodInfo GetArithmeticInterfaceMethod(Type tInterface, MeasurementToken x, MeasurementToken y) {
             Type tFirst = x.MeasurementValue.GetType();
             Type tSecond = y.MeasurementValue.GetType();

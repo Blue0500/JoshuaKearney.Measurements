@@ -3,13 +3,13 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{84B1912C-E0AF-44EE-A80D-723E491C1841}</ProjectGuid>
+    <ProjectGuid>{D0828490-455D-42D5-9A50-16CBA6379365}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JoshuaKearney.Measurements.Csv</RootNamespace>
-    <AssemblyName>JoshuaKearney.Measurements.Csv</AssemblyName>
+    <RootNamespace>JoshuaKearney.Measurements.JsonConverters</RootNamespace>
+    <AssemblyName>JoshuaKearney.Measurements.JsonConverters</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,27 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="JoshuaKearney.Measurements.Csv.nuspec" />
     <None Include="project.json" />
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AngleConverter.cs" />
-    <Compile Include="AreaConverter.cs" />
-    <Compile Include="DigitalSizeConverter.cs" />
-    <Compile Include="DistanceConverter.cs" />
-    <Compile Include="MassConverter.cs" />
-    <Compile Include="MeasurementConverter.cs" />
+    <Compile Include="JsonAreaConverter.cs" />
+    <Compile Include="JsonMeasurementConverter.cs" />
+    <Compile Include="JsonVolumeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RatioConverter.cs" />
-    <Compile Include="TermProvider.cs" />
-    <Compile Include="VolumeConverter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\JoshuaKearney.Measurements\JoshuaKearney.Measurements.csproj">
-      <Project>{9b98820d-4b85-46a2-9ed0-8fa071f2ec8b}</Project>
-      <Name>JoshuaKearney.Measurements</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

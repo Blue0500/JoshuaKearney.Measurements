@@ -8,7 +8,7 @@ using static JoshuaKearney.Measurements.Volume.Units;
 using static JoshuaKearney.Measurements.Density.Units;
 
 namespace JoshuaKearney.Measurements {
-    public class Density : Ratio<Density, Mass, Volume> {
+    public class Density : Ratio<Density, Mass, Volume>, IMultipliableMeasurement<Volume, Mass> {
         public static MeasurementProvider<Density> Provider { get; } = new DensityProvider();
 
         public Density() : base() { }
@@ -19,11 +19,7 @@ namespace JoshuaKearney.Measurements {
 
         public override MeasurementProvider<Volume> DenominatorProvider => Volume.Provider;
 
-        public override MeasurementProvider<Density> MeasurementProvider {
-            get {
-                throw new NotImplementedException();
-            }
-        }
+        public override MeasurementProvider<Density> MeasurementProvider => Provider;
 
         public override MeasurementProvider<Mass> NumeratorProvider => Mass.Provider;
 

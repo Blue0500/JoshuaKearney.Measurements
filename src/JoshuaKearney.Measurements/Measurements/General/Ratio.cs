@@ -15,7 +15,8 @@ namespace JoshuaKearney.Measurements {
 
     public abstract class Ratio<TSelf, TNumerator, TDenominator> :
         Measurement<TSelf>,
-        IMultipliableMeasurement<TDenominator, TNumerator>
+        IMultipliableMeasurement<TDenominator, TNumerator>,
+        IDividableMeasurement<TNumerator, Ratio<DoubleMeasurement, TDenominator>>
 
         where TSelf : Ratio<TSelf, TNumerator, TDenominator>
         where TNumerator : Measurement<TNumerator>
@@ -28,19 +29,9 @@ namespace JoshuaKearney.Measurements {
             numerator.ToDouble(numerator.MeasurementProvider.DefaultUnit) / denominator.ToDouble(denominator.MeasurementProvider.DefaultUnit),
             numerator.MeasurementProvider.DefaultUnit.DivideToRatioUnit(denominator.MeasurementProvider.DefaultUnit).ToRatioUnit(provider)
         ) { }
-        //    numerator.ToDouble(numerator.MeasurementProvider.DefaultUnit) / denominator.ToDouble(denominator.MeasurementProvider.DefaultUnit),
-        //    numerator.MeasurementProvider.DefaultUnit,
-        //    denominator.MeasurementProvider.DefaultUnit,
-        //    provider
-        //) { }
 
         protected Ratio(double amount, Unit<TSelf> unit) : base(amount, unit) {
         }
-
-        //protected Ratio(double amount, Unit<TNumerator> numDef, Unit<TDenominator> denomDef, MeasurementProvider<TSelf> provider) : this(
-        //    amount,
-        //    numDef.DivideToRatioUnit(denomDef).ToRatioUnit(provider)
-        //) { }
 
         public abstract MeasurementProvider<TDenominator> DenominatorProvider { get; }
 
@@ -160,6 +151,10 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(denomDef, nameof(denomDef));
 
             return this.ToString(numDef.DivideToRatioUnit(denomDef).ToRatioUnit(this.MeasurementProvider));
+        }
+
+        public Ratio<DoubleMeasurement, TDenominator> Divide(TNumerator measurement2) {
+            return this.Select((x, y) => x.Divide(measurement2).DivideToRatio(y));
         }
     }
 

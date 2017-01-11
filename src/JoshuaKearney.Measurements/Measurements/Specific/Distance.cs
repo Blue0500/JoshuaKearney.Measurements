@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JoshuaKearney.Measurements.Parser;
+using System;
 using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
@@ -35,7 +36,7 @@ namespace JoshuaKearney.Measurements {
 
             private static Lazy<Unit<Distance>> kilometer = new Lazy<Unit<Distance>>(() => Prefix.Kilo(Meter));
 
-            private static Lazy<PrefixableUnit<Distance>> meter = new Lazy<PrefixableUnit<Distance>>(() => CreatePrefixableUnit("m", Provider));
+            private static Lazy<PrefixableUnit<Distance>> meter = new Lazy<PrefixableUnit<Distance>>(() => new PrefixableUnit<Distance>("m", Provider));
 
             private static Lazy<Unit<Distance>> mile = new Lazy<Unit<Distance>>(() => Foot.Multiply(5280).ToUnit("mi"));
 

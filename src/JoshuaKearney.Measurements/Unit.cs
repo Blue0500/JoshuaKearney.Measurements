@@ -81,6 +81,8 @@ namespace JoshuaKearney.Measurements {
         /// <param name="symbol">The symbol of the unit. Ex: ft</param>
         /// <param name="unitsPerDefault">The units per default unit for this type of measurement. Ex: 3.2808399 ft/m (meter is the default unit for length)</param>
         internal PrefixableUnit(string symbol, double defaultsPerUnit, MeasurementProvider<T> provider) : base(symbol, defaultsPerUnit, provider) { }
+
+        public PrefixableUnit(string symbol, MeasurementProvider<T> provider) : base(symbol, provider) { }
     }
 
     /// <summary>
@@ -106,6 +108,8 @@ namespace JoshuaKearney.Measurements {
             this.Symbol = $"({symbol})";
             this.MeasurementProvider = provider;
         }
+
+        public Unit(string symbol, MeasurementProvider<T> provider) : this(symbol, 1, provider) { }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.

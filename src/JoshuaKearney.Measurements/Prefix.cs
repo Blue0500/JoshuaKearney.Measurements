@@ -13,14 +13,14 @@ namespace JoshuaKearney.Measurements {
         public static IEnumerable<Unit<T>> All<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
 
-            yield return Exa(unit); yield return Peta(unit); yield return Tera(unit);
-            yield return Giga(unit); yield return Mega(unit); yield return Kilo(unit);
-            yield return Hecto(unit); yield return Deca(unit); yield return Deci(unit);
-            yield return Centi(unit); yield return Milli(unit); yield return Micro(unit);
-            yield return Nano(unit); yield return Pico(unit); yield return Femto(unit);
-            yield return Atto(unit); yield return Yobi(unit); yield return Zebi(unit);
-            yield return Exbi(unit); yield return Pebi(unit); yield return Tebi(unit);
-            yield return Gibi(unit); yield return Mebi(unit); yield return Kibi(unit);
+            yield return Exa(unit);     yield return Peta(unit);    yield return Tera(unit);
+            yield return Giga(unit);    yield return Mega(unit);    yield return Kilo(unit);
+            yield return Hecto(unit);   yield return Deca(unit);    yield return Deci(unit);
+            yield return Centi(unit);   yield return Milli(unit);   yield return Micro(unit);
+            yield return Nano(unit);    yield return Pico(unit);    yield return Femto(unit);
+            yield return Atto(unit);    yield return Yobi(unit);    yield return Zebi(unit);
+            yield return Exbi(unit);    yield return Pebi(unit);    yield return Tebi(unit);
+            yield return Gibi(unit);    yield return Mebi(unit);    yield return Kibi(unit);
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static class Units {
-            private static Lazy<PrefixableUnit<Mass>> gram = new Lazy<PrefixableUnit<Mass>>(() => CreatePrefixableUnit("g", Provider));
+            private static Lazy<PrefixableUnit<Mass>> gram = new Lazy<PrefixableUnit<Mass>>(() => new PrefixableUnit<Mass>("g", Provider));
 
             private static Lazy<Unit<Mass>> kilogram  = new Lazy<Unit<Mass>>(() => Prefix.Kilo(Gram));
 
@@ -24,7 +24,7 @@ namespace JoshuaKearney.Measurements {
 
             private static Lazy<Unit<Mass>> milligram = new Lazy<Unit<Mass>>(() => Prefix.Milli(Gram));
 
-            private static Lazy<Unit<Mass>> ounce = new Lazy<Unit<Mass>>(() => Pound.Divide(12).ToUnit("oz"));
+            private static Lazy<Unit<Mass>> ounce = new Lazy<Unit<Mass>>(() => Gram.Multiply(28.349523125).ToUnit("oz"));
 
             private static Lazy<Unit<Mass>> pound = new Lazy<Unit<Mass>>(() => Kilogram.Multiply(0.45359237).ToUnit("lb"));
 
@@ -44,10 +44,10 @@ namespace JoshuaKearney.Measurements {
         private class MassProvider : MeasurementProvider<Mass> {
             public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
 
-            protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram };
+            protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram, Units.Ounce, Units.Pound };
         }
 
-        public Density Divide(Volume measurement2) => this.Divide(measurement2);
+        Density IDividableMeasurement<Volume, Density>.Divide(Volume measurement2) => this.Divide(measurement2);
     }
 
     public static partial class MeasurementExtensions {

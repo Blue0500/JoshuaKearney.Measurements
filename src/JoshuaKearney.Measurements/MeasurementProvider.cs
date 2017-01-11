@@ -42,6 +42,16 @@ namespace JoshuaKearney.Measurements {
         }
 
         public Unit<T> DefaultUnit { get; }
+
+        public T NaN => this.CreateMeasurement(double.NaN, DefaultUnit);
+
+        public T PositiveInfinity => this.CreateMeasurement(double.PositiveInfinity, DefaultUnit);
+
+        public T NegativeInfinity => this.CreateMeasurement(double.NegativeInfinity, DefaultUnit);
+
+        public T MaxValue => this.CreateMeasurement(double.MaxValue, DefaultUnit);
+
+        public T MinValue => this.CreateMeasurement(double.MinValue, DefaultUnit);
     }
 
     public abstract class CompoundMeasurementProvider<T, TComp1, TComp2> : MeasurementProvider<T>
@@ -59,37 +69,6 @@ namespace JoshuaKearney.Measurements {
                 () => this.GetParsableUnits().Concat(units)
             );
         }
-
-        //public CompoundMeasurementProvider<T, TComp1, TComp2> AppendComponent1ParsableUnits(params Unit<TComp1>[] units) {
-        //    Validate.NonNull(units, nameof(units));
-
-        //    return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
-        //        this.Component1Provider.AppendParsableUnits(units),
-        //        this.Component2Provider,
-        //        this.CreateMeasurement,
-        //        () => this.GetParsableUnits()
-        //    );
-        //}
-
-        //public CompoundMeasurementProvider<T, TComp1, TComp2> AppendComponent2ParsableUnits(params Unit<TComp2>[] units) {
-        //    Validate.NonNull(units, nameof(units));
-
-        //    return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
-        //        this.Component1Provider,
-        //        this.Component2Provider.AppendParsableUnits(units),
-        //        this.CreateMeasurement,
-        //        () => this.GetParsableUnits()
-        //    );
-        //}
-
-        //public CompoundMeasurementProvider<T, TComp1, TComp2> Select(Func<MeasurementProvider<TComp1>, MeasurementProvider<TComp1>> compProvider1Select, Func<MeasurementProvider<TComp2>, MeasurementProvider<TComp2>> compProvider2Select) {
-        //    return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
-        //        compProvider1Select(this.Component1Provider),
-        //        compProvider2Select(this.Component2Provider),
-        //        this.CreateMeasurement,
-        //        () => this.GetParsableUnits()
-        //    );
-        //}
 
         public abstract MeasurementProvider<TComp1> Component1Provider { get; }
 

@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "exports": {
+    "JoshuaKearney.Measurements.JsonConverters/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.3",
+      "compile": {
+        "bin/Release/JoshuaKearney.Measurements.JsonConverters.dll": {}
+      },
+      "runtime": {
+        "bin/Release/JoshuaKearney.Measurements.JsonConverters.dll": {}
+      },
+      "contentFiles": {
+        "bin/Release/JoshuaKearney.Measurements.JsonConverters.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
+    "JoshuaKearney.Measurements/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.0",
+      "compile": {
+        "bin/Release/JoshuaKearney.Measurements.dll": {}
+      },
+      "runtime": {
+        "bin/Release/JoshuaKearney.Measurements.dll": {}
+      },
+      "contentFiles": {
+        "bin/Release/JoshuaKearney.Measurements.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
+    "JoshuaKearney.Measurements.CsvConverters/1.0.0": {
+      "type": "project",
+      "framework": ".NETStandard,Version=v1.3",
+      "compile": {
+        "bin/Release/JoshuaKearney.Measurements.Csv.dll": {}
+      },
+      "runtime": {
+        "bin/Release/JoshuaKearney.Measurements.Csv.dll": {}
+      },
+      "contentFiles": {
+        "bin/Release/JoshuaKearney.Measurements.Csv.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}

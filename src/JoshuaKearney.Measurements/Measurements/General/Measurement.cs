@@ -28,26 +28,6 @@ namespace JoshuaKearney.Measurements {
 
         private static bool hasUnit = false;
 
-        protected static Unit<TSelf> CreateUnit(string symbol, MeasurementProvider<TSelf> provider) {
-            if (hasUnit) {
-                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
-            }
-            else {
-                hasUnit = true;
-                return new Unit<TSelf>(symbol, 1, provider);
-            }
-        }
-
-        protected static PrefixableUnit<TSelf> CreatePrefixableUnit(string symbol, MeasurementProvider<TSelf> provider) {
-            if (hasUnit) {
-                throw new InvalidOperationException($"A default unit has already been created for the type '{typeof(TSelf).ToString()}'. Please define all other units in terms of that unit");
-            }
-            else {
-                hasUnit = true;
-                return new PrefixableUnit<TSelf>(symbol, 1, provider);
-            }
-        }
-
         protected Measurement() {
             this.Value = 0;
         }
@@ -562,20 +542,6 @@ namespace JoshuaKearney.Measurements {
             var unit = units.FirstOrDefault(x => this.ToDouble(x) >= 1) ?? units.FirstOrDefault() ?? this.MeasurementProvider.ParsableUnits.FirstOrDefault();
 
             return this.ToString(unit, "0.##");
-        }
-
-        protected TSelf Select(Func<double, double> func) {
-            Validate.NonNull(func, nameof(func));
-
-            return this.MeasurementProvider.CreateMeasurement(func(this.Value), this.MeasurementProvider.DefaultUnit);
-        }
-
-        //public TSelf Divide(DoubleMeasurement measurement2) {
-        //    return this.Divide(measurement2.ToDouble());
-        //}
-
-        //public TSelf Multiply(DoubleMeasurement measurement2) {
-        //    return this.Multiply(measurement2.ToDouble());
-        //}
+        }        
     }
 }

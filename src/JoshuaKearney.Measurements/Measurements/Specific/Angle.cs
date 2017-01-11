@@ -71,7 +71,7 @@ namespace JoshuaKearney.Measurements {
         public override MeasurementProvider<Angle> MeasurementProvider => Provider;
 
         public class Units {
-            private static Lazy<PrefixableUnit<Angle>> radian = new Lazy<PrefixableUnit<Angle>>(() => CreatePrefixableUnit("rad", Provider));
+            private static Lazy<PrefixableUnit<Angle>> radian = new Lazy<PrefixableUnit<Angle>>(() => new PrefixableUnit<Angle>("rad", Provider));
 
             private static Lazy<Unit<Angle>> degree = new Lazy<Unit<Angle>>(() => Radian.Multiply(Math.PI / 180).ToUnit("deg"));
 

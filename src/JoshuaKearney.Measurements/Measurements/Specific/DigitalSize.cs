@@ -20,7 +20,7 @@ namespace JoshuaKearney.Measurements {
 
             private static Lazy<PrefixableUnit<DigitalSize>> bit = new Lazy<PrefixableUnit<DigitalSize>>(() => Octet.Multiply(1d / 8).ToPrefixableUnit("b"));
 
-            private static Lazy<PrefixableUnit<DigitalSize>> sizeByte = new Lazy<PrefixableUnit<DigitalSize>>(() => CreatePrefixableUnit("B", Provider));
+            private static Lazy<PrefixableUnit<DigitalSize>> sizeByte = new Lazy<PrefixableUnit<DigitalSize>>(() => new PrefixableUnit<DigitalSize>("B", Provider));
 
             public static Unit<DigitalSize> Exabyte { get; } = Prefix.Exa(Octet);
 

@@ -80,7 +80,6 @@ namespace JoshuaKearney.Measurements {
             return new DoubleMeasurement(1 / this.ToDouble());
         }
 
-
         public static implicit operator DoubleMeasurement(double d) {
             return new DoubleMeasurement(d);
         }
@@ -90,7 +89,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static class Units {
-            public static Unit<DoubleMeasurement> DefaultUnit { get; } = CreateUnit("", Provider);
+            public static Unit<DoubleMeasurement> DefaultUnit { get; } = new Unit<DoubleMeasurement>("", Provider);
         }
 
         private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {

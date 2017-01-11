@@ -5,10 +5,21 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace JoshuaKearney.Measurements {
+namespace JoshuaKearney.Measurements.Parser {
 
     public sealed class MeasurementParser<T> where T : Measurement<T> {
         private static Regex NumericPattern { get; } = new Regex(@"^\d*\.?\d*$");
+
+        public static IEnumerable<MeasurementRelationship> DefaultRelationships {
+            get {
+                return new List<MeasurementRelationship>() {
+                    MeasurementRelationship.CreateMultiplicative<Distance, Distance, Area>((x, y) => x.Multiply(y)),
+                    MeasurementRelationship.CreateMultiplicative<Distance, Area, Volume>((x, y) => x.Multiply(y)),
+                    MeasurementRelationship.CreateMultiplicative<Area, Distance, Volume>((x, y) => x.Multiply(y)),
+                    MeasurementRelationship.CreateMultiplicative<Distance, Area, Volume>((x, y) => x.Multiply(y)),
+                };
+            }
+        }
 
         private Dictionary<string, MeasurementToken> dictionary;
 
