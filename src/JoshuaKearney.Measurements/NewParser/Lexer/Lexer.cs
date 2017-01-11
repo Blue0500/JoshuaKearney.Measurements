@@ -5,45 +5,31 @@ using System.Text;
 
 namespace JoshuaKearney.Measurements.NewParser.Lexer {
     public class Lexer {
-       // public int Position { get; private set; } = 0;
-       // public IEnumerable<char> Text { get; }
-
-     //   public char CurrentChar => this.Text.ElementAtOrDefault(this.Position);
-
-      //  public char NextChar => this.Text.ElementAtOrDefault(this.Position + 1);
-
-        public bool Advance() {
-            this.Position++;
-
-            if (this.Position >= this.Text.Count()) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-
-        public void Retract() {
-            this.Position--;
-        }
-
-        public Lexer(string text) {
-            this.Text = text.ToCharArray();
-        }
-
-        private IEnumerable<Token> GetTokensCore(string text) {
+        public IEnumerable<Token> GetTokens(string text) {
             char[] arr = text.ToCharArray();
             int position = 0;
-            char currentchar = arr.ElementAtOrDefault(position);
+            char currentChar = arr.ElementAtOrDefault(position);
             List<Token> allToks = new List<Token>();
+
+            Func<bool> Advance = () => {
+                position++;
+                currentChar = arr.ElementAtOrDefault(position);
+
+                return currentChar != '\0';
+            };
+
+            Action Retract = () => {
+                position--;
+                currentChar = arr.ElementAtOrDefault(position);
+            };
 
             do {
                 if (char.IsDigit(currentChar)) {
-                    string numStr = this.CurrentChar.ToString();
+                    string numStr = currentChar.ToString();
                     double num = double.Parse(numStr);
 
-                    while (this.Advance() && (char.IsDigit(this.CurrentChar) || this.CurrentChar == '.')) {
-                        string temp = numStr + this.CurrentChar;
+                    while (Advance() && (char.IsDigit(currentChar) || currentChar == '.')) {
+                        string temp = numStr + currentChar;
 
                         double res;
                         if (!double.TryParse(temp, out res)) {
@@ -56,37 +42,49 @@ namespace JoshuaKearney.Measurements.NewParser.Lexer {
                     }
 
                     // Found the first non number char, back step to process it on the next go
-                    this.Retract();
+                    Retract();
 
-                    yield return new NumberToken(num);
+                    allToks.Add(new NumberToken(num));
                 }
-                else if (this.CurrentChar == '+') {
-                    yield return Token.Plus;
+                else if (char.IsLetter(currentChar)) {
+                    string numStr = currentChar.ToString();
+
+                    while (Advance() && char.IsLetter(currentChar)) {
+                        numStr = numStr + currentChar;   
+                    }
+
+                    // Found the first non letter char, back step to process it on the next go
+                    Retract();
+
+                    allToks.Add(new IdToken(numStr));
                 }
-                else if (this.CurrentChar == '-') {
-                    yield return Token.Minus;
+                else if (currentChar == '+') {
+                    allToks.Add(Token.Plus);
                 }
-                else if (this.CurrentChar == '*') {
-                    yield return Token.Askerisk;
+                else if (currentChar == '-') {
+                    allToks.Add(Token.Minus);
                 }
-                else if (this.CurrentChar == '/') {
-                    yield return Token.ForwardSlash;
+                else if (currentChar == '*') {
+                    allToks.Add(Token.Askerisk);
                 }
-                else if (this.CurrentChar == '(') {
-                    yield return Token.OpenParen;
+                else if (currentChar == '/') {
+                    allToks.Add(Token.ForwardSlash);
                 }
-                else if (this.CurrentChar == ')') {
-                    yield return Token.CloseParen;
+                else if (currentChar == '(') {
+                    allToks.Add(Token.OpenParen);
                 }
-                else if (char.IsWhiteSpace(this.CurrentChar)) {
+                else if (currentChar == ')') {
+                    allToks.Add(Token.CloseParen);
+                }
+                else if (char.IsWhiteSpace(currentChar)) {
                     continue;
                 }
                 else {
                     break;
                 }
-            } while (this.Advance());
+            } while (Advance());
 
-            yield return Token.EOF;
+            return allToks;
         }
     }
 }

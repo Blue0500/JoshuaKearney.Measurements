@@ -14,6 +14,7 @@ namespace JoshuaKearney.Measurements.NewParser.Lexer {
         ForwardSlash,
         Caret,
         OpenParen,
-        CloseParen
+        CloseParen,
+        Id
     }
 }

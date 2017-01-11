@@ -1,0 +1,9 @@
+﻿Atom		:	Number
+				| OpenParen AddExpr CloseParen
+				| (Plus | Minus)+ Atom 
+
+PowExpr		:	Atom (Caret Atom)*
+
+MultExpr	:	PowExpr ((Asterisk? | ForwardSlash) PowExpr)*
+
+AddExpr		:	MultExpr ((Plus | Minus) MultExpr)*

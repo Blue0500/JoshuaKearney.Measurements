@@ -167,6 +167,9 @@
     <Compile Include="NewParser\Lexer\Token.cs" />
     <Compile Include="NewParser\Lexer\TokenType.cs" />
     <Compile Include="NewParser\Lexer\NumberToken.cs" />
+    <Compile Include="NewParser\Lexer\IdToken.cs" />
+    <Compile Include="NewParser\Parser\AbstractSyntaxTree.cs" />
+    <Compile Include="NewParser\Parser\Parser.cs" />
     <Compile Include="Parser\DoubleMeasurementToken.cs" />
     <Compile Include="Parser\MeasurementParseException.cs" />
     <Compile Include="Parser\MeasurementParser.cs" />
@@ -182,6 +185,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="NewParser\Interpreter\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NewParser\Grammar.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
