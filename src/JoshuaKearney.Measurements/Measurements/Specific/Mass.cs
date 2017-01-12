@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JoshuaKearney.Measurements {
 
-    public sealed class Mass : Measurement<Mass>, IDividableMeasurement<Volume, Density> {
+    public sealed class Mass : Measurement<Mass> {
 
         public static MeasurementProvider<Mass> Provider { get; } = new MassProvider();
 
@@ -46,8 +46,6 @@ namespace JoshuaKearney.Measurements {
 
             protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram, Units.Ounce, Units.Pound };
         }
-
-        Density IDividableMeasurement<Volume, Density>.Divide(Volume measurement2) => this.Divide(measurement2);
     }
 
     public static partial class MeasurementExtensions {

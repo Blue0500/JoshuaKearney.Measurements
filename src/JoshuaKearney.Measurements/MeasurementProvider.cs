@@ -2,15 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JoshuaKearney.Measurements.NewParser;
 
 namespace JoshuaKearney.Measurements {
 
     public abstract class MeasurementProvider<T> where T : Measurement<T> {
         private IEnumerable<Unit<T>> parsableUnits;
+        private IEnumerable<ParsingOperator> operators;
 
         public abstract T CreateMeasurement(double value, Unit<T> unit);
 
-        protected abstract IEnumerable<Unit<T>> GetParsableUnits();
+        protected virtual IEnumerable<Unit<T>> GetParsableUnits() => new Unit<T>[] { };
+
+        protected virtual IEnumerable<ParsingOperator> GetOperators() => new ParsingOperator[] { };
 
         public MeasurementProvider<T> AppendParsableUnits(params Unit<T>[] units) {
             Validate.NonNull(units, nameof(units));
@@ -38,6 +42,16 @@ namespace JoshuaKearney.Measurements {
                 else {
                     return this.parsableUnits;
                 }
+            }
+        }
+
+        public IEnumerable<ParsingOperator> ParseOperators {
+            get {
+                if(this.operators == null) {
+                    this.operators = this.GetOperators() ?? new ParsingOperator[] { };
+                }
+
+                return this.operators;
             }
         }
 

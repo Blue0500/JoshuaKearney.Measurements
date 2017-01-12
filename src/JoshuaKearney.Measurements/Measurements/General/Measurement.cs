@@ -10,9 +10,7 @@ namespace JoshuaKearney.Measurements {
     /// <seealso cref="System.IEquatable{TSelf}" />
     /// <seealso cref="System.IComparable{TSelf}" />
     /// <seealso cref="System.IComparable" />
-    public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable,
-        IMultipliableMeasurement<DoubleMeasurement, TSelf>,
-        IDividableMeasurement<DoubleMeasurement, TSelf>
+    public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable
         where TSelf : Measurement<TSelf> {
 
         // For unit
@@ -417,14 +415,6 @@ namespace JoshuaKearney.Measurements {
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode() => this.Value.GetHashCode();
-
-        TSelf IDividableMeasurement<DoubleMeasurement, TSelf>.Divide(DoubleMeasurement measurement2) {
-            return this.Divide(measurement2.ToDouble());
-        }
-
-        TSelf IMultipliableMeasurement<DoubleMeasurement, TSelf>.Multiply(DoubleMeasurement measurement2) {
-            return this.Multiply(measurement2.ToDouble());
-        }
 
         /// <summary>
         /// Multiplies this instance by the specified double.

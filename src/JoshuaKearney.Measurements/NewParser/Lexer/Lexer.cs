@@ -70,6 +70,9 @@ namespace JoshuaKearney.Measurements.NewParser.Lexer {
                 else if (currentChar == '/') {
                     allToks.Add(Token.ForwardSlash);
                 }
+                else if (currentChar == '^') {
+                    allToks.Add(Token.Caret);
+                }
                 else if (currentChar == '(') {
                     allToks.Add(Token.OpenParen);
                 }

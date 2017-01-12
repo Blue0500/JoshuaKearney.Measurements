@@ -8,7 +8,7 @@ namespace JoshuaKearney.Measurements.NewParser.Lexer {
     public class NumberToken : Token {
         public double Value { get; }
 
-        public NumberToken(double value) : base(TokenType.Number) {
+        public NumberToken(double value) : base(TokenType.Number, value.ToString()) {
             this.Value = value;
         }
     }

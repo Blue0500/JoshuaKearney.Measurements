@@ -13,10 +13,7 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    public abstract class Ratio<TSelf, TNumerator, TDenominator> :
-        Measurement<TSelf>,
-        IMultipliableMeasurement<TDenominator, TNumerator>,
-        IDividableMeasurement<TNumerator, Ratio<DoubleMeasurement, TDenominator>>
+    public abstract class Ratio<TSelf, TNumerator, TDenominator> : Measurement<TSelf>
 
         where TSelf : Ratio<TSelf, TNumerator, TDenominator>
         where TNumerator : Measurement<TNumerator>

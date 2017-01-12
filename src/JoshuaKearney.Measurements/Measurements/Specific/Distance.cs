@@ -1,13 +1,9 @@
-﻿using JoshuaKearney.Measurements.Parser;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using JoshuaKearney.Measurements.NewParser;
 
 namespace JoshuaKearney.Measurements {
-    public sealed class Distance : Measurement<Distance>,
-            IMultipliableMeasurement<Distance, Area>,
-            IMultipliableMeasurement<Area, Volume>,
-            ISquareableMeasurement<Area>,
-            ICubableMeasurement<Volume> {
+    public sealed class Distance : Measurement<Distance> {
 
         public Distance() {
         }
@@ -18,14 +14,6 @@ namespace JoshuaKearney.Measurements {
         public static MeasurementProvider<Distance> Provider { get; } = new DistanceProvider();
 
         public override MeasurementProvider<Distance> MeasurementProvider => Provider;
-
-        Volume ICubableMeasurement<Volume>.Cube() => this.Cube();
-
-        Volume IMultipliableMeasurement<Area, Volume>.Multiply(Area measurement2) => this.Multiply(measurement2);
-
-        Area IMultipliableMeasurement<Distance, Area>.Multiply(Distance measurement2) => this.Multiply(measurement2);
-
-        Area ISquareableMeasurement<Area>.Square() => this.Square();
 
         public static class Units {
             private static Lazy<Unit<Distance>> centimeter = new Lazy<Unit<Distance>>(() => Prefix.Centi(Meter));
@@ -67,6 +55,18 @@ namespace JoshuaKearney.Measurements {
 
             protected override IEnumerable<Unit<Distance>> GetParsableUnits() => new[] {
                 Units.Meter, Units.Centimeter, Units.Kilometer, Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard, Units.Millimeter
+            };
+
+            protected override IEnumerable<ParsingOperator> GetOperators() => new[] {
+                ParsingOperator.CreateMultiplication<Distance, DoubleMeasurement, Distance>((x, y) => x.Multiply(y)),
+                ParsingOperator.CreateMultiplication<Distance, Distance, Area>((x, y) => x.Multiply(y)),
+                ParsingOperator.CreateMultiplication<Distance, Area, Volume>((x, y) => x.Multiply(y)),
+
+                ParsingOperator.CreateDivision<Distance, DoubleMeasurement, Distance>((x, y) => x.Divide(y)),
+                ParsingOperator.CreateDivision<Distance, Distance, DoubleMeasurement>((x, y) => x.Divide(y)),
+
+                ParsingOperator.CreateExponation<Distance, DoubleMeasurement, Area>((x, y) => y == 2 ? x.Square() : null),
+                ParsingOperator.CreateExponation<Distance, DoubleMeasurement, Volume>((x, y) => y == 3 ? x.Cube() : null)
             };
         }
     }

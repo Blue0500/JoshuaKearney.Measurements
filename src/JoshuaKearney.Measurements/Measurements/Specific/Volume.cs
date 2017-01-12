@@ -13,8 +13,7 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    public sealed class Volume : Term<Volume, Distance, Area>,
-        IDividableMeasurement<Distance, Area> {
+    public sealed class Volume : Term<Volume, Distance, Area> {
 
         public Volume() {
         }
@@ -41,8 +40,6 @@ namespace JoshuaKearney.Measurements {
         public override MeasurementProvider<Distance> Item1Provider => Distance.Provider;
 
         public override MeasurementProvider<Area> Item2Provider => Area.Provider;
-
-        Area IDividableMeasurement<Distance, Area>.Divide(Distance measurement2) => this.Divide(measurement2);
 
         public static class Units {
             private static Lazy<Unit<Volume>> centimeterCubed = new Lazy<Unit<Volume>>(() => Distance.Units.Centimeter.Cube().ToUnit("cm^3"));
