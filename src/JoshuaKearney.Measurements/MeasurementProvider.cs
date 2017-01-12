@@ -8,7 +8,13 @@ namespace JoshuaKearney.Measurements {
 
     public abstract class MeasurementProvider<T> where T : Measurement<T> {
         private IEnumerable<Unit<T>> parsableUnits;
-        private IEnumerable<ParsingOperator> operators;
+        private IEnumerable<ParsingOperator> operators = new ParsingOperator[] {
+            ParsingOperator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
+            ParsingOperator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
+            ParsingOperator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
+            ParsingOperator.CreateAddition<T, T, T>((x, y) => x.Add(y)),
+            ParsingOperator.CreateSubtraction<T, T, T>((x, y) => x.Subtract(y))
+        };
 
         public abstract T CreateMeasurement(double value, Unit<T> unit);
 
@@ -48,7 +54,7 @@ namespace JoshuaKearney.Measurements {
         public IEnumerable<ParsingOperator> ParseOperators {
             get {
                 if(this.operators == null) {
-                    this.operators = this.GetOperators() ?? new ParsingOperator[] { };
+                    this.operators = this.GetOperators().Concat(this.operators) ?? new ParsingOperator[] { };
                 }
 
                 return this.operators;

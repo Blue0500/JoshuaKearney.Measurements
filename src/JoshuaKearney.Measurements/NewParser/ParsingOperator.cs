@@ -42,5 +42,21 @@ namespace JoshuaKearney.Measurements.NewParser {
 
             return new ParsingOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Exponation, (x, y) => eval(x as TIn1, y as TIn2));
         }
+
+        public static ParsingOperator CreateAddition<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
+            where TIn1 : Measurement<TIn1>
+            where TIn2 : Measurement<TIn2>
+            where TResult : Measurement<TResult> {
+
+            return new ParsingOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Addition, (x, y) => eval(x as TIn1, y as TIn2));
+        }
+
+        public static ParsingOperator CreateSubtraction<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
+            where TIn1 : Measurement<TIn1>
+            where TIn2 : Measurement<TIn2>
+            where TResult : Measurement<TResult> {
+
+            return new ParsingOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Subtraction, (x, y) => eval(x as TIn1, y as TIn2));
+        }
     }
 }

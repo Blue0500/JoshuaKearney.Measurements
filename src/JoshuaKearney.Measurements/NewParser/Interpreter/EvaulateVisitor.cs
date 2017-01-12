@@ -12,37 +12,64 @@ namespace JoshuaKearney.Measurements.NewParser.Interpreter {
         private IReadOnlyDictionary<string, object> Units;
         private object lockObj = new object();
 
-        public Union<object, Exception> TryInterpret(AbstractSyntaxTree tree, IEnumerable<ParsingOperator> ops, IReadOnlyDictionary<string, object> units) {
+        public bool TryInterpret(
+            AbstractSyntaxTree tree, 
+            IEnumerable<ParsingOperator> ops, 
+            IReadOnlyDictionary<string, object> units,
+            out object success,
+            out Exception failure) {
+
             lock (lockObj) {
                 this.Operators = ops;
                 this.Units = units;
 
-                return this.Visit(tree);
+                return this.Visit(tree, out success, out failure);
             }
         }
 
-        public Union<object, Exception> Visit(AbstractSyntaxTree tree) {
+        public bool Visit(AbstractSyntaxTree tree, out object result, out Exception result2) {
             if (tree is BinaryOperatorTree) {
-                return this.VisitBinaryOperator(tree as BinaryOperatorTree);
+                return this.VisitBinaryOperator(tree as BinaryOperatorTree, out result, out result2);
             }
             else if (tree is IdLeaf) {
-                return this.VisitIdLeaf(tree as IdLeaf);
+                return this.VisitIdLeaf(tree as IdLeaf, out result, out result2);
             }
             else if (tree is NumberLeaf) {
-                return this.VisitNumberLeaf(tree as NumberLeaf);
+                return this.VisitNumberLeaf(tree as NumberLeaf, out result, out result2);
             }
             else {
-                return new Exception();
+                result = null;
+                result2 = new Exception();
+                return false;
             }
         }
 
-        public Union<object, Exception> VisitBinaryOperator(BinaryOperatorTree tree) {
-            return this.Visit(tree.LeftOperand).Select(
-                first => this.Visit(tree.RightOperand).Select(
-                    second => {
+        public bool VisitBinaryOperator(BinaryOperatorTree tree, out object success, out Exception failure) {
+            object first, second;
+            Exception exp;
+
+            if (this.Visit(tree.LeftOperand,  out first, out exp)) {
+                if (this.Visit(tree.RightOperand, out second, out exp)) {
+
+                }
+                else {
+                    success = null;
+                    failure = exp;
+                    return false;
+                }
+            }
+            else {
+                success = null;
+                failure = exp;
+                return false;
+            }
+
+           /// return this.Visit(tree.LeftOperand).Select(
+              //  first => this.Visit(tree.RightOperand).Select(
+                //    second => {
                         IEnumerable<ParsingOperator> ops;
-                        if (tree.Type == BinaryOperatorType.Multiplication) {
-                            if (this.FindOp(BinaryOperatorType.Multiplication, first.GetType(), second.GetType(), out ops)) {
+                        if (tree.Type == BinaryOperatorType.Multiplication || tree.Type == BinaryOperatorType.Addition) {
+                            if (this.FindOp(tree.Type, first.GetType(), second.GetType(), out ops)) {
                                 object measurement;
                                 if (this.ApplyOperators(ops, first, second, out measurement)) {
                                     return measurement;
@@ -55,7 +82,7 @@ namespace JoshuaKearney.Measurements.NewParser.Interpreter {
                                 }                                
                             }
                         }
-                        else if (tree.Type == BinaryOperatorType.Exponation || tree.Type == BinaryOperatorType.Division) {
+                        else {
                             if (this.FindOp(tree.Type, first.GetType(), second.GetType(), out ops)) {
                                 object measurement;
                                 if (this.ApplyOperators(ops, first, second, out measurement)) {
@@ -65,11 +92,11 @@ namespace JoshuaKearney.Measurements.NewParser.Interpreter {
                         }
 
                         return new Exception($"Evaluation of operator '{tree.Token}' failed on operands '{first}' and '{second}'");
-                    },
-                    exception => exception    
-                ),
-                exception => exception    
-            );            
+                //    },
+              //      exception => exception    
+               // ),
+                //exception => exception    
+            //);            
         }
 
         public Union<object, Exception> VisitIdLeaf(IdLeaf id) {

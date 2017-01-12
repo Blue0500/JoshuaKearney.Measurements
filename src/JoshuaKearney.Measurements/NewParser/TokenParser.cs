@@ -39,7 +39,7 @@ namespace JoshuaKearney.Measurements.NewParser {
                 Token prev = this.CurrentToken;
                 this.Advance(this.CurrentToken.Type);
 
-                if (this.CurrentToken.Type == TokenType.Plus) {
+                if (prev.Type == TokenType.Plus) {
                     first = new BinaryOperatorTree(first, this.MultExpression(), BinaryOperatorType.Addition, prev);
                 }
                 else {

@@ -13,7 +13,7 @@ namespace JoshuaKearney.Measurements.Testing2 {
             MeasurementParser<Area> parse = new MeasurementParser<Area>(Area.Provider);
 
             Area result;
-            Console.WriteLine(parse.TryParse("3 ((((((m))))))^2", out result));
+            Console.WriteLine(parse.TryParse("(10 m) ^ 2 + ft^2", out result));
             Console.WriteLine(result);
 
             Console.Read();

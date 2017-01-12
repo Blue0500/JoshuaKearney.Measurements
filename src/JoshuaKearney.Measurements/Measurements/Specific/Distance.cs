@@ -58,12 +58,8 @@ namespace JoshuaKearney.Measurements {
             };
 
             protected override IEnumerable<ParsingOperator> GetOperators() => new[] {
-                ParsingOperator.CreateMultiplication<Distance, DoubleMeasurement, Distance>((x, y) => x.Multiply(y)),
                 ParsingOperator.CreateMultiplication<Distance, Distance, Area>((x, y) => x.Multiply(y)),
                 ParsingOperator.CreateMultiplication<Distance, Area, Volume>((x, y) => x.Multiply(y)),
-
-                ParsingOperator.CreateDivision<Distance, DoubleMeasurement, Distance>((x, y) => x.Divide(y)),
-                ParsingOperator.CreateDivision<Distance, Distance, DoubleMeasurement>((x, y) => x.Divide(y)),
 
                 ParsingOperator.CreateExponation<Distance, DoubleMeasurement, Area>((x, y) => y == 2 ? x.Square() : null),
                 ParsingOperator.CreateExponation<Distance, DoubleMeasurement, Volume>((x, y) => y == 3 ? x.Cube() : null)
