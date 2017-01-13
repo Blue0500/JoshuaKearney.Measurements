@@ -1,4 +1,4 @@
-﻿using JoshuaKearney.Measurements.NewParser;
+﻿using JoshuaKearney.Measurements.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +12,9 @@ namespace JoshuaKearney.Measurements.Testing2 {
         public static void Main(string[] args) {
             MeasurementParser<Area> parse = new MeasurementParser<Area>(Area.Provider);
 
-            Area result;
-            Console.WriteLine(parse.TryParse("(10 m) ^ 2 + ft^2", out result));
-            Console.WriteLine(result);
+           // Area result;
+            Console.WriteLine(parse.Parse("(10 m) ^ 2 + ft^2"));
+           // Console.WriteLine(result);
 
             Console.Read();
         }

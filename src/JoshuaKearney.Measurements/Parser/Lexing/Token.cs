@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoshuaKearney.Measurements.NewParser.Lexer {
-    public class Token {
+namespace JoshuaKearney.Measurements.Parser.Lexing {
+    internal class Token {
         public static Token Plus { get; } = new Token(TokenType.Plus, "+");
         public static Token Minus { get; } = new Token(TokenType.Minus, "-");
         public static Token Askerisk { get; } = new Token(TokenType.Asterisk, "*");

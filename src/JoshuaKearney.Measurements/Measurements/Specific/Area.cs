@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using static JoshuaKearney.Measurements.Area.Units;
-using JoshuaKearney.Measurements.NewParser;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
@@ -69,13 +69,13 @@ namespace JoshuaKearney.Measurements {
 
             protected override IEnumerable<Unit<Area>> GetParsableUnits() => new[] { MeterSquared, Acre };
 
-            protected override IEnumerable<ParsingOperator> GetOperators() => new[] {
-                ParsingOperator.CreateMultiplication<Area, DoubleMeasurement, Area>((x, y) => x.Multiply(y)),
-                ParsingOperator.CreateMultiplication<Area, Distance, Volume>((x, y) => x.Multiply(y)),
+            protected override IEnumerable<Operator> GetOperators() => new[] {
+                Operator.CreateMultiplication<Area, DoubleMeasurement, Area>((x, y) => x.Multiply(y)),
+                Operator.CreateMultiplication<Area, Distance, Volume>((x, y) => x.Multiply(y)),
 
-                ParsingOperator.CreateDivision<Area, DoubleMeasurement, Area>((x, y) => x.Divide(y)),
-                ParsingOperator.CreateDivision<Area, Area, DoubleMeasurement>((x, y) => x.Divide(y)),
-                ParsingOperator.CreateDivision<Area, Distance, Distance>((x, y) => x.Divide(y))
+                Operator.CreateDivision<Area, DoubleMeasurement, Area>((x, y) => x.Divide(y)),
+                Operator.CreateDivision<Area, Area, DoubleMeasurement>((x, y) => x.Divide(y)),
+                Operator.CreateDivision<Area, Distance, Distance>((x, y) => x.Divide(y))
             };
         }
     }

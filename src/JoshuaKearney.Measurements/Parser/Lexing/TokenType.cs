@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoshuaKearney.Measurements.NewParser.Lexer {
-    public enum TokenType {
+namespace JoshuaKearney.Measurements.Parser.Lexing {
+    internal enum TokenType {
         EOF,
         Number,
         Plus,

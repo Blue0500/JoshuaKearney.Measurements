@@ -1,128 +1,93 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using JoshuaKearney.Measurements.Parser.Syntax;
 
 namespace JoshuaKearney.Measurements.Parser {
+    public abstract class Operator {
+        protected internal Operator() { }
 
-    internal class Operator : Token {
-        public static Operator CloseParen { get; } = new Operator(")", 100);
+        public static Operator CreateMultiplication<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
+            where TIn1 : Measurement<TIn1>
+            where TIn2 : Measurement<TIn2>
+            where TResult : Measurement<TResult> {
 
-        public static Operator OpenParen { get; } = new Operator("(", 100);
-
-        public static BinaryOperator Multiply { get; } = new BinaryOperator("*", 5, (x, y) => {
-            var result = ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), x, y) ?? ApplyBinaryOp(typeof(IMultipliableMeasurement<,>), y, x) ?? MultiplyToTerm(x, y);
-            return result;
-        });
-
-        public static BinaryOperator Divide { get; } = new BinaryOperator("/", 5, (x, y) => ApplyBinaryOp(typeof(IDividableMeasurement<,>), x, y) ?? DivideToRatio(x, y));
-
-        public static UrnaryOperator Square { get; } = new UrnaryOperator("²", 10, x => ApplyUrnaryOp(typeof(ISquareableMeasurement<>), x));
-
-        public static UrnaryOperator Cube { get; } = new UrnaryOperator("³", 10, x => ApplyUrnaryOp(typeof(ICubableMeasurement<>), x));
-
-        public Operator(string value, int priority) : base(value) {
-            this.Priority = priority;
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Multiplication, (x, y) => eval(x as TIn1, y as TIn2));
         }
 
-        // Higher is higher priortiy
-        public int Priority { get; }
+        public static Operator CreateDivision<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
+            where TIn1 : Measurement<TIn1>
+            where TIn2 : Measurement<TIn2>
+            where TResult : Measurement<TResult> {
 
-        private static MeasurementToken DivideToRatio(MeasurementToken x, MeasurementToken y) {
-            var methodInfo = x.MeasurementValue.GetType().GetRuntimeMethods().Where(z => z.Name == "DivideToRatio").First();
-
-            if (methodInfo.GetGenericArguments().Count() != 1) {
-                return null;
-            }
-            else {
-                var divideToRatio = methodInfo.MakeGenericMethod(y.MeasurementValue.GetType());
-                return new MeasurementToken(divideToRatio.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
-            }
-        }
-        private static MeasurementToken MultiplyToTerm(MeasurementToken x, MeasurementToken y) {
-            var methodInfo = x.MeasurementValue.GetType().GetRuntimeMethods().Where(z => z.Name == "MultiplyToTerm").First();
-
-            if (methodInfo.GetGenericArguments().Count() != 1) {
-                return null;
-            }
-            else {
-                var multiplyToTerm = methodInfo.MakeGenericMethod(y.MeasurementValue.GetType());
-                return new MeasurementToken(multiplyToTerm.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
-            }
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Division, (x, y) => eval(x as TIn1, y as TIn2));
         }
 
-        private static MethodInfo GetArithmeticInterfaceMethod(Type tInterface, MeasurementToken x, MeasurementToken y) {
-            Type tFirst = x.MeasurementValue.GetType();
-            Type tSecond = y.MeasurementValue.GetType();
+        public static Operator CreateExponation<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
+            where TIn1 : Measurement<TIn1>
+            where TIn2 : Measurement<TIn2>
+            where TResult : Measurement<TResult> {
 
-            var tGenericInterface = tFirst
-                .GetTypeInfo()
-                .ImplementedInterfaces
-                .Where(z =>
-                    z.IsConstructedGenericType &&
-                    z.GetGenericTypeDefinition() == tInterface &&
-                    z.GenericTypeArguments.Count() == 2 &&
-                    z.GenericTypeArguments[0] == tSecond)
-                .FirstOrDefault();
-
-            return tGenericInterface
-                ?.GetTypeInfo()
-                ?.DeclaredMethods
-                ?.First();
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Exponation, (x, y) => eval(x as TIn1, y as TIn2));
         }
 
-        private static MeasurementToken ApplyBinaryOp(Type tInterface, MeasurementToken x, MeasurementToken y) {
-            var mathMethod = GetArithmeticInterfaceMethod(tInterface, x, y);
+        public static Operator CreateAddition<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
+            where TIn1 : Measurement<TIn1>
+            where TIn2 : Measurement<TIn2>
+            where TResult : Measurement<TResult> {
 
-            if (mathMethod != null) {
-                return new MeasurementToken(mathMethod.Invoke(x.MeasurementValue, new[] { y.MeasurementValue }));
-            }
-            else {
-                return null;
-            }
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Addition, (x, y) => eval(x as TIn1, y as TIn2));
         }
 
-        private static MeasurementToken ApplyUrnaryOp(Type tInterface, MeasurementToken x) {
-            Type tFirst = x.MeasurementValue.GetType();
+        public static Operator CreateSubtraction<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
+            where TIn1 : Measurement<TIn1>
+            where TIn2 : Measurement<TIn2>
+            where TResult : Measurement<TResult> {
 
-            var tGenericInterface = tFirst
-                .GetTypeInfo()
-                .ImplementedInterfaces
-                .Where(z =>
-                    z.IsConstructedGenericType &&
-                    z.IsConstructedGenericType &&
-                    z.GetGenericTypeDefinition() == tInterface &&
-                    z.GenericTypeArguments.Count() == 1)
-                .FirstOrDefault();
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Subtraction, (x, y) => eval(x as TIn1, y as TIn2));
+        }
 
-            if (tGenericInterface != null) {
-                var mathMethod = tGenericInterface
-                    .GetTypeInfo()
-                    .DeclaredMethods
-                    .First();
+        public static Operator CreateUrnaryNegative<TIn, TResult>(Func<TIn, TResult> eval)
+            where TIn : Measurement<TIn>
+            where TResult : Measurement<TResult> {
 
-                return new MeasurementToken(mathMethod.Invoke(x.MeasurementValue, new object[] { }));
-            }
-            else {
-                return null;
-            }
+            return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Negation, (x) => eval(x as TIn));
+        }
+
+        public static Operator CreateUrnaryPositive<TIn, TResult>(Func<TIn, TResult> eval)
+           where TIn : Measurement<TIn>
+           where TResult : Measurement<TResult> {
+
+            return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Positation, (x) => eval(x as TIn));
+        }
+    }
+
+    internal class BinaryOperator : Operator {
+        public BinaryOperatorType Type { get; }
+        public Func<IMeasurement, IMeasurement, IMeasurement> Evaluate { get; }
+        public Type InputType1 { get; }
+        public Type InputType2 { get; }
+
+        public BinaryOperator(Type input1, Type input2, BinaryOperatorType type, Func<IMeasurement, IMeasurement, IMeasurement> eval) {
+            this.Evaluate = eval;
+            this.Type = type;
+            this.InputType1 = input1;
+            this.InputType2 = input2;
         }
     }
 
     internal class UrnaryOperator : Operator {
+        public UrnaryOperatorType Type { get; }
+        public Func<IMeasurement, IMeasurement> Evaluate { get; }
+        public Type InputType { get; }
 
-        public UrnaryOperator(string value, int priority, Func<MeasurementToken, MeasurementToken> eval) : base(value, priority) {
+        public UrnaryOperator(Type input, UrnaryOperatorType type, Func<IMeasurement, IMeasurement> eval) {
             this.Evaluate = eval;
+            this.Type = type;
+            this.InputType = input;
         }
-
-        public Func<MeasurementToken, MeasurementToken> Evaluate { get; }
     }
 
-    internal class BinaryOperator : Operator {
-
-        public BinaryOperator(string value, int priority, Func<MeasurementToken, MeasurementToken, MeasurementToken> eval) : base(value, priority) {
-            this.Evaluate = eval;
-        }
-
-        public Func<MeasurementToken, MeasurementToken, MeasurementToken> Evaluate { get; }
-    }
 }

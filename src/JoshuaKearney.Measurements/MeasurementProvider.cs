@@ -2,25 +2,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using JoshuaKearney.Measurements.NewParser;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
     public abstract class MeasurementProvider<T> where T : Measurement<T> {
         private IEnumerable<Unit<T>> parsableUnits;
-        private IEnumerable<ParsingOperator> operators = new ParsingOperator[] {
-            ParsingOperator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
-            ParsingOperator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
-            ParsingOperator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
-            ParsingOperator.CreateAddition<T, T, T>((x, y) => x.Add(y)),
-            ParsingOperator.CreateSubtraction<T, T, T>((x, y) => x.Subtract(y))
+        private IEnumerable<Operator> operators = new Operator[] {
+            Operator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
+            Operator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
+            Operator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
+            Operator.CreateAddition<T, T, T>((x, y) => x.Add(y)),
+            Operator.CreateSubtraction<T, T, T>((x, y) => x.Subtract(y))
         };
 
         public abstract T CreateMeasurement(double value, Unit<T> unit);
 
         protected virtual IEnumerable<Unit<T>> GetParsableUnits() => new Unit<T>[] { };
 
-        protected virtual IEnumerable<ParsingOperator> GetOperators() => new ParsingOperator[] { };
+        protected virtual IEnumerable<Operator> GetOperators() => new Operator[] { };
 
         public MeasurementProvider<T> AppendParsableUnits(params Unit<T>[] units) {
             Validate.NonNull(units, nameof(units));
@@ -51,10 +51,10 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        public IEnumerable<ParsingOperator> ParseOperators {
+        public IEnumerable<Operator> ParseOperators {
             get {
                 if(this.operators == null) {
-                    this.operators = this.GetOperators().Concat(this.operators) ?? new ParsingOperator[] { };
+                    this.operators = (this.GetOperators() ?? new Operator[] { }).Concat(this.operators);
                 }
 
                 return this.operators;

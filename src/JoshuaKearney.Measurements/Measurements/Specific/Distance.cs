@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using JoshuaKearney.Measurements.NewParser;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
     public sealed class Distance : Measurement<Distance> {
@@ -57,12 +57,12 @@ namespace JoshuaKearney.Measurements {
                 Units.Meter, Units.Centimeter, Units.Kilometer, Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard, Units.Millimeter
             };
 
-            protected override IEnumerable<ParsingOperator> GetOperators() => new[] {
-                ParsingOperator.CreateMultiplication<Distance, Distance, Area>((x, y) => x.Multiply(y)),
-                ParsingOperator.CreateMultiplication<Distance, Area, Volume>((x, y) => x.Multiply(y)),
+            protected override IEnumerable<Operator> GetOperators() => new[] {
+                Operator.CreateMultiplication<Distance, Distance, Area>((x, y) => x.Multiply(y)),
+                Operator.CreateMultiplication<Distance, Area, Volume>((x, y) => x.Multiply(y)),
 
-                ParsingOperator.CreateExponation<Distance, DoubleMeasurement, Area>((x, y) => y == 2 ? x.Square() : null),
-                ParsingOperator.CreateExponation<Distance, DoubleMeasurement, Volume>((x, y) => y == 3 ? x.Cube() : null)
+                Operator.CreateExponation<Distance, DoubleMeasurement, Area>((x, y) => y == 2 ? x.Square() : null),
+                Operator.CreateExponation<Distance, DoubleMeasurement, Volume>((x, y) => y == 3 ? x.Cube() : null)
             };
         }
     }

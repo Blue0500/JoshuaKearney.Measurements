@@ -2,6 +2,7 @@
 using System.Linq;
 
 namespace JoshuaKearney.Measurements {
+    internal interface IMeasurement { }
 
     /// <summary>
     /// The base class to represent all measurements within JoshuaKearney.Measurements
@@ -10,7 +11,7 @@ namespace JoshuaKearney.Measurements {
     /// <seealso cref="System.IEquatable{TSelf}" />
     /// <seealso cref="System.IComparable{TSelf}" />
     /// <seealso cref="System.IComparable" />
-    public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable
+    public abstract class Measurement<TSelf> : IEquatable<TSelf>, IComparable<TSelf>, IComparable, IMeasurement
         where TSelf : Measurement<TSelf> {
 
         // For unit

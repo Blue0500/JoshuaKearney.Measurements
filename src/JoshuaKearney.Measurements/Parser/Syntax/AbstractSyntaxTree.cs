@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JoshuaKearney.Measurements.NewParser.Lexer;
+using JoshuaKearney.Measurements.Parser.Lexing;
 
-namespace JoshuaKearney.Measurements.NewParser.Syntax {
-    public abstract class AbstractSyntaxTree {
+namespace JoshuaKearney.Measurements.Parser.Syntax {
+    internal abstract class AbstractSyntaxTree {
         public Token Token { get; }
 
         public AbstractSyntaxTree(Token tok) {
@@ -14,7 +14,7 @@ namespace JoshuaKearney.Measurements.NewParser.Syntax {
         }
     }
 
-    public class NumberLeaf : AbstractSyntaxTree {
+    internal class NumberLeaf : AbstractSyntaxTree {
         public double Value { get; }
 
         public NumberLeaf(NumberToken tok) : base(tok) {
@@ -22,7 +22,7 @@ namespace JoshuaKearney.Measurements.NewParser.Syntax {
         }
     }
 
-    public class IdLeaf : AbstractSyntaxTree {
+    internal class IdLeaf : AbstractSyntaxTree {
         public string Value { get; }
 
         public IdLeaf(IdToken tok) : base(tok) {
@@ -30,11 +30,11 @@ namespace JoshuaKearney.Measurements.NewParser.Syntax {
         }
     }
 
-    public enum BinaryOperatorType {
+    internal enum BinaryOperatorType {
         Multiplication, Division, Addition, Subtraction, Exponation
     }
 
-    public class BinaryOperatorTree : AbstractSyntaxTree {
+    internal class BinaryOperatorTree : AbstractSyntaxTree {
         public AbstractSyntaxTree LeftOperand { get; }
 
         public AbstractSyntaxTree RightOperand { get; }
@@ -48,11 +48,11 @@ namespace JoshuaKearney.Measurements.NewParser.Syntax {
         }
     }
 
-    public enum UrnaryOperatorType {
+    internal enum UrnaryOperatorType {
         Negation, Positation    
     }
 
-    public class UrnaryOperatorTree : AbstractSyntaxTree {
+    internal class UrnaryOperatorTree : AbstractSyntaxTree {
         public AbstractSyntaxTree Operand { get; }
 
         public UrnaryOperatorType Type { get; }
