@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
@@ -94,6 +95,8 @@ namespace JoshuaKearney.Measurements {
 
         private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {
             protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit };
+
+            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
 
             public override DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) => new DoubleMeasurement(value, Units.DefaultUnit);
         }

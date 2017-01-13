@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using static JoshuaKearney.Measurements.Mass.Units;
 using static JoshuaKearney.Measurements.Volume.Units;
 using static JoshuaKearney.Measurements.Density.Units;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
     public class Density : Ratio<Density, Mass, Volume> {
@@ -37,6 +38,8 @@ namespace JoshuaKearney.Measurements {
             public override Density CreateMeasurement(double value, Unit<Density> unit) => new Density(value, unit);
 
             protected override IEnumerable<Unit<Density>> GetParsableUnits() => new[] { KilogramPerMeterCubed, GramPerMilliliter };
+
+            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
         }
     }
 }

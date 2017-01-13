@@ -7,8 +7,7 @@ using JoshuaKearney.Measurements.Parser;
 namespace JoshuaKearney.Measurements {
 
     public abstract class MeasurementProvider<T> where T : Measurement<T> {
-        private IEnumerable<Unit<T>> parsableUnits;
-        private IEnumerable<Operator> operators = new Operator[] {
+        private static readonly IEnumerable<Operator> defaultOperators = new[] {
             Operator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
             Operator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
             Operator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
@@ -16,21 +15,35 @@ namespace JoshuaKearney.Measurements {
             Operator.CreateSubtraction<T, T, T>((x, y) => x.Subtract(y))
         };
 
+        private IEnumerable<Unit<T>> parsableUnits;
+        private IEnumerable<Operator> operators = null;
+
         public abstract T CreateMeasurement(double value, Unit<T> unit);
 
-        protected virtual IEnumerable<Unit<T>> GetParsableUnits() => new Unit<T>[] { };
+        protected abstract IEnumerable<Unit<T>> GetParsableUnits();
 
-        protected virtual IEnumerable<Operator> GetOperators() => new Operator[] { };
+        protected abstract IEnumerable<Operator> GetOperators();
 
         public MeasurementProvider<T> AppendParsableUnits(params Unit<T>[] units) {
             Validate.NonNull(units, nameof(units));
 
-            IEnumerable<Unit<T>> par = this.GetParsableUnits();
             return new ExtendedMeasurementProvider<T>(
                 this.CreateMeasurement,
-                () => par.Concat(units)
+                () => this.ParsableUnits.Concat(units),
+                () => this.ParseOperators
             );
         }
+
+        public MeasurementProvider<T> AppendOperators(params Operator[] operators) {
+            Validate.NonNull(operators, nameof(operators));
+
+            return new ExtendedMeasurementProvider<T>(
+                this.CreateMeasurement,
+                () => this.ParsableUnits,
+                () => this.ParseOperators.Concat(operators)
+            );
+        }
+
 
         public MeasurementProvider() {
             this.DefaultUnit = new Unit<T>("", 1, this);
@@ -54,7 +67,7 @@ namespace JoshuaKearney.Measurements {
         public IEnumerable<Operator> ParseOperators {
             get {
                 if(this.operators == null) {
-                    this.operators = (this.GetOperators() ?? new Operator[] { }).Concat(this.operators);
+                    this.operators = (this.GetOperators() ?? new Operator[] { }).Concat(defaultOperators);
                 }
 
                 return this.operators;
@@ -86,7 +99,20 @@ namespace JoshuaKearney.Measurements {
                 this.Component1Provider,
                 this.Component2Provider,
                 this.CreateMeasurement,
-                () => this.GetParsableUnits().Concat(units)
+                () => this.ParsableUnits.Concat(units),
+                () => this.ParseOperators
+            );
+        }
+
+        public new CompoundMeasurementProvider<T, TComp1, TComp2> AppendOperators(params Operator[] operators) {
+            Validate.NonNull(operators, nameof(operators));
+
+            return new ExtendedComplexMeasurementProvider<T, TComp1, TComp2>(
+                this.Component1Provider,
+                this.Component2Provider,
+                this.CreateMeasurement,
+                () => this.ParsableUnits,
+                () => this.ParseOperators.Concat(operators)
             );
         }
 

@@ -116,64 +116,6 @@ namespace JoshuaKearney.Measurements.Parser.Evaluating {
             success = new DoubleMeasurement(leaf.Value);
             failure = null;
             return true;
-        }
-
-        private bool ApplyBinaryOperators(IEnumerable<BinaryOperator> ops, IMeasurement first, IMeasurement second, out IMeasurement result) {
-            result = null;
-
-            foreach(var op in ops) {
-                if (result != null) {
-                    break;
-                }
-                else {
-                    result = op.Evaluate(first, second);
-                }
-            }
-
-            if (result != null) {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool FindBinaryOperators(BinaryOperatorType type, Type t1, Type t2, out IEnumerable<BinaryOperator> operators) {
-            var ops = this.Operators
-                .Where(x => x is BinaryOperator)
-                .Select(x => (BinaryOperator)x)
-                .Where(x => x.Type == type && x.InputType1 == t1 && x.InputType2 == t2);
-
-            operators = ops;
-            return operators.Count() > 0;            
-        }
-
-        private bool ApplyUrnaryOperators(IEnumerable<UrnaryOperator> ops, IMeasurement first, out IMeasurement result) {
-            result = null;
-
-            foreach (var op in ops) {
-                if (result != null) {
-                    break;
-                }
-                else {
-                    result = op.Evaluate(first);
-                }
-            }
-
-            if (result != null) {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool FindUrnaryOperators(UrnaryOperatorType type, Type t1, out IEnumerable<UrnaryOperator> operators) {
-            var ops = this.Operators
-                .Where(x => x is UrnaryOperator)
-                .Select(x => (UrnaryOperator)x)
-                .Where(x => x.Type == type && x.InputType == t1);
-
-            operators = ops;
-            return operators.Count() > 0;
-        }
+        }        
     }
 }

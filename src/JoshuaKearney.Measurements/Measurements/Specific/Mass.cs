@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
@@ -43,6 +44,8 @@ namespace JoshuaKearney.Measurements {
 
         private class MassProvider : MeasurementProvider<Mass> {
             public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
+
+            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
 
             protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram, Units.Ounce, Units.Pound };
         }

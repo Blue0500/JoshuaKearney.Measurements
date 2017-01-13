@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
@@ -171,6 +172,8 @@ namespace JoshuaKearney.Measurements {
             public override Term<T1, T2> CreateMeasurement(double value, Unit<Term<T1, T2>> unit) {
                 return new Term<T1, T2>(value, unit, Component1Provider, Component2Provider);
             }
+
+            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
 
             protected override IEnumerable<Unit<Term<T1, T2>>> GetParsableUnits() => 
                 new[] { Component1Provider.ParsableUnits.First().MultiplyToTermUnit(Component2Provider.ParsableUnits.First()) };

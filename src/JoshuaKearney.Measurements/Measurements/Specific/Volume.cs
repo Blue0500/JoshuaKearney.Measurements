@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using static JoshuaKearney.Measurements.Volume.Units;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
@@ -103,6 +104,8 @@ namespace JoshuaKearney.Measurements {
             public override Volume CreateMeasurement(double value, Unit<Volume> unit) => new Volume(value, unit);
 
             protected override IEnumerable<Unit<Volume>> GetParsableUnits() => new[] { MeterCubed, CentimeterCubed, FootCubed, InchCubed, KilometerCubed, Liter, MileCubed, MillimeterCubed };
+
+            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
         }
     }
 }

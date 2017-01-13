@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
@@ -198,7 +199,9 @@ namespace JoshuaKearney.Measurements {
 
             public override MeasurementProvider<TNumerator> Component1Provider { get; }
 
-            public override MeasurementProvider<TDenominator> Component2Provider { get; }                
+            public override MeasurementProvider<TDenominator> Component2Provider { get; }
+
+            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
 
             public override Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
                 return new Ratio<TNumerator, TDenominator>(value, unit, Component1Provider, Component2Provider);

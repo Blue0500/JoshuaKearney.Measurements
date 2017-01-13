@@ -163,6 +163,7 @@
     <Compile Include="Measurements\Specific\Distance.cs" />
     <Compile Include="Measurements\Specific\Mass.cs" />
     <Compile Include="Measurements\Specific\Volume.cs" />
+    <Compile Include="Parser\Evaluating\Evaluation.cs" />
     <Compile Include="Parser\Evaluating\EvaluationVisitor.cs" />
     <Compile Include="Parser\Lexing\Lexer.cs" />
     <Compile Include="Parser\Lexing\Token.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JoshuaKearney.Measurements.Parser;
 using static JoshuaKearney.Measurements.Angle.Units;
 
 namespace JoshuaKearney.Measurements {
@@ -100,6 +101,8 @@ namespace JoshuaKearney.Measurements {
             protected override IEnumerable<Unit<Angle>> GetParsableUnits() => new[] { Radian, Degree, Revolution, Gradian };
 
             public override Angle CreateMeasurement(double value, Unit<Angle> unit) => new Angle(value, unit);
+
+            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
         }
     }
 }
