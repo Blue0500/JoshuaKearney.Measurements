@@ -23,7 +23,15 @@ namespace JoshuaKearney.Measurements.Parser {
 
             this.Provider = provider;
             var info = GetProviderInfo(provider);
-            this.Units = info.Item1;
+            this.Units = info.Item1
+                .Concat(new Dictionary<string, IMeasurement>() {
+                    { "NaN", provider.NaN },
+                    { "Infinity", provider.PositiveInfinity },
+                    { "PositiveInfinity", provider.PositiveInfinity },
+                    { "NegativeInfinity", provider.PositiveInfinity }
+                })
+                .ToDictionary(x => x.Key, x => x.Value);
+
             this.Operators = info.Item2.Concat(ops).Concat(DoubleMeasurement.Provider.ParseOperators).Distinct();
         }
 
