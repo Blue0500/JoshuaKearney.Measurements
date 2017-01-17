@@ -45,7 +45,9 @@ namespace JoshuaKearney.Measurements {
         private class MassProvider : MeasurementProvider<Mass> {
             public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            protected override IEnumerable<Operator> GetOperators() => new[] {
+                Operator.CreateDivision<Mass, Volume, Density>((x, y) => x.Divide(y))
+            };
 
             protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram, Units.Ounce, Units.Pound };
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoshuaKearney.Measurements.Parser {
+namespace JoshuaKearney.Measurements.OldParser {
     internal interface IBinaryRelationship {
         object Apply(object item1, object item2);
     }

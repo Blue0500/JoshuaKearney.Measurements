@@ -5,32 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using JoshuaKearney.Measurements.Parser.Lexing;
-using JoshuaKearney.Measurements.Parser.Syntax;
-using JoshuaKearney.Measurements.Parser.Evaluating;
 
 namespace JoshuaKearney.Measurements.Parser {
     public class MeasurementParser<T> where T : Measurement<T> {
-        public MeasurementProvider<T> Provider { get; }
+        private MeasurementProvider<T> Provider { get; }
+        private IEnumerable<Operator> Operators { get; }
+        private IReadOnlyDictionary<string, IMeasurement> Units { get; }
 
-        public IEnumerable<Operator> Operators { get; }
+        private static Lexer Lexer { get; } = new Lexer();
+        private static EvaluationParser EvalParser { get; } = new EvaluationParser();
 
-        internal IReadOnlyDictionary<string, IMeasurement> Units { get; }
-
-        private static Lexing.Lexer lex = new Lexing.Lexer();
-        private static TokenParser parser = new TokenParser();
-        private static EvaluationVisitor interpreter = new EvaluationVisitor();
-
-        public MeasurementParser(MeasurementProvider<T> provider) : this(provider, new Operator[0]) { }
+        public MeasurementParser(MeasurementProvider<T> provider, params Operator[] operators) : this(provider, (IEnumerable<Operator>)operators) { }
 
         public MeasurementParser(MeasurementProvider<T> provider, IEnumerable<Operator> ops) {
-            this.Provider = provider;
+            Validate.NonNull(provider, nameof(provider));
+            Validate.NonNull(ops, nameof(ops));
 
-            var units = GetUnits(provider);
-            this.Units = units.Item1;
-            this.Operators = units.Item2.Concat(ops).Distinct();
+            this.Provider = provider;
+            var info = GetProviderInfo(provider);
+            this.Units = info.Item1;
+            this.Operators = info.Item2.Concat(ops).Concat(DoubleMeasurement.Provider.ParseOperators).Distinct();
         }
 
         public T Parse(string str) {
+            Validate.NonNull(str, nameof(str));
+
             T result;
             ParseException exp;
 
@@ -43,45 +42,45 @@ namespace JoshuaKearney.Measurements.Parser {
         }
 
         public bool TryParse(string str, out T success) {
-            T result;
+            Validate.NonNull(str, nameof(str));
+
             ParseException exp;
 
-            if (this.Parse(str, out result, out exp)) {
-                success = result;
+            if (this.Parse(str, out success, out exp)) {
                 return true;
             }
             else {
-                success = null;
                 return false;
             }
         }
 
         private bool Parse(string str, out T success, out ParseException failure) {
+            Validate.NonNull(str, nameof(str));
+
             IEnumerable<Token> toks;
-            AbstractSyntaxTree tree;
             IMeasurement result;
 
-            if (lex.TryGetTokens(str, out toks, out failure)) {
-                if (parser.TryParse(toks, out tree, out failure)) {
-                    if (interpreter.TryInterpret(tree, this.Operators, this.Units, out result, out failure)) {
-                        if (result is T) {
-                            success = (T)result;
-                            failure = null;
-                            return true;
-                        }
-                        else {
-                            failure = ParseException.TypeConversionError(result.GetType(), typeof(T));
-                        }
+            if (Lexer.TryGetTokens(str, out toks, out failure)) {
+                if (EvalParser.TryParse(toks, this.Operators, this.Units, out result, out failure)) {
+                    if (result is T) {
+                        success = (T)result;
+                        failure = null;
+                        return true;
+                    }
+                    else {
+                        failure = ParseException.TypeConversionError(result.GetType(), typeof(T));
                     }
                 }
             }
 
             success = null;
-            failure = failure ?? new ParseException("");
+            failure = failure ?? ParseException.UnspecifiedError();
             return false;
         }
 
-        private static Tuple<Dictionary<string, IMeasurement>, IEnumerable<Operator>> GetUnits<E>(MeasurementProvider<E> provider) where E : Measurement<E> {
+        private static Tuple<Dictionary<string, IMeasurement>, IEnumerable<Operator>> GetProviderInfo<E>(MeasurementProvider<E> provider) where E : Measurement<E> {
+            Validate.NonNull(provider, nameof(provider));
+
             Dictionary<string, IMeasurement> ret =
                 provider
                 .ParsableUnits
@@ -102,7 +101,7 @@ namespace JoshuaKearney.Measurements.Parser {
             IEnumerable<Operator> ops = provider.ParseOperators;
 
             if (provider.GetType().GetTypeInfo().BaseType != null && provider.GetType().GetTypeInfo().BaseType.GetGenericTypeDefinition() == typeof(CompoundMeasurementProvider<,,>)) {
-                MethodInfo info = typeof(MeasurementParser<T>).GetRuntimeMethods().First(x => x.Name == nameof(GetUnits));
+                MethodInfo info = typeof(MeasurementParser<T>).GetRuntimeMethods().First(x => x.Name == nameof(GetProviderInfo));
 
                 object provider1 = provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider);
                 object provider2 = provider.GetType().GetRuntimeProperty("Component2Provider").GetValue(provider);

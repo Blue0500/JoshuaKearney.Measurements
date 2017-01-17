@@ -15,51 +15,42 @@ namespace JoshuaKearney.Measurements {
         public static TNum Simplify<TSelf, TNum>(this Ratio<TSelf, TNum, DoubleMeasurement> measurement)
                 where TSelf : Ratio<TSelf, TNum, DoubleMeasurement>
                 where TNum : Measurement<TNum> {
+
             Validate.NonNull(measurement, nameof(measurement));
+
             return measurement.Select((x, y) => x.Divide(y));
         }
 
         public static double SimplifyToDouble<TSelf>(this Term<TSelf, DoubleMeasurement, DoubleMeasurement> term)
                 where TSelf : Term<TSelf, DoubleMeasurement, DoubleMeasurement> {
+
             Validate.NonNull(term, nameof(term));
+
             return term.Select((x, y) => x.Divide(y.ToDouble()));
         }
 
         public static TFirst Simplify<TSelf, TFirst>(this Term<TSelf, TFirst, DoubleMeasurement> measurement)
                 where TFirst : Measurement<TFirst>
                 where TSelf : Term<TSelf, TFirst, DoubleMeasurement> {
+
             Validate.NonNull(measurement, nameof(measurement));
+
             return measurement.Select((x, y) => x.Multiply(y));
         }
 
         public static TSecond Simplify<TSelf, TSecond>(this Term<TSelf, DoubleMeasurement, TSecond> measurement)
                 where TSecond : Measurement<TSecond>
                 where TSelf : Term<TSelf, DoubleMeasurement, TSecond> {
+
             Validate.NonNull(measurement, nameof(measurement));
+
             return measurement.Select((x, y) => y.Multiply(x));
-        }
-
-        public static DoubleMeasurement ToDoubleMeasurement(this int i) {
-            return new DoubleMeasurement(i);
-        }
-
-        public static DoubleMeasurement ToDoubleMeasurement(this double i) {
-            return new DoubleMeasurement(i);
-        }
-
-        public static DoubleMeasurement ToDoubleMeasurement(this long i) {
-            return new DoubleMeasurement(i);
-        }
-
-        public static DoubleMeasurement ToDoubleMeasurement(this float i) {
-            return new DoubleMeasurement(i);
         }
 
         public static double ToDouble(this Measurement<DoubleMeasurement> d) {
             Validate.NonNull(d, nameof(d));
             return d.ToDouble(DoubleMeasurement.Units.DefaultUnit);
         }
-
     }
 
     public sealed class DoubleMeasurement : Measurement<DoubleMeasurement> { 
@@ -96,7 +87,9 @@ namespace JoshuaKearney.Measurements {
         private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {
             protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit };
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            protected override IEnumerable<Operator> GetOperators() => new[] {
+                Operator.CreateExponation<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>((x, y) => Math.Pow(x, y))
+            };
 
             public override DoubleMeasurement CreateMeasurement(double value, Unit<DoubleMeasurement> unit) => new DoubleMeasurement(value, Units.DefaultUnit);
         }

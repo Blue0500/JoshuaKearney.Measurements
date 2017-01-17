@@ -14,12 +14,20 @@ namespace JoshuaKearney.Measurements {
         private Func<IEnumerable<Operator>> getOperators;
 
         public ExtendedMeasurementProvider(Func<double, Unit<T>, T> createMeasurement, Func<IEnumerable<Unit<T>>> getParsableUnits, Func<IEnumerable<Operator>> getops) {
+            Validate.NonNull(createMeasurement, nameof(createMeasurement));
+            Validate.NonNull(getParsableUnits, nameof(getParsableUnits));
+            Validate.NonNull(getops, nameof(getops));
+
             this.createMeasurement = createMeasurement;
             this.getParsableUnits = getParsableUnits;
             this.getOperators = getops;
         }
 
-        public override T CreateMeasurement(double value, Unit<T> unit) => this.createMeasurement(value, unit);
+        public override T CreateMeasurement(double value, Unit<T> unit) {
+            Validate.NonNull(unit, nameof(unit));
+
+            return this.createMeasurement(value, unit);
+        }
 
         protected override IEnumerable<Unit<T>> GetParsableUnits() => this.getParsableUnits();
 
@@ -38,17 +46,28 @@ namespace JoshuaKearney.Measurements {
         private Func<IEnumerable<Operator>> getOperators;
 
         public ExtendedComplexMeasurementProvider(MeasurementProvider<TComp1> comp1Provider, MeasurementProvider<TComp2> comp2Provider, Func<double, Unit<T>, T> createMeasurement, Func<IEnumerable<Unit<T>>> getParsableUnits, Func<IEnumerable<Operator>> getops) {
+            Validate.NonNull(comp1Provider, nameof(comp1Provider));
+            Validate.NonNull(comp2Provider, nameof(comp2Provider));
+            Validate.NonNull(createMeasurement, nameof(createMeasurement));
+            Validate.NonNull(getParsableUnits, nameof(getParsableUnits));
+            Validate.NonNull(getops, nameof(getops));
+
             this.createMeasurement = createMeasurement;
             this.getParsableUnits = getParsableUnits;
             this.Component1Provider = comp1Provider;
             this.Component2Provider = comp2Provider;
+            this.getOperators = getops;
         }
 
         public override MeasurementProvider<TComp1> Component1Provider { get; }
 
         public override MeasurementProvider<TComp2> Component2Provider { get; }
 
-        public override T CreateMeasurement(double value, Unit<T> unit) => this.createMeasurement(value, unit);
+        public override T CreateMeasurement(double value, Unit<T> unit) {
+            Validate.NonNull(unit, nameof(unit));
+
+            return this.createMeasurement(value, unit);
+        }
 
         protected override IEnumerable<Unit<T>> GetParsableUnits() => this.getParsableUnits();
 

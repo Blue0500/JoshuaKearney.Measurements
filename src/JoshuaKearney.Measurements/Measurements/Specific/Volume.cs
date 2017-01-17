@@ -4,16 +4,6 @@ using static JoshuaKearney.Measurements.Volume.Units;
 using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
-
-    public partial class MeasurementExtensions {
-        public static Area Divide(this Measurement<Volume> volume, Distance distance) {
-            Validate.NonNull(volume, nameof(volume));
-            Validate.NonNull(distance, nameof(distance));
-
-            return ((Volume)volume).Select((x, y) => y.Divide(distance).Multiply(x));
-        }
-    }
-
     public sealed class Volume : Term<Volume, Distance, Area> {
 
         public Volume() {
@@ -105,7 +95,26 @@ namespace JoshuaKearney.Measurements {
 
             protected override IEnumerable<Unit<Volume>> GetParsableUnits() => new[] { MeterCubed, CentimeterCubed, FootCubed, InchCubed, KilometerCubed, Liter, MileCubed, MillimeterCubed };
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            protected override IEnumerable<Operator> GetOperators() => new[] {
+                Operator.CreateDivision<Volume, Distance, Area>((x, y) => x.Divide(y)),
+                Operator.CreateDivision<Volume, Area, Distance>((x, y) => x.Divide(y))
+            };
+        }
+    }
+
+    public partial class MeasurementExtensions {
+        public static Area Divide(this Measurement<Volume> volume, Distance distance) {
+            Validate.NonNull(volume, nameof(volume));
+            Validate.NonNull(distance, nameof(distance));
+
+            return ((Volume)volume).Select((x, y) => y.Divide(distance).Multiply(x));
+        }
+
+        public static Distance Divide(this Measurement<Volume> volume, Area area) {
+            Validate.NonNull(volume, nameof(volume));
+            Validate.NonNull(area, nameof(area));
+
+            return ((Volume)volume).Select((x, y) => y.Divide(area).Multiply(x));
         }
     }
 }

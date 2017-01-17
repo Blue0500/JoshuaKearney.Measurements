@@ -39,7 +39,9 @@ namespace JoshuaKearney.Measurements {
 
             protected override IEnumerable<Unit<Density>> GetParsableUnits() => new[] { KilogramPerMeterCubed, GramPerMilliliter };
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            protected override IEnumerable<Operator> GetOperators() => new[] {
+                Operator.CreateMultiplication<Density, Volume, Mass>((x, y) => x.Multiply(y))
+            };
         }
     }
 }

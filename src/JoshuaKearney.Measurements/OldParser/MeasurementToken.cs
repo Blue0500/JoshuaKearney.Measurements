@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JoshuaKearney.Measurements.Parser {
+namespace JoshuaKearney.Measurements.OldParser {
 
     internal class MeasurementToken : Token, IEquatable<MeasurementToken> {
         public object MeasurementValue { get; }

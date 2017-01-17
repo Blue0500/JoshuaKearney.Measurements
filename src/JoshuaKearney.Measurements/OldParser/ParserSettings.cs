@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JoshuaKearney.Measurements.Parser {
+namespace JoshuaKearney.Measurements.OldParser {
     public class ParserSettings {
         private Dictionary<Type, IEnumerable<object>> allUnits = new Dictionary<Type, IEnumerable<object>>();
 

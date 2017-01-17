@@ -11,6 +11,9 @@ namespace JoshuaKearney.Measurements {
         public Angle Angle { get; }
 
         public Vector2d(T horizontalComp, T verticalComp) {
+            Validate.NonNull(horizontalComp, nameof(horizontalComp));
+            Validate.NonNull(verticalComp, nameof(verticalComp));
+
             this.Magnitude = horizontalComp.MeasurementProvider.CreateMeasurement(
                 Math.Sqrt(
                     Math.Pow(horizontalComp.ToDouble(horizontalComp.MeasurementProvider.DefaultUnit), 2) +
@@ -23,6 +26,9 @@ namespace JoshuaKearney.Measurements {
         }
 
         public Vector2d(T magnitude, Angle angle) {
+            Validate.NonNull(magnitude, nameof(magnitude));
+            Validate.NonNull(angle, nameof(angle));
+
             this.Magnitude = magnitude;
             this.Angle = angle;
         }
@@ -32,6 +38,8 @@ namespace JoshuaKearney.Measurements {
         public T HorizontalComponent => this.Magnitude.Multiply(Angle.Cos(this.Angle));
 
         public Vector2d<T> Add(Vector2d<T> that) {
+            Validate.NonNull(that, nameof(that));
+
             return new Vector2d<T>(
                 this.HorizontalComponent + that.HorizontalComponent, 
                 this.VerticleComponent + that.VerticleComponent
@@ -39,6 +47,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         public Vector2d<T> Subtract(Vector2d<T> that) {
+            Validate.NonNull(that, nameof(that));
+
             return new Vector2d<T>(
                 this.HorizontalComponent - that.HorizontalComponent, 
                 this.VerticleComponent - that.VerticleComponent

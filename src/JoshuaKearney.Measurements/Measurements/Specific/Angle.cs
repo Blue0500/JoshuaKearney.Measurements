@@ -10,26 +10,38 @@ namespace JoshuaKearney.Measurements {
 
     public class Angle : Measurement<Angle> {
         public static double Sin(Angle a) {
+            Validate.NonNull(a, nameof(a));
+
             return Math.Sin(a.ToDouble(Radian));
         }
 
         public static double Cos(Angle a) {
+            Validate.NonNull(a, nameof(a));
+
             return Math.Cos(a.ToDouble(Radian));
         }
 
         public static double Tan(Angle a) {
+            Validate.NonNull(a, nameof(a));
+
             return Math.Tan(a.ToDouble(Radian));
         }
 
         public static double Sec(Angle a) {
+            Validate.NonNull(a, nameof(a));
+
             return 1 / Cos(a);
         }
 
         public static double Csc(Angle a) {
+            Validate.NonNull(a, nameof(a));
+
             return 1 / Sin(a);
         }
 
         public static double Cot(Angle a) {
+            Validate.NonNull(a, nameof(a));
+
             return 1 / Tan(a);
         }
 

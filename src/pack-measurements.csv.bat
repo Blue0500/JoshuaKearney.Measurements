@@ -1,1 +1,1 @@
-nuget pack JoshuaKearney.Measurements.Csv/JoshuaKearney.Measurements.Csv.csproj
+nuget pack JoshuaKearney.Measurements.Csv/JoshuaKearney.Measurements.CsvConverters.csproj

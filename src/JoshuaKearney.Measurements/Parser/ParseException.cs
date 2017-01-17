@@ -13,9 +13,11 @@ namespace JoshuaKearney.Measurements.Parser {
         internal static ParseException UrnaryOperatorEvaluationFailed(string op, string term) => new ParseException(MessagePrefix + $"Evaluation of operator '{op} failed on operand {term}'");
         internal static ParseException UndefinedUnitDiscovered(string unit) => new ParseException(MessagePrefix + $"The unit '{unit}' is undefined");
         internal static ParseException UnrecognizedSyntaxConstructDiscovered(Type t) => new ParseException(MessagePrefix + $"The construct '{t.ToString()}' was not recognized as valid syntax");
+        internal static ParseException NumberParseFailed(char start) => new ParseException(MessagePrefix + $"Failed to parse number starting with '{start}'");
         internal static ParseException UnspecifiedError() => new ParseException(MessagePrefix + "Unspecified error");
 
         public ParseException(string message) : base(message) {
+            Validate.NonNull(message, nameof(message));
         }
     }
 }

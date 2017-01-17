@@ -9,6 +9,8 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
         public string Value { get; }
 
         public IdToken(string value) : base(TokenType.Id, value) {
+            Validate.NonNull(value, nameof(value));
+
             this.Value = value;
         }
     }

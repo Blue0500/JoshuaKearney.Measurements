@@ -44,10 +44,13 @@ namespace JoshuaKearney.Measurements {
         }
 
         public Unit<TSelf> ToUnit(string symbol) {
+            Validate.NonNull(symbol, nameof(symbol));
+
             return new Unit<TSelf>(symbol, this.Value, this.MeasurementProvider);
         }
         public PrefixableUnit<TSelf> ToPrefixableUnit(string symbol) {
             Validate.NonNull(symbol, nameof(symbol));
+
             return new PrefixableUnit<TSelf>(symbol, this.Value, this.MeasurementProvider);
         }
 
@@ -67,18 +70,26 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static bool IsInfinity(Measurement<TSelf> measurement) {
+            Validate.NonNull(measurement, nameof(measurement));
+
             return double.IsInfinity(measurement.Value);
         }
 
         public static bool IsNan(Measurement<TSelf> measurement) {
+            Validate.NonNull(measurement, nameof(measurement));
+
             return double.IsNaN(measurement.Value);
         }
 
         public static bool IsNegativeInfinity(Measurement<TSelf> measurement) {
+            Validate.NonNull(measurement, nameof(measurement));
+
             return double.IsNegativeInfinity(measurement.Value);
         }
 
         public static bool IsPositiveInfinity(Measurement<TSelf> measurement) {
+            Validate.NonNull(measurement, nameof(measurement));
+
             return double.IsPositiveInfinity(measurement.Value);
         }
 
@@ -278,6 +289,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public TSelf Add(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
+
             return this.MeasurementProvider.CreateMeasurement(
                 this.Value + that.Value, 
                 this.MeasurementProvider.DefaultUnit
@@ -317,16 +329,6 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        ///// <summary>
-        ///// Creates a unit with the given name and symbol from this measurement's value
-        ///// </summary>
-        ///// <param name="name">The name.</param>
-        ///// <param name="symbol">The symbol.</param>
-        ///// <returns></returns>
-        //public Unit<TSelf> CreateUnit(string name, string symbol) {
-        //    return new Unit<TSelf>(name, symbol, 1 / this.DefaultUnits);
-        //}
-
         /// <summary>
         /// Divides this instance by the specified ratio.
         /// </summary>
@@ -337,6 +339,9 @@ namespace JoshuaKearney.Measurements {
         public E Divide<E, F>(Ratio<F, TSelf, E> ratio)
                 where F : Ratio<F, TSelf, E>
                 where E : Measurement<E> {
+
+            Validate.NonNull(ratio, nameof(ratio));
+
             return ratio.Reciprocal().Multiply(this);
         }
 
@@ -347,6 +352,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public DoubleMeasurement Divide(Measurement<TSelf> that) {
             Validate.NonNull(that, nameof(that));
+
             return this.Value / that.Value;
         }
 
@@ -432,6 +438,9 @@ namespace JoshuaKearney.Measurements {
         public T Multiply<T, E>(Ratio<E, T, TSelf> ratio)
             where E : Ratio<E, T, TSelf>
             where T : Measurement<T> {
+
+            Validate.NonNull(ratio, nameof(ratio));
+
             return ratio.Multiply(this);
         }
 
@@ -452,7 +461,7 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <returns></returns>
         public TSelf Negate() => this.MeasurementProvider.CreateMeasurement(
-            -this.Value,
+            -this.ToDouble(this.MeasurementProvider.DefaultUnit),
             this.MeasurementProvider.DefaultUnit
         );
 

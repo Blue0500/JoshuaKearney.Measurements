@@ -14,6 +14,7 @@ namespace JoshuaKearney.Measurements {
         public abstract MeasurementProvider<T2> Item2Provider { get; }
 
         public T1 Divide(T2 other) {
+            Validate.NonNull(other, nameof(other));
             return this.DivideToFirst(other);
         }
 
@@ -24,17 +25,9 @@ namespace JoshuaKearney.Measurements {
             item1.ToDouble(item1.MeasurementProvider.DefaultUnit) * item2.ToDouble(item2.MeasurementProvider.DefaultUnit),
             item1.MeasurementProvider.DefaultUnit.MultiplyToTermUnit(item2.MeasurementProvider.DefaultUnit).ToTermUnit(provider)
         ) { }
-        //    item1.ToDouble(item1.MeasurementProvider.DefaultUnit) * item2.ToDouble(item2.MeasurementProvider.DefaultUnit),
-        //    item1.MeasurementProvider.DefaultUnit,
-        //    item2.MeasurementProvider.DefaultUnit, 
-        //    provider
-        //) { }
 
         protected Term(double amount, Unit<TSelf> unit) : base(amount, unit) {
         }
-
-        //protected Term(double amount, Unit<T1> item1Def, Unit<T2> item2Def, MeasurementProvider<TSelf> provider) : base(amount, item1Def.MultiplyToTermUnit(item2Def).ToTermUnit(provider)) {
-        //}
 
         public TNew Select<TNew>(Func<T1, T2, TNew> selector) {
             Validate.NonNull(selector, nameof(selector));
@@ -91,6 +84,10 @@ namespace JoshuaKearney.Measurements {
         );
 
         public static implicit operator Term<T1, T2>(Term<TSelf, T1, T2> term) {
+            if (term == null) {
+                return null;
+            }
+
             return term.ToTerm();
         }
 
@@ -118,6 +115,9 @@ namespace JoshuaKearney.Measurements {
             where T2 : Measurement<T2> {
 
         internal Term(double amount, Unit<Term<T1, T2>> unit, MeasurementProvider<T1> t1Prov, MeasurementProvider<T2> t2Prov) : base(amount, unit) {
+            Validate.NonNull(t1Prov, nameof(t1Prov));
+            Validate.NonNull(t2Prov, nameof(t2Prov));
+
             this.Item1Provider = t1Prov;
             this.Item2Provider = t2Prov;
             this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
@@ -152,6 +152,9 @@ namespace JoshuaKearney.Measurements {
         private static MeasurementProvider<Term<T1, T2>> provider;
 
         public static MeasurementProvider<Term<T1, T2>> GetProvider(MeasurementProvider<T1> numProvider, MeasurementProvider<T2> denomProvider) {
+            Validate.NonNull(numProvider, nameof(numProvider));
+            Validate.NonNull(denomProvider, nameof(denomProvider));
+
             if (provider == null) {
                 provider = new TermProvider(numProvider, denomProvider);
             }
@@ -161,6 +164,9 @@ namespace JoshuaKearney.Measurements {
 
         private class TermProvider : CompoundMeasurementProvider<Term<T1, T2>, T1, T2> {
             public TermProvider(MeasurementProvider<T1> t1Prov, MeasurementProvider<T2> t2Prov) {
+                Validate.NonNull(t1Prov, nameof(t1Prov));
+                Validate.NonNull(t2Prov, nameof(t2Prov));
+
                 this.Component1Provider = t1Prov;
                 this.Component2Provider = t2Prov;
             }
@@ -170,6 +176,8 @@ namespace JoshuaKearney.Measurements {
             public override MeasurementProvider<T2> Component2Provider { get; }                
 
             public override Term<T1, T2> CreateMeasurement(double value, Unit<Term<T1, T2>> unit) {
+                Validate.NonNull(unit, nameof(unit));
+
                 return new Term<T1, T2>(value, unit, Component1Provider, Component2Provider);
             }
 

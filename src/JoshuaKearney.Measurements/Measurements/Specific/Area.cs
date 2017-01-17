@@ -56,8 +56,6 @@ namespace JoshuaKearney.Measurements {
             public static Unit<Area> MileSquared => mileSquared.Value;
             public static Unit<Area> MillimeterSquared => millimeterSquared.Value;
             public static Unit<Area> YardSquared => yardSquared.Value;
-
-
         }
 
         private class AreaProvider : CompoundMeasurementProvider<Area, Distance, Distance> {

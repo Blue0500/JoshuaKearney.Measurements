@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace JoshuaKearney.Measurements.Parser.Lexing {
+
     internal class Lexer {
+        private static NumberParser numParser { get; } = new NumberParser();
+
         private char[] text;
         private int position = 0;
         private object lockObj = new object();
@@ -22,6 +23,8 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
         }
 
         public bool TryGetTokens(string text, out IEnumerable<Token> success, out ParseException failure) {
+            Validate.NonNull(text, nameof(text));
+
             lock (this.lockObj) {
                 this.text = text.ToCharArray();
                 this.position = 0;
@@ -29,27 +32,19 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
                 List<Token> allToks = new List<Token>();
 
                 do {
-                    if (char.IsDigit(CurrentChar)) {
-                        string numStr = CurrentChar.ToString();
-                        double num = double.Parse(numStr);
+                    if (char.IsDigit(CurrentChar) || this.CurrentChar == '.') {
+                        char start = this.CurrentChar;
+                        double ret;
 
-                        while (this.Advance() && (char.IsDigit(CurrentChar) || CurrentChar == '.')) {
-                            string temp = numStr + CurrentChar;
-
-                            double res;
-                            if (!double.TryParse(temp, out res)) {
-                                break;
-                            }
-                            else {
-                                numStr = temp;
-                                num = res;
-                            }
+                        if (numParser.Parse(this.text, this.position, out ret, out this.position)) {
+                            allToks.Add(new NumberToken(ret));
+                            this.Retract();
                         }
-
-                        // Found the first non number char, back step to process it on the next go
-                        Retract();
-
-                        allToks.Add(new NumberToken(num));
+                        else {
+                            success = null;
+                            failure = ParseException.NumberParseFailed(start);
+                            return false;
+                        }
                     }
                     else if (char.IsLetter(CurrentChar)) {
                         string numStr = CurrentChar.ToString();
@@ -63,35 +58,26 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
 
                         allToks.Add(new IdToken(numStr));
                     }
-                    else if (CurrentChar == '+') {
-                        allToks.Add(Token.Plus);
-                    }
-                    else if (CurrentChar == '-') {
-                        allToks.Add(Token.Minus);
-                    }
-                    else if (CurrentChar == '*') {
-                        allToks.Add(Token.Askerisk);
-                    }
-                    else if (CurrentChar == '/') {
-                        allToks.Add(Token.ForwardSlash);
-                    }
-                    else if (CurrentChar == '^') {
-                        allToks.Add(Token.Caret);
-                    }
-                    else if (CurrentChar == '(') {
-                        allToks.Add(Token.OpenParen);
-                    }
-                    else if (CurrentChar == ')') {
-                        allToks.Add(Token.CloseParen);
-                    }
-                    else if (char.IsWhiteSpace(CurrentChar)) {
+                    else if (char.IsWhiteSpace(this.CurrentChar)) {
                         continue;
                     }
                     else {
-                        success = null;
-                        failure = ParseException.UnexpectedCharactersError(this.CurrentChar.ToString());
+                        switch (this.CurrentChar) {
+                            case '+': allToks.Add(Token.Plus); break;
+                            case '-': allToks.Add(Token.Minus); break;
+                            case '*': allToks.Add(Token.Askerisk); break;
+                            case '/': allToks.Add(Token.ForwardSlash); break;
+                            case '^': allToks.Add(Token.Caret); break;
+                            case '(': allToks.Add(Token.OpenParen); break;
+                            case ')': allToks.Add(Token.CloseParen); break;
+                            default: {
+                                    success = null;
+                                    failure = ParseException.UnexpectedCharactersError(this.CurrentChar.ToString());
+                                    return false;
+                                }
+                        }
                     }
-                } while (Advance());
+                } while (this.Advance());
 
                 success = allToks;
                 failure = null;

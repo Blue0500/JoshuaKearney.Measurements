@@ -1,4 +1,4 @@
-﻿namespace JoshuaKearney.Measurements.Parser {
+﻿namespace JoshuaKearney.Measurements.OldParser {
 
     internal class DoubleMeasurementToken : MeasurementToken {
 

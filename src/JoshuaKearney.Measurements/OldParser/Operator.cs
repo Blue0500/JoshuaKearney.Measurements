@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace JoshuaKearney.Measurements.Parser {
+namespace JoshuaKearney.Measurements.OldParser {
 
     internal class Operator : Token {
         public static Operator CloseParen { get; } = new Operator(")", 100);

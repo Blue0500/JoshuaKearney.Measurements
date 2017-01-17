@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace JoshuaKearney.Measurements.Parser {
+namespace JoshuaKearney.Measurements.OldParser {
 
     public sealed class MeasurementParser<T> where T : Measurement<T> {
         private static Regex NumericPattern { get; } = new Regex(@"^\d*\.?\d*$");

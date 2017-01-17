@@ -7,6 +7,10 @@ namespace JoshuaKearney.Measurements {
         public static Unit<Term<T1, T2>> MultiplyToTermUnit<T1, T2>(this Unit<T1> unit1, Unit<T2> unit2)
             where T1 : Measurement<T1>
             where T2 : Measurement<T2> {
+
+            Validate.NonNull(unit1, nameof(unit1));
+            Validate.NonNull(unit2, nameof(unit2));
+
             return new Unit<Term<T1, T2>>(
                 $"{unit1.Symbol}*{unit2.Symbol}",
                 unit1.DefaultsPerUnit * unit2.DefaultsPerUnit,
@@ -18,6 +22,10 @@ namespace JoshuaKearney.Measurements {
             where T1 : Measurement<T1>
             where T2 : Measurement<T2>
             where TSelf : Term<TSelf, T1, T2> {
+
+            Validate.NonNull(unit, nameof(unit));
+            Validate.NonNull(provider, nameof(provider));
+
             return new Unit<TSelf>(unit.Symbol, unit.DefaultsPerUnit, provider);
         }
 
@@ -25,8 +33,10 @@ namespace JoshuaKearney.Measurements {
             where T1 : Measurement<T1>
             where T2 : Measurement<T2>
             where TSelf : Term<TSelf, T1, T2> {
-            TSelf self = unit.ToMeasurement();
 
+            Validate.NonNull(unit, nameof(unit));
+
+            TSelf self = unit.ToMeasurement();
             return new Unit<Term<T1, T2>>(
                 unit.Symbol,
                 unit.DefaultsPerUnit,
@@ -38,6 +48,10 @@ namespace JoshuaKearney.Measurements {
         public static Unit<Ratio<TNumerator, TDenominator>> DivideToRatioUnit<TNumerator, TDenominator>(this Unit<TNumerator> unit1, Unit<TDenominator> unit2)
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator> {
+
+            Validate.NonNull(unit1, nameof(unit1));
+            Validate.NonNull(unit2, nameof(unit2));
+
             return new Unit<Ratio<TNumerator, TDenominator>>(
                 $"{unit1.Symbol}/{unit2.Symbol}",
                 unit1.DefaultsPerUnit / unit2.DefaultsPerUnit,
@@ -49,6 +63,10 @@ namespace JoshuaKearney.Measurements {
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator>
             where TSelf : Ratio<TSelf, TNumerator, TDenominator> {
+
+            Validate.NonNull(unit, nameof(unit));
+            Validate.NonNull(provider, nameof(provider));
+
             return new Unit<TSelf>(unit.Symbol, unit.DefaultsPerUnit, provider);
         }
 
@@ -56,6 +74,8 @@ namespace JoshuaKearney.Measurements {
             where TNumerator : Measurement<TNumerator>
             where TDenominator : Measurement<TDenominator>
             where TSelf : Ratio<TSelf, TNumerator, TDenominator> {
+
+            Validate.NonNull(unit, nameof(unit));
 
             TSelf self = unit.ToMeasurement();
             return new Unit<Ratio<TNumerator, TDenominator>>(
@@ -105,6 +125,9 @@ namespace JoshuaKearney.Measurements {
         /// <param name="symbol">The symbol.</param>
         /// <param name="unitsPerDefault">The units per default unit for this measurement.</param>
         internal Unit(string symbol, double defaultsPerUnit, MeasurementProvider<T> provider) : base(defaultsPerUnit) {
+            Validate.NonNull(symbol, nameof(symbol));
+            Validate.NonNull(provider, nameof(provider));
+
             this.Symbol = $"({symbol})";
             this.MeasurementProvider = provider;
         }
@@ -122,6 +145,10 @@ namespace JoshuaKearney.Measurements {
         public override string ToString() => this.Symbol.Substring(1, this.Symbol.Length - 2);
 
         public bool Equals(Unit<T> other) {
+            if (other == null) {
+                return false;
+            }
+
             return this.Value == other.Value && this.Symbol == other.Symbol;
         }
 

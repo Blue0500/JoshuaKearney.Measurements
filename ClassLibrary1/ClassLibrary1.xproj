@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>bca88ef3-fb6b-4578-a88b-e0543f52557e</ProjectGuid>
-    <RootNamespace>JoshuaKearney.Measurements.Testing</RootNamespace>
+    <ProjectGuid>787de11f-de46-4ed1-9929-92e20041828b</ProjectGuid>
+    <RootNamespace>ClassLibrary1</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -16,7 +16,7 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JoshuaKearney.Measurements.JsonConverters\JoshuaKearney.Measurements.JsonConverters.csproj" />
+    <ProjectReference Include="..\src\JoshuaKearney.Measurements.Csv\JoshuaKearney.Measurements.CsvConverters.csproj" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JoshuaKearney.Measurements.Parser.Syntax;
 
 namespace JoshuaKearney.Measurements.Parser {
     public abstract class Operator {
@@ -14,6 +13,8 @@ namespace JoshuaKearney.Measurements.Parser {
             where TIn2 : Measurement<TIn2>
             where TResult : Measurement<TResult> {
 
+            Validate.NonNull(eval, nameof(eval));
+
             return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Multiplication, (x, y) => eval(x as TIn1, y as TIn2));
         }
 
@@ -21,6 +22,8 @@ namespace JoshuaKearney.Measurements.Parser {
             where TIn1 : Measurement<TIn1>
             where TIn2 : Measurement<TIn2>
             where TResult : Measurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
 
             return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Division, (x, y) => eval(x as TIn1, y as TIn2));
         }
@@ -30,6 +33,8 @@ namespace JoshuaKearney.Measurements.Parser {
             where TIn2 : Measurement<TIn2>
             where TResult : Measurement<TResult> {
 
+            Validate.NonNull(eval, nameof(eval));
+
             return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Exponation, (x, y) => eval(x as TIn1, y as TIn2));
         }
 
@@ -37,6 +42,8 @@ namespace JoshuaKearney.Measurements.Parser {
             where TIn1 : Measurement<TIn1>
             where TIn2 : Measurement<TIn2>
             where TResult : Measurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
 
             return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Addition, (x, y) => eval(x as TIn1, y as TIn2));
         }
@@ -46,6 +53,8 @@ namespace JoshuaKearney.Measurements.Parser {
             where TIn2 : Measurement<TIn2>
             where TResult : Measurement<TResult> {
 
+            Validate.NonNull(eval, nameof(eval));
+
             return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Subtraction, (x, y) => eval(x as TIn1, y as TIn2));
         }
 
@@ -53,12 +62,16 @@ namespace JoshuaKearney.Measurements.Parser {
             where TIn : Measurement<TIn>
             where TResult : Measurement<TResult> {
 
+            Validate.NonNull(eval, nameof(eval));
+
             return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Negation, (x) => eval(x as TIn));
         }
 
         public static Operator CreateUrnaryPositive<TIn, TResult>(Func<TIn, TResult> eval)
-           where TIn : Measurement<TIn>
-           where TResult : Measurement<TResult> {
+            where TIn : Measurement<TIn>
+            where TResult : Measurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
 
             return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Positation, (x) => eval(x as TIn));
         }

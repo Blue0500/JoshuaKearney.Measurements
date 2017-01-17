@@ -31,12 +31,6 @@ namespace JoshuaKearney.Measurements {
 
             public static Unit<DigitalSize> Megabyte { get; } = Prefix.Mega(Octet);
 
-            //public static Unit<DigitalSize> Nybble { get; } = new Unit<DigitalSize>(
-            //    symbol: "Nybble",
-            //    defaultsPerUnit: .5,
-            //    provider: Provider
-            //);
-
             public static Unit<DigitalSize> Petabyte { get; } = Prefix.Peta(Octet);
 
             public static Unit<DigitalSize> Terabyte { get; } = Prefix.Tera(Octet);

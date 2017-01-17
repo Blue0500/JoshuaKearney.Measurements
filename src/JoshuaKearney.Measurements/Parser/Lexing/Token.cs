@@ -20,6 +20,9 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
         public string StringValue { get; }
 
         public Token(TokenType type, string str) {
+            Validate.NonNull(type, nameof(type));
+            Validate.NonNull(str, nameof(str));
+
             this.Type = type;
             this.StringValue = str;
         }

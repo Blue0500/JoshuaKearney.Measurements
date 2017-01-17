@@ -7,3 +7,15 @@ PowExpr		:	Atom (Caret Atom)*
 MultExpr	:	PowExpr ((Asterisk? | ForwardSlash) PowExpr)*
 
 AddExpr		:	MultExpr ((Plus | Minus) MultExpr)*
+
+
+Double parser grammar:
+HexLiteral	:	0 x ([0-9] | [a-z] | [A-Z])+
+
+OctLiteral	:	0 c Atom
+
+BinLiteral	:	0 b (0 | 1)*
+
+DecLiteral	:	[0-9]* Dot? [0-9]+
+
+Literal		:	DecLiteral | BinLiteral | OctLiteral | HexLiteral
