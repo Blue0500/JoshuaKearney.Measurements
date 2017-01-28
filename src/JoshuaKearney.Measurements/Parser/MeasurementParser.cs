@@ -76,7 +76,7 @@ namespace JoshuaKearney.Measurements.Parser {
                         return true;
                     }
                     else {
-                        failure = ParseException.TypeConversionError(result.GetType(), typeof(T));
+                        failure = ParseException.TypeConversionError(result.ToString(), typeof(T).ToString());
                     }
                 }
             }

@@ -9,8 +9,9 @@ using JoshuaKearney.Measurements;
 namespace Testing {
     class Program {
         static void Main(string[] args) {
-            MeasurementParser<Distance> p = new MeasurementParser<Distance>(Distance.Provider);
-            Console.WriteLine(p.Parse("NaN"));
+            Distance d = Distance.Units.Meter.Multiply(.17213543514321324);
+
+            Console.WriteLine(d.ToString(Distance.Units.Meter, "R"));
             Console.Read();
         }
     }

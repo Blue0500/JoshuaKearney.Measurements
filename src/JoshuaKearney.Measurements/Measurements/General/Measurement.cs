@@ -93,6 +93,12 @@ namespace JoshuaKearney.Measurements {
             return double.IsPositiveInfinity(measurement.Value);
         }
 
+        public static bool IsZero(Measurement<TSelf> measurement) {
+            Validate.NonNull(measurement, nameof(measurement));
+
+            return measurement.Value == 0;
+        }
+
         /// <summary>
         /// Returns the maximum of this instance and the specified measurement.
         /// </summary>
@@ -115,11 +121,13 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="measurements">The other measurements.</param>
         /// <returns></returns>
-        public static TSelf Max(params Measurement<TSelf>[] measurements) {
+        public static TSelf Max(Measurement<TSelf> t1, Measurement<TSelf> t2, params Measurement<TSelf>[] measurements) {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
             Validate.NonNull(measurements, nameof(measurements));
             Validate.NonEmpty(measurements, nameof(measurements));
 
-            return measurements.Aggregate((x, y) => Max(x, y)).ToMeasurement();
+            return measurements.Concat(new[] { t1, t2 }).Aggregate((x, y) => Max(x, y)).ToMeasurement();
         }
 
         /// <summary>
@@ -144,11 +152,13 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="measurments">The other measurments.</param>
         /// <returns></returns>
-        public static TSelf Min(params Measurement<TSelf>[] measurments) {
+        public static TSelf Min(Measurement<TSelf> t1, Measurement<TSelf> t2, params Measurement<TSelf>[] measurments) {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
             Validate.NonNull(measurments, nameof(measurments));
             Validate.NonEmpty(measurments, nameof(measurments));
 
-            return measurments.Aggregate((x, y) => Min(x, y));
+            return measurments.Concat(new[] { t1, t2 }).Aggregate((x, y) => Min(x, y));
         }
 
         public static TSelf operator -(Measurement<TSelf> measurement) {

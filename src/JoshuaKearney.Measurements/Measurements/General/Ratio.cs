@@ -185,8 +185,6 @@ namespace JoshuaKearney.Measurements {
             this.MeasurementProvider = GetProvider(this.NumeratorProvider, this.DenominatorProvider);
         }
 
-        public Ratio() { }
-
         public Ratio(TNumerator item1, TDenominator item2) : base(item1, item2, GetProvider(item1.MeasurementProvider, item2.MeasurementProvider)) {
             this.NumeratorProvider = item1.MeasurementProvider;
             this.DenominatorProvider = item2.MeasurementProvider;

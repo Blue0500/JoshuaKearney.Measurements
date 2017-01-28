@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>JoshuaKearney.Measurements.Csv</id>
+    <version>3.0.5.2-beta</version>
+    <title>JoshuaKearney.Measurements.Csv</title>
+    <authors>Josh Kearney</authors>
+    <owners>Josh Kearney</owners>
+    <licenseUrl>https://raw.githubusercontent.com/Blue0500/JoshuaKearney.Measurements/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An addon library for JoshuaKearney.Measurements to enable easier usage with CsvHelper</description>
+    <copyright>Copyright © 2017 Josh Kearney</copyright>
+    <tags>Units Conversion</tags>
+
+    <dependencies>
+      <dependency id="JoshuaKearney.Core" version="1.0.2" />
+      <dependency id="CsvHelper" version="2.16.3" />
+      <dependency id="JoshuaKearney.Measurements" version="3.0.5.0-beta" />
+    </dependencies>
+  </metadata>
+
+  <files>
+    <file src="bin\release\JoshuaKearney.Measurements.Csv.dll" target="lib\netstandard1.3\" />
+    <file src="bin\release\JoshuaKearney.Measurements.Csv.pdb" target="lib\netstandard1.3\" />
+  </files>
+</package>

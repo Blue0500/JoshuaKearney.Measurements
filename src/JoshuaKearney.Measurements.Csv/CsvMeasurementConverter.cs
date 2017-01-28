@@ -37,7 +37,10 @@ namespace JoshuaKearney.Measurements.CsvConverters {
                 throw new ArgumentException($"Cannot convert the type '{text.GetType()}' to a string");
             }
 
-            return measurement.ToString();
+            return measurement.ToString(
+                measurement.MeasurementProvider.ParsableUnits.FirstOrDefault() ?? measurement.MeasurementProvider.DefaultUnit, 
+                "R"
+            );
         }
 
         public override bool CanConvertFrom(Type type) {

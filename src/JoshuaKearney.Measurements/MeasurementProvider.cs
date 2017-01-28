@@ -44,7 +44,6 @@ namespace JoshuaKearney.Measurements {
             );
         }
 
-
         public MeasurementProvider() {
             this.DefaultUnit = new Unit<T>("", 1, this);
         }
@@ -85,6 +84,8 @@ namespace JoshuaKearney.Measurements {
         public T MaxValue => this.CreateMeasurement(double.MaxValue, DefaultUnit);
 
         public T MinValue => this.CreateMeasurement(double.MinValue, DefaultUnit);
+
+        public T Zero => this.CreateMeasurement(0, DefaultUnit);
     }
 
     public abstract class CompoundMeasurementProvider<T, TComp1, TComp2> : MeasurementProvider<T>

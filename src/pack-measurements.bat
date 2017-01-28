@@ -1,1 +1,2 @@
-nuget pack JoshuaKearney.Measurements/JoshuaKearney.Measurements.csproj
+nuget pack JoshuaKearney.Measurements/JoshuaKearney.Measurements.csproj.nuspec
+PAUSE

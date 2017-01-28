@@ -123,8 +123,6 @@ namespace JoshuaKearney.Measurements {
             this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
         }
 
-        public Term() { }
-
         public Term(T1 item1, T2 item2) : base(item1, item2, GetProvider(item1.MeasurementProvider, item2.MeasurementProvider)) {
             this.Item1Provider = item1.MeasurementProvider;
             this.Item2Provider = item2.MeasurementProvider;

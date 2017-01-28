@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace JoshuaKearney.Measurements.Parser {
     public class ParseException : Exception {
         public static string MessagePrefix { get; } = "Unable to parse measurement: ";
-        internal static ParseException TypeConversionError(Type t1, Type t2) => new ParseException(MessagePrefix + $"Cannot convert type '{t1}' to {t2}");
+        internal static ParseException TypeConversionError(string t1, string t2) => new ParseException(MessagePrefix + $"Cannot convert '{t1}' to {t2}");
         internal static ParseException UnexpectedCharactersError(string str) => new ParseException(MessagePrefix + $"Unexpected character(s) '{str}'");
         internal static ParseException BinaryOperatorEvaluationFailed(string op, string op1, string op2) => new ParseException(MessagePrefix + $"Evaluation of operator '{op}' failed on operands '{op1}' and '{op2}'");
         internal static ParseException UrnaryOperatorEvaluationFailed(string op, string term) => new ParseException(MessagePrefix + $"Evaluation of operator '{op} failed on operand {term}'");
