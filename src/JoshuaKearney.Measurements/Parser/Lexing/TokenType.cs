@@ -15,6 +15,8 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
         Caret,
         OpenParen,
         CloseParen,
-        Id
+        Id,
+        OpenBracket,
+        CloseBracket
     }
 }

@@ -211,6 +211,21 @@ namespace JoshuaKearney.Measurements.Parser {
                     return true;
                 }
             }
+            else if (this.CurrentToken.Type == TokenType.OpenBracket) {
+                if (!this.Advance(TokenType.OpenBracket, out failure)) {
+                    success = null;
+                    return false;
+                }
+                else if (!this.AddExpression(out success, out failure)) {
+                    return false;
+                }
+                else if (!this.Advance(TokenType.CloseBracket, out failure)) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
             else if (this.CurrentToken.Type == TokenType.Plus || this.CurrentToken.Type == TokenType.Minus) {
                 if (!this.Advance(this.CurrentToken.Type, out failure)) {
                     success = null;

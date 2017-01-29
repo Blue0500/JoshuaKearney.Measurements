@@ -48,6 +48,7 @@ namespace JoshuaKearney.Measurements {
 
             return new Unit<TSelf>(symbol, this.Value, this.MeasurementProvider);
         }
+
         public PrefixableUnit<TSelf> ToPrefixableUnit(string symbol) {
             Validate.NonNull(symbol, nameof(symbol));
 

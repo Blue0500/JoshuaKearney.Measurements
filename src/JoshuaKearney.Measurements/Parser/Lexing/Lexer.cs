@@ -65,11 +65,25 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
                         switch (this.CurrentChar) {
                             case '+': allToks.Add(Token.Plus); break;
                             case '-': allToks.Add(Token.Minus); break;
-                            case '*': allToks.Add(Token.Askerisk); break;
+                            case '*': {
+                                this.Advance();
+
+                                if (this.CurrentChar == '*') {
+                                    allToks.Add(Token.Caret);
+                                }
+                                else {
+                                    allToks.Add(Token.Askerisk);
+                                    this.Retract();
+                                }
+
+                                break;
+                            }
                             case '/': allToks.Add(Token.ForwardSlash); break;
                             case '^': allToks.Add(Token.Caret); break;
                             case '(': allToks.Add(Token.OpenParen); break;
                             case ')': allToks.Add(Token.CloseParen); break;
+                            case '[': allToks.Add(Token.OpenBracket); break;
+                            case ']': allToks.Add(Token.CloseBracket); break;
                             default: {
                                     success = null;
                                     failure = ParseException.UnexpectedCharactersError(this.CurrentChar.ToString());

@@ -45,7 +45,13 @@ namespace JoshuaKearney.Measurements {
         }
 
         public MeasurementProvider() {
-            this.DefaultUnit = new Unit<T>("", 1, this);
+            this.defUnit = new Lazy<Unit<T>>(() => new Unit<T>("", 1, this));
+            this.nan = new Lazy<T>(() => this.CreateMeasurement(double.NaN, this.DefaultUnit));
+            this.posInf = new Lazy<T>(() => this.CreateMeasurement(double.PositiveInfinity, this.DefaultUnit));
+            this.negInf = new Lazy<T>(() => this.CreateMeasurement(double.NegativeInfinity, this.DefaultUnit));
+            this.minVal = new Lazy<T>(() => this.CreateMeasurement(double.MinValue, this.DefaultUnit));
+            this.maxVal = new Lazy<T>(() => this.CreateMeasurement(double.MaxValue, this.DefaultUnit));
+            this.zero = new Lazy<T>(() => this.CreateMeasurement(0d, this.DefaultUnit));
         }
 
         public IEnumerable<Unit<T>> ParsableUnits {
@@ -73,19 +79,23 @@ namespace JoshuaKearney.Measurements {
             }
         }
 
-        public Unit<T> DefaultUnit { get; }
 
-        public T NaN => this.CreateMeasurement(double.NaN, DefaultUnit);
+        private readonly Lazy<T> nan, posInf, negInf, maxVal, minVal, zero;
+        private readonly Lazy<Unit<T>> defUnit;
 
-        public T PositiveInfinity => this.CreateMeasurement(double.PositiveInfinity, DefaultUnit);
+        public Unit<T> DefaultUnit => defUnit.Value;
 
-        public T NegativeInfinity => this.CreateMeasurement(double.NegativeInfinity, DefaultUnit);
+        public T NaN => nan.Value;
 
-        public T MaxValue => this.CreateMeasurement(double.MaxValue, DefaultUnit);
+        public T PositiveInfinity => posInf.Value;
 
-        public T MinValue => this.CreateMeasurement(double.MinValue, DefaultUnit);
+        public T NegativeInfinity => negInf.Value;
 
-        public T Zero => this.CreateMeasurement(0, DefaultUnit);
+        public T MaxValue => maxVal.Value;
+
+        public T MinValue => minVal.Value;
+
+        public T Zero => zero.Value;
     }
 
     public abstract class CompoundMeasurementProvider<T, TComp1, TComp2> : MeasurementProvider<T>

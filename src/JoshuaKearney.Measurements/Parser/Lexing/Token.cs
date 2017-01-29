@@ -14,6 +14,9 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
         public static Token OpenParen { get; } = new Token(TokenType.OpenParen, "(");
         public static Token CloseParen { get; } = new Token(TokenType.CloseParen, ")");
         public static Token EOF { get; } = new Token(TokenType.EOF, "");
+        public static Token OpenBracket { get; } = new Token(TokenType.OpenBracket, "[");
+        public static Token CloseBracket { get; } = new Token(TokenType.CloseBracket, "]");
+
 
         public TokenType Type { get; }
 
