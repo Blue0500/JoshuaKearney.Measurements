@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
-    public class Vector2d<T> where T : Measurement<T> {
-        public T Magnitude { get; }
+    public class Vector2d<T> where T : IMeasurement<T> {
+        public IMeasurement<T> Magnitude { get; }
 
         public Angle Angle { get; }
 
-        public Vector2d(T horizontalComp, T verticalComp) {
+        public Vector2d(IMeasurement<T> horizontalComp, IMeasurement<T> verticalComp) {
             Validate.NonNull(horizontalComp, nameof(horizontalComp));
             Validate.NonNull(verticalComp, nameof(verticalComp));
 
@@ -25,7 +25,7 @@ namespace JoshuaKearney.Measurements {
             this.Angle = Angle.Atan2(verticalComp.ToDouble(verticalComp.MeasurementProvider.DefaultUnit), horizontalComp.ToDouble(verticalComp.MeasurementProvider.DefaultUnit));
         }
 
-        public Vector2d(T magnitude, Angle angle) {
+        public Vector2d(IMeasurement<T> magnitude, Angle angle) {
             Validate.NonNull(magnitude, nameof(magnitude));
             Validate.NonNull(angle, nameof(angle));
 
@@ -41,8 +41,8 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             return new Vector2d<T>(
-                this.HorizontalComponent + that.HorizontalComponent, 
-                this.VerticleComponent + that.VerticleComponent
+                this.HorizontalComponent.Add(that.HorizontalComponent), 
+                this.VerticleComponent.Add(that.VerticleComponent)
             );
         }
 
@@ -50,8 +50,8 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(that, nameof(that));
 
             return new Vector2d<T>(
-                this.HorizontalComponent - that.HorizontalComponent, 
-                this.VerticleComponent - that.VerticleComponent
+                this.HorizontalComponent.Subtract(that.HorizontalComponent), 
+                this.VerticleComponent.Subtract(that.VerticleComponent)
             );
         }
 

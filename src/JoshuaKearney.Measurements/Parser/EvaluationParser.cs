@@ -141,7 +141,7 @@ namespace JoshuaKearney.Measurements.Parser {
             }
             else {
                 while (this.CurrentToken.Type == TokenType.Caret) {
-                    Token prev = this.CurrentToken;
+                    Token prev = this.CurrentToken;                                                                                                                                                                                                              
                     IMeasurement next;
 
                     if (!this.Advance(TokenType.Caret, out failure)) {

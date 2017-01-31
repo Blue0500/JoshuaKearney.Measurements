@@ -54,7 +54,7 @@ namespace JoshuaKearney.Measurements {
     }
 
     public static partial class MeasurementExtensions {
-        public static Density Divide(this Measurement<Mass> mass, Measurement<Volume> volume) {
+        public static Density Divide(this IMeasurement<Mass> mass, IMeasurement<Volume> volume) {
             Validate.NonNull(mass, nameof(mass));
             Validate.NonNull(volume, nameof(volume));
 

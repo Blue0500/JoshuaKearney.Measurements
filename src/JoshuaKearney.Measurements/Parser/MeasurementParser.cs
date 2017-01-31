@@ -7,7 +7,7 @@ using System.Reflection;
 using JoshuaKearney.Measurements.Parser.Lexing;
 
 namespace JoshuaKearney.Measurements.Parser {
-    public class MeasurementParser<T> where T : Measurement<T> {
+    public class MeasurementParser<T> where T : IMeasurement<T> {
         private MeasurementProvider<T> Provider { get; }
         private IEnumerable<Operator> Operators { get; }
         private IReadOnlyDictionary<string, IMeasurement> Units { get; }
@@ -81,12 +81,12 @@ namespace JoshuaKearney.Measurements.Parser {
                 }
             }
 
-            success = null;
+            success = default(T);
             failure = failure ?? ParseException.UnspecifiedError();
             return false;
         }
 
-        private static Tuple<Dictionary<string, IMeasurement>, IEnumerable<Operator>> GetProviderInfo<E>(MeasurementProvider<E> provider) where E : Measurement<E> {
+        private static Tuple<Dictionary<string, IMeasurement>, IEnumerable<Operator>> GetProviderInfo<E>(MeasurementProvider<E> provider) where E : IMeasurement<E> {
             Validate.NonNull(provider, nameof(provider));
 
             Dictionary<string, IMeasurement> ret =

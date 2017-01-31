@@ -6,14 +6,14 @@ using JoshuaKearney.Measurements.Parser;
 namespace JoshuaKearney.Measurements {
     public sealed class Volume : Term<Volume, Distance, Area> {
 
-        public Volume() {
+        public Volume() : base(0, Units.MeterCubed) {
         }
 
         public Volume(double amount, Unit<Volume> unit)
             : base(amount, unit) {
         }
 
-        public Volume(Distance length, Area area)
+        public Volume(IMeasurement<Distance> length, IMeasurement<Area> area)
             : base(length, area, Provider) {
         }
 
@@ -96,21 +96,21 @@ namespace JoshuaKearney.Measurements {
             protected override IEnumerable<Unit<Volume>> GetParsableUnits() => new[] { MeterCubed, CentimeterCubed, FootCubed, InchCubed, KilometerCubed, Liter, MileCubed, MillimeterCubed };
 
             protected override IEnumerable<Operator> GetOperators() => new[] {
-                Operator.CreateDivision<Volume, Distance, Area>((x, y) => x.Divide(y)),
-                Operator.CreateDivision<Volume, Area, Distance>((x, y) => x.Divide(y))
+                Operator.CreateDivision((Volume x, Distance y, out Area result) => { result = x.Divide(y); return true; }),
+                Operator.CreateDivision((Volume x, Area y, out Distance result) => { result = x.Divide(y); return true; })
             };
         }
     }
 
     public partial class MeasurementExtensions {
-        public static Area Divide(this Measurement<Volume> volume, Distance distance) {
+        public static Area Divide(this IMeasurement<Volume> volume, Distance distance) {
             Validate.NonNull(volume, nameof(volume));
             Validate.NonNull(distance, nameof(distance));
 
             return ((Volume)volume).Select((x, y) => y.Divide(distance).Multiply(x));
         }
 
-        public static Distance Divide(this Measurement<Volume> volume, Area area) {
+        public static Distance Divide(this IMeasurement<Volume> volume, Area area) {
             Validate.NonNull(volume, nameof(volume));
             Validate.NonNull(area, nameof(area));
 

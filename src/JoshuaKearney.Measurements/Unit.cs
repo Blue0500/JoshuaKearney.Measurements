@@ -5,8 +5,8 @@ namespace JoshuaKearney.Measurements {
     public static partial class MeasurementExtensions {
         // Term unit extensions
         public static Unit<Term<T1, T2>> MultiplyToTermUnit<T1, T2>(this Unit<T1> unit1, Unit<T2> unit2)
-            where T1 : Measurement<T1>
-            where T2 : Measurement<T2> {
+            where T1 : IMeasurement<T1>
+            where T2 : IMeasurement<T2> {
 
             Validate.NonNull(unit1, nameof(unit1));
             Validate.NonNull(unit2, nameof(unit2));
@@ -19,8 +19,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static Unit<TSelf> ToTermUnit<TSelf, T1, T2>(this Unit<Term<T1, T2>> unit, MeasurementProvider<TSelf> provider)
-            where T1 : Measurement<T1>
-            where T2 : Measurement<T2>
+            where T1 : IMeasurement<T1>
+            where T2 : IMeasurement<T2>
             where TSelf : Term<TSelf, T1, T2> {
 
             Validate.NonNull(unit, nameof(unit));
@@ -30,8 +30,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static Unit<Term<T1, T2>> ToTermUnit<TSelf, T1, T2>(this Unit<TSelf> unit)
-            where T1 : Measurement<T1>
-            where T2 : Measurement<T2>
+            where T1 : IMeasurement<T1>
+            where T2 : IMeasurement<T2>
             where TSelf : Term<TSelf, T1, T2> {
 
             Validate.NonNull(unit, nameof(unit));
@@ -46,8 +46,8 @@ namespace JoshuaKearney.Measurements {
 
         // Ratio unit extensions
         public static Unit<Ratio<TNumerator, TDenominator>> DivideToRatioUnit<TNumerator, TDenominator>(this Unit<TNumerator> unit1, Unit<TDenominator> unit2)
-            where TNumerator : Measurement<TNumerator>
-            where TDenominator : Measurement<TDenominator> {
+            where TNumerator : IMeasurement<TNumerator>
+            where TDenominator : IMeasurement<TDenominator> {
 
             Validate.NonNull(unit1, nameof(unit1));
             Validate.NonNull(unit2, nameof(unit2));
@@ -60,8 +60,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static Unit<TSelf> ToRatioUnit<TSelf, TNumerator, TDenominator>(this Unit<Ratio<TNumerator, TDenominator>> unit, MeasurementProvider<TSelf> provider)
-            where TNumerator : Measurement<TNumerator>
-            where TDenominator : Measurement<TDenominator>
+            where TNumerator : IMeasurement<TNumerator>
+            where TDenominator : IMeasurement<TDenominator>
             where TSelf : Ratio<TSelf, TNumerator, TDenominator> {
 
             Validate.NonNull(unit, nameof(unit));
@@ -71,8 +71,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static Unit<Ratio<TNumerator, TDenominator>> ToRatioUnit<TSelf, TNumerator, TDenominator>(this Unit<TSelf> unit)
-            where TNumerator : Measurement<TNumerator>
-            where TDenominator : Measurement<TDenominator>
+            where TNumerator : IMeasurement<TNumerator>
+            where TDenominator : IMeasurement<TDenominator>
             where TSelf : Ratio<TSelf, TNumerator, TDenominator> {
 
             Validate.NonNull(unit, nameof(unit));
@@ -92,7 +92,7 @@ namespace JoshuaKearney.Measurements {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="JoshuaKearney.Measurements.Unit{T}" />
-    public class PrefixableUnit<T> : Unit<T> where T : Measurement<T> {
+    public class PrefixableUnit<T> : Unit<T> where T : IMeasurement<T> {
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PrefixableUnit{T}"/> class.
@@ -110,7 +110,7 @@ namespace JoshuaKearney.Measurements {
     /// be found in dedicated unit classes. Ex: <see cref="Distance.Units"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Unit<T> : Measurement<T>, IEquatable<Unit<T>> where T : Measurement<T> {
+    public class Unit<T> : Measurement<T>, IEquatable<Unit<T>> where T : IMeasurement<T> {
         /// <summary>
         /// Gets the symbol of this unit.
         /// </summary>

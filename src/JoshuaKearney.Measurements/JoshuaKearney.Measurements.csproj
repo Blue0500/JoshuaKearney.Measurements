@@ -154,6 +154,7 @@
     <Compile Include="Measurements\General\Measurement.cs" />
     <Compile Include="Measurements\General\Ratio.cs" />
     <Compile Include="Measurements\General\Term.cs" />
+    <Compile Include="Measurements\General\ValueDoubleMeasurement.cs" />
     <Compile Include="Measurements\General\Vector.cs" />
     <Compile Include="Measurements\Specific\Angle.cs" />
     <Compile Include="Measurements\Specific\Area.cs" />

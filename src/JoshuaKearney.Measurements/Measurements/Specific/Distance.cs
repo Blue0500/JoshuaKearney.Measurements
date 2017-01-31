@@ -69,27 +69,27 @@ namespace JoshuaKearney.Measurements {
 
     public static partial class MeasurementExtensions {
 
-        public static Volume Cube(this Measurement<Distance> distance) {
+        public static Volume Cube(this IMeasurement<Distance> distance) {
             Validate.NonNull(distance, nameof(distance));
 
             return distance.Multiply(distance).Multiply(distance);
         }
 
-        public static Area Multiply(this Measurement<Distance> distance1, Measurement<Distance> distance2) {
+        public static Area Multiply(this IMeasurement<Distance> distance1, IMeasurement<Distance> distance2) {
             Validate.NonNull(distance1, nameof(distance1));
             Validate.NonNull(distance2, nameof(distance2));
 
             return new Area(distance1, distance2);
         }
 
-        public static Volume Multiply(this Measurement<Distance> distance, Measurement<Area> area) {
+        public static Volume Multiply(this IMeasurement<Distance> distance, IMeasurement<Area> area) {
             Validate.NonNull(distance, nameof(distance));
             Validate.NonNull(area, nameof(area));
 
             return new Volume(distance, area);
         }
 
-        public static Area Square(this Measurement<Distance> distance) {
+        public static Area Square(this IMeasurement<Distance> distance) {
             Validate.NonNull(distance, nameof(distance));
 
             return distance.Multiply(distance);

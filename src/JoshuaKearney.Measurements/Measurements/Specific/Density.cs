@@ -16,7 +16,7 @@ namespace JoshuaKearney.Measurements {
 
         public Density(double value, Unit<Density> unit) : base(value, unit) { }
 
-        public Density(Mass mass, Volume volume) : base(mass, volume, Provider) { }
+        public Density(IMeasurement<Mass> mass, IMeasurement<Volume> volume) : base(mass, volume, Provider) { }
 
         public override MeasurementProvider<Volume> DenominatorProvider => Volume.Provider;
 

@@ -5,75 +5,175 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements.Parser {
+    public delegate bool BinaryOperatorTryCallback<TIn1, TIn2, TResult>(TIn1 measurement1, TIn2 measurement2, out TResult result) where TIn1 : IMeasurement<TIn1> where TIn2 : IMeasurement<TIn2> where TResult : IMeasurement<TResult>;
+    public delegate bool UrnaryOperatorTryCallback<TIn1, TResult>(TIn1 measurement1, out TResult result) where TIn1 : IMeasurement<TIn1> where TResult : IMeasurement<TResult>;
+    public delegate TResult BinaryOperatorCallback<TIn1, TIn2, TResult>(TIn1 measurement1, TIn2 measurement2) where TIn1 : IMeasurement<TIn1> where TIn2 : IMeasurement<TIn2> where TResult : IMeasurement<TResult>;
+    public delegate TResult UrnaryOperatorCallback<TIn1, TResult>(TIn1 measurement1) where TIn1 : IMeasurement<TIn1> where TResult : IMeasurement<TResult>;
+
     public abstract class Operator {
         protected internal Operator() { }
 
-        public static Operator CreateMultiplication<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
-            where TIn1 : Measurement<TIn1>
-            where TIn2 : Measurement<TIn2>
-            where TResult : Measurement<TResult> {
+        private static IMeasurement InvokeBinaryOperator<TIn1, TIn2, TResult>(IMeasurement x, IMeasurement y, BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1> where TIn2 : IMeasurement<TIn2> where TResult : IMeasurement<TResult> {
 
-            Validate.NonNull(eval, nameof(eval));
+            if (x is TIn1 && y is TIn2) {
+                TResult res;
+                if (eval((TIn1)x, (TIn2)y, out res)) {
+                    return res;
+                }
+            }
 
-            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Multiplication, (x, y) => eval(x as TIn1, y as TIn2));
+            return null;
         }
 
-        public static Operator CreateDivision<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
-            where TIn1 : Measurement<TIn1>
-            where TIn2 : Measurement<TIn2>
-            where TResult : Measurement<TResult> {
+        private static IMeasurement InvokeUrnaryOperator<TIn1, TResult>(IMeasurement x, UrnaryOperatorTryCallback<TIn1, TResult> eval)
+           where TIn1 : IMeasurement<TIn1> where TResult : IMeasurement<TResult> {
 
-            Validate.NonNull(eval, nameof(eval));
+            if (x is TIn1) {
+                TResult res;
+                if (eval((TIn1)x, out res)) {
+                    return res;
+                }
+            }
 
-            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Division, (x, y) => eval(x as TIn1, y as TIn2));
+            return null;
         }
 
-        public static Operator CreateExponation<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
-            where TIn1 : Measurement<TIn1>
-            where TIn2 : Measurement<TIn2>
-            where TResult : Measurement<TResult> {
+        public static Operator CreateMultiplication<TIn1, TIn2, TResult>(BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
 
             Validate.NonNull(eval, nameof(eval));
 
-            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Exponation, (x, y) => eval(x as TIn1, y as TIn2));
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Multiplication, (x, y) => InvokeBinaryOperator(x, y, eval));
         }
 
-        public static Operator CreateAddition<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
-            where TIn1 : Measurement<TIn1>
-            where TIn2 : Measurement<TIn2>
-            where TResult : Measurement<TResult> {
+        public static Operator CreateDivision<TIn1, TIn2, TResult>(BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
 
             Validate.NonNull(eval, nameof(eval));
 
-            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Addition, (x, y) => eval(x as TIn1, y as TIn2));
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Division, (x, y) => InvokeBinaryOperator(x, y, eval));
         }
 
-        public static Operator CreateSubtraction<TIn1, TIn2, TResult>(Func<TIn1, TIn2, TResult> eval)
-            where TIn1 : Measurement<TIn1>
-            where TIn2 : Measurement<TIn2>
-            where TResult : Measurement<TResult> {
+        public static Operator CreateExponation<TIn1, TIn2, TResult>(BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
 
             Validate.NonNull(eval, nameof(eval));
 
-            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Subtraction, (x, y) => eval(x as TIn1, y as TIn2));
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Exponation, (x, y) => InvokeBinaryOperator(x, y, eval));
         }
 
-        public static Operator CreateUrnaryNegative<TIn, TResult>(Func<TIn, TResult> eval)
-            where TIn : Measurement<TIn>
-            where TResult : Measurement<TResult> {
+        public static Operator CreateAddition<TIn1, TIn2, TResult>(BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
 
             Validate.NonNull(eval, nameof(eval));
 
-            return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Negation, (x) => eval(x as TIn));
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Addition, (x, y) => InvokeBinaryOperator(x, y, eval));
         }
 
-        public static Operator CreateUrnaryPositive<TIn, TResult>(Func<TIn, TResult> eval)
-            where TIn : Measurement<TIn>
-            where TResult : Measurement<TResult> {
+        public static Operator CreateSubtraction<TIn1, TIn2, TResult>(BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
 
             Validate.NonNull(eval, nameof(eval));
 
-            return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Positation, (x) => eval(x as TIn));
+            return new BinaryOperator(typeof(TIn1), typeof(TIn2), BinaryOperatorType.Subtraction, (x, y) => InvokeBinaryOperator(x, y, eval));
+        }
+
+        public static Operator CreateUrnaryNegative<TIn, TResult>(UrnaryOperatorTryCallback<TIn, TResult> eval)
+            where TIn : IMeasurement<TIn>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Negation, (x) => InvokeUrnaryOperator(x, eval));
+        }
+
+        public static Operator CreateUrnaryPositive<TIn, TResult>(UrnaryOperatorTryCallback<TIn, TResult> eval)
+            where TIn : IMeasurement<TIn>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return new UrnaryOperator(typeof(TIn), UrnaryOperatorType.Positation, (x) => InvokeUrnaryOperator(x, eval));
+        }
+
+
+        public static Operator CreateMultiplication<TIn1, TIn2, TResult>(BinaryOperatorCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return CreateMultiplication((TIn1 x, TIn2 y, out TResult result) => { result = eval(x, y); return true; });
+        }
+
+        public static Operator CreateDivision<TIn1, TIn2, TResult>(BinaryOperatorCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return CreateDivision((TIn1 x, TIn2 y, out TResult result) => { result = eval(x, y); return true; });
+        }
+
+        public static Operator CreateExponation<TIn1, TIn2, TResult>(BinaryOperatorCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return CreateExponation((TIn1 x, TIn2 y, out TResult result) => { result = eval(x, y); return true; });
+        }
+
+        public static Operator CreateAddition<TIn1, TIn2, TResult>(BinaryOperatorCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return CreateAddition((TIn1 x, TIn2 y, out TResult result) => { result = eval(x, y); return true; });
+        }
+
+        public static Operator CreateSubtraction<TIn1, TIn2, TResult>(BinaryOperatorCallback<TIn1, TIn2, TResult> eval)
+            where TIn1 : IMeasurement<TIn1>
+            where TIn2 : IMeasurement<TIn2>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return CreateSubtraction((TIn1 x, TIn2 y, out TResult result) => { result = eval(x, y); return true; });
+        }
+
+        public static Operator CreateUrnaryNegative<TIn, TResult>(UrnaryOperatorCallback<TIn, TResult> eval)
+            where TIn : IMeasurement<TIn>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return CreateUrnaryNegative((TIn x, out TResult result) => { result = eval(x); return true; });
+        }
+
+        public static Operator CreateUrnaryPositive<TIn, TResult>(UrnaryOperatorCallback<TIn, TResult> eval)
+            where TIn : IMeasurement<TIn>
+            where TResult : IMeasurement<TResult> {
+
+            Validate.NonNull(eval, nameof(eval));
+
+            return CreateUrnaryPositive((TIn x, out TResult result) => { result = eval(x); return true; });
         }
     }
 

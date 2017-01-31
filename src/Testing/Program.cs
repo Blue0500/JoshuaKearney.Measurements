@@ -9,9 +9,13 @@ using JoshuaKearney.Measurements;
 namespace Testing {
     class Program {
         static void Main(string[] args) {
-            Distance d = Distance.Units.Meter.Multiply(.17213543514321324);
+            var parse = new MeasurementParser<Density>(Density.Provider);
 
-            Console.WriteLine(d.ToString(Distance.Units.Meter, "R"));
+            JoshuaKearney.Measurements.DoubleMeasurement x = new DoubleMeasurement();
+
+            Console.WriteLine(x);
+
+            Console.WriteLine(parse.Parse("2 kg / (7 in * yd * 29cm)"));
             Console.Read();
         }
     }

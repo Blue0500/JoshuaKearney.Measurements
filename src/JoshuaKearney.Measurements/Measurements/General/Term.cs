@@ -7,21 +7,18 @@ namespace JoshuaKearney.Measurements {
 
     public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>
            where TSelf : Term<TSelf, T1, T2>
-           where T1 : Measurement<T1>
-           where T2 : Measurement<T2> {
+           where T1 : IMeasurement<T1>
+           where T2 : IMeasurement<T2> {
         public abstract MeasurementProvider<T1> Item1Provider { get; }
 
         public abstract MeasurementProvider<T2> Item2Provider { get; }
 
-        public T1 Divide(T2 other) {
+        public T1 Divide(IMeasurement<T2> other) {
             Validate.NonNull(other, nameof(other));
             return this.DivideToFirst(other);
         }
 
-        protected Term() {
-        }
-
-        protected Term(T1 item1, T2 item2, MeasurementProvider<TSelf> provider) : base(
+        protected Term(IMeasurement<T1> item1, IMeasurement<T2> item2, MeasurementProvider<TSelf> provider) : base(
             item1.ToDouble(item1.MeasurementProvider.DefaultUnit) * item2.ToDouble(item2.MeasurementProvider.DefaultUnit),
             item1.MeasurementProvider.DefaultUnit.MultiplyToTermUnit(item2.MeasurementProvider.DefaultUnit).ToTermUnit(provider)
         ) { }
@@ -36,8 +33,8 @@ namespace JoshuaKearney.Measurements {
         }
 
         public Term<T, E> Select<T, E>(Func<T1, T> firstSelect, Func<T2, E> secondSelect)
-                where T : Measurement<T>
-                where E : Measurement<E> {
+                where T : IMeasurement<T>
+                where E : IMeasurement<E> {
             Validate.NonNull(firstSelect, nameof(firstSelect));
             Validate.NonNull(secondSelect, nameof(secondSelect));
 
@@ -91,7 +88,7 @@ namespace JoshuaKearney.Measurements {
             return term.ToTerm();
         }
 
-        protected T1 DivideToFirst(T2 that) {
+        protected T1 DivideToFirst(IMeasurement<T2> that) {
             Validate.NonNull(that, nameof(that));
 
             return Item1Provider.CreateMeasurement(
@@ -100,7 +97,7 @@ namespace JoshuaKearney.Measurements {
             );
         }
 
-        protected T2 DivideToSecond(T1 that) {
+        protected T2 DivideToSecond(IMeasurement<T1> that) {
             Validate.NonNull(that, nameof(that));
 
             return Item2Provider.CreateMeasurement(
@@ -111,8 +108,8 @@ namespace JoshuaKearney.Measurements {
     }
 
     public sealed partial class Term<T1, T2> : Term<Term<T1, T2>, T1, T2>
-            where T1 : Measurement<T1>
-            where T2 : Measurement<T2> {
+            where T1 : IMeasurement<T1>
+            where T2 : IMeasurement<T2> {
 
         internal Term(double amount, Unit<Term<T1, T2>> unit, MeasurementProvider<T1> t1Prov, MeasurementProvider<T2> t2Prov) : base(amount, unit) {
             Validate.NonNull(t1Prov, nameof(t1Prov));
@@ -123,7 +120,7 @@ namespace JoshuaKearney.Measurements {
             this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
         }
 
-        public Term(T1 item1, T2 item2) : base(item1, item2, GetProvider(item1.MeasurementProvider, item2.MeasurementProvider)) {
+        public Term(IMeasurement<T1> item1, IMeasurement<T2> item2) : base(item1, item2, GetProvider(item1.MeasurementProvider, item2.MeasurementProvider)) {
             this.Item1Provider = item1.MeasurementProvider;
             this.Item2Provider = item2.MeasurementProvider;
             this.MeasurementProvider = GetProvider(this.Item1Provider, this.Item2Provider);
@@ -135,13 +132,13 @@ namespace JoshuaKearney.Measurements {
 
         public override MeasurementProvider<T2> Item2Provider { get; }
 
-        public new T1 DivideToFirst(T2 measurement2) {
+        public new T1 DivideToFirst(IMeasurement<T2> measurement2) {
             Validate.NonNull(measurement2, nameof(measurement2));
 
             return base.DivideToFirst(measurement2);
         }
 
-        public new T2 DivideToSecond(T1 first) {
+        public new T2 DivideToSecond(IMeasurement<T1> first) {
             Validate.NonNull(first, nameof(first));
 
             return base.DivideToSecond(first);
