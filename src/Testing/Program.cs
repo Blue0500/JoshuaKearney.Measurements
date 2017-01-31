@@ -9,13 +9,9 @@ using JoshuaKearney.Measurements;
 namespace Testing {
     class Program {
         static void Main(string[] args) {
-            var parse = new MeasurementParser<Density>(Density.Provider);
+            Temperature temp = Temperature.FromCelcius(560);
 
-            JoshuaKearney.Measurements.DoubleMeasurement x = new DoubleMeasurement();
-
-            Console.WriteLine(x);
-
-            Console.WriteLine(parse.Parse("2 kg / (7 in * yd * 29cm)"));
+            Console.WriteLine(temp.ToFahrenheit());
             Console.Read();
         }
     }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JoshuaKearney.Measurements;
 using JoshuaKearney.Measurements.Parser;
+using static JoshuaKearney.Measurements.Distance.Units;
 
 namespace ConsoleApplication2 {
     class Program {

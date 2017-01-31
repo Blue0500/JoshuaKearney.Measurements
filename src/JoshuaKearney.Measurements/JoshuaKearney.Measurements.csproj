@@ -153,6 +153,7 @@
     <Compile Include="Measurements\General\DoubleMeasurement.cs" />
     <Compile Include="Measurements\General\Measurement.cs" />
     <Compile Include="Measurements\General\Ratio.cs" />
+    <Compile Include="Measurements\Specific\Temperature.cs" />
     <Compile Include="Measurements\General\Term.cs" />
     <Compile Include="Measurements\General\ValueDoubleMeasurement.cs" />
     <Compile Include="Measurements\General\Vector.cs" />

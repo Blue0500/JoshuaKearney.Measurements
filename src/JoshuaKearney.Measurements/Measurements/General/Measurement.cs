@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace JoshuaKearney.Measurements {
@@ -11,6 +12,134 @@ namespace JoshuaKearney.Measurements {
         string ToString();
     }
 
+    public abstract class Measurement {
+        internal Measurement() { }
+
+        public static bool IsInfinity<T>(IMeasurement<T> measurement) where T : IMeasurement<T> {
+            Validate.NonNull(measurement, nameof(measurement));
+
+            return double.IsInfinity(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
+        }
+
+        public static bool IsNan<T>(IMeasurement<T> measurement) where T : IMeasurement<T> {
+            Validate.NonNull(measurement, nameof(measurement));
+
+            return double.IsNaN(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
+        }
+
+        public static bool IsNegativeInfinity<T>(IMeasurement<T> measurement) where T : IMeasurement<T> {
+            Validate.NonNull(measurement, nameof(measurement));
+
+            return double.IsNegativeInfinity(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
+        }
+
+        public static bool IsPositiveInfinity<T>(IMeasurement<T> measurement) where T : IMeasurement<T> {
+            Validate.NonNull(measurement, nameof(measurement));
+
+            return double.IsPositiveInfinity(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
+        }
+
+        public static bool IsZero<T>(IMeasurement<T> measurement) where T : IMeasurement<T> {
+            Validate.NonNull(measurement, nameof(measurement));
+
+            return measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit) == 0;
+        }
+
+        /// <summary>
+        /// Returns the maximum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
+        public static T Max<T>(IMeasurement<T> t1, IMeasurement<T> t2) where T : IMeasurement<T> {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
+
+            if (t1.CompareTo(t2) >= 0) {
+                return t1.ToMeasurement();
+            }
+            else {
+                return t2.ToMeasurement();
+            }
+        }
+
+        /// <summary>
+        /// Returns the maximum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="measurements">The other measurements.</param>
+        /// <returns></returns>
+        public static T Max<T>(IMeasurement<T> t1, IMeasurement<T> t2, params IMeasurement<T>[] measurements) where T : IMeasurement<T> {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
+            Validate.NonNull(measurements, nameof(measurements));
+            Validate.NonEmpty(measurements, nameof(measurements));
+
+            return measurements.Concat(new[] { t1, t2 }).Aggregate((x, y) => Max(x, y)).ToMeasurement();
+        }
+
+        /// <summary>
+        /// Returns the minimum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="that">The other measurement.</param>
+        /// <returns></returns>
+        public static T Min<T>(IMeasurement<T> t1, IMeasurement<T> t2) where T : IMeasurement<T> {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
+
+            if (t1.CompareTo(t2) <= 0) {
+                return t1.ToMeasurement();
+            }
+            else {
+                return t2.ToMeasurement();
+            }
+        }
+
+        /// <summary>
+        /// Returns the minimum of this instance and the specified measurement.
+        /// </summary>
+        /// <param name="measurments">The other measurments.</param>
+        /// <returns></returns>
+        public static T Min<T>(IMeasurement<T> t1, IMeasurement<T> t2, params IMeasurement<T>[] measurments) where T : IMeasurement<T> {
+            Validate.NonNull(t1, nameof(t1));
+            Validate.NonNull(t2, nameof(t2));
+            Validate.NonNull(measurments, nameof(measurments));
+            Validate.NonEmpty(measurments, nameof(measurments));
+
+            return measurments.Concat(new[] { t1, t2 }).Aggregate((x, y) => Min(x, y)).ToMeasurement();
+        }
+
+        public static int Compare<T>(IMeasurement<T> measurement1, IMeasurement<T> measurement2) where T : IMeasurement<T> {
+            if (measurement1 == null && measurement2 == null) {
+                return 0;
+            }
+            else if (measurement1 == null || measurement2 == null) {
+                return 1;
+            }
+
+            return measurement1.ToDouble(
+                measurement1.MeasurementProvider.DefaultUnit
+            )
+            .CompareTo(
+                measurement2.ToDouble(measurement1.MeasurementProvider.DefaultUnit)
+            );
+        }
+
+        public static bool Equals<T>(IMeasurement<T> measurement1, IMeasurement<T> measurement2) where T : IMeasurement<T> {
+            if (measurement1 == null && measurement2 == null) {
+                return true;
+            }
+            else if (measurement1 == null || measurement2 == null) {
+                return false;
+            }
+
+            return measurement1.ToDouble(
+                measurement1.MeasurementProvider.DefaultUnit
+            )
+            .Equals(
+                measurement2.ToDouble(measurement1.MeasurementProvider.DefaultUnit)
+            );
+        }
+    }
+
     /// <summary>
     /// The base class to represent all measurements within JoshuaKearney.Measurements
     /// </summary>
@@ -18,7 +147,7 @@ namespace JoshuaKearney.Measurements {
     /// <seealso cref="System.IEquatable{TSelf}" />
     /// <seealso cref="System.IComparable{TSelf}" />
     /// <seealso cref="System.IComparable" />
-    public abstract class Measurement<TSelf> : IEquatable<IMeasurement<TSelf>>, IComparable<IMeasurement<TSelf>>, IComparable, IMeasurement, IMeasurement<TSelf>
+    public abstract class Measurement<TSelf> : Measurement, IEquatable<IMeasurement<TSelf>>, IComparable<IMeasurement<TSelf>>, IComparable, IMeasurement, IMeasurement<TSelf>
         where TSelf : IMeasurement<TSelf> {
 
         // For unit
@@ -56,99 +185,7 @@ namespace JoshuaKearney.Measurements {
             }
 
             return measurement.ToMeasurement();
-        }
-
-        public static bool IsInfinity(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return double.IsInfinity(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
-        }
-
-        public static bool IsNan(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return double.IsNaN(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
-        }
-
-        public static bool IsNegativeInfinity(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return double.IsNegativeInfinity(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
-        }
-
-        public static bool IsPositiveInfinity(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return double.IsPositiveInfinity(measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit));
-        }
-
-        public static bool IsZero(IMeasurement<TSelf> measurement) {
-            Validate.NonNull(measurement, nameof(measurement));
-
-            return measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit) == 0;
-        }
-
-        /// <summary>
-        /// Returns the maximum of this instance and the specified measurement.
-        /// </summary>
-        /// <param name="that">The other measurement.</param>
-        /// <returns></returns>
-        public static TSelf Max(IMeasurement<TSelf> t1, IMeasurement<TSelf> t2) {
-            Validate.NonNull(t1, nameof(t1));
-            Validate.NonNull(t2, nameof(t2));
-
-            if (t1.CompareTo(t2) >= 0) {
-                return t1.ToMeasurement();
-            }
-            else {
-                return t2.ToMeasurement();
-            }
-        }
-
-        /// <summary>
-        /// Returns the maximum of this instance and the specified measurement.
-        /// </summary>
-        /// <param name="measurements">The other measurements.</param>
-        /// <returns></returns>
-        public static TSelf Max(IMeasurement<TSelf> t1, IMeasurement<TSelf> t2, params IMeasurement<TSelf>[] measurements) {
-            Validate.NonNull(t1, nameof(t1));
-            Validate.NonNull(t2, nameof(t2));
-            Validate.NonNull(measurements, nameof(measurements));
-            Validate.NonEmpty(measurements, nameof(measurements));
-
-            return measurements.Concat(new[] { t1, t2 }).Aggregate((x, y) => Max(x, y)).ToMeasurement();
-        }
-
-        /// <summary>
-        /// Returns the minimum of this instance and the specified measurement.
-        /// </summary>
-        /// <param name="that">The other measurement.</param>
-        /// <returns></returns>
-        public static TSelf Min(IMeasurement<TSelf> t1, IMeasurement<TSelf> t2) {
-            Validate.NonNull(t1, nameof(t1));
-            Validate.NonNull(t2, nameof(t2));
-
-            if (t1.CompareTo(t2) <= 0) {
-                return t1.ToMeasurement();
-            }
-            else {
-                return t2.ToMeasurement();
-            }
-        }
-
-        /// <summary>
-        /// Returns the minimum of this instance and the specified measurement.
-        /// </summary>
-        /// <param name="measurments">The other measurments.</param>
-        /// <returns></returns>
-        public static TSelf Min(IMeasurement<TSelf> t1, IMeasurement<TSelf> t2, params IMeasurement<TSelf>[] measurments) {
-            Validate.NonNull(t1, nameof(t1));
-            Validate.NonNull(t2, nameof(t2));
-            Validate.NonNull(measurments, nameof(measurments));
-            Validate.NonEmpty(measurments, nameof(measurments));
-
-            return measurments.Concat(new[] { t1, t2 }).Aggregate((x, y) => Min(x, y)).ToMeasurement();
-        }
+        }        
 
         public static TSelf operator -(Measurement<TSelf> measurement) {
             if (measurement == null) {
@@ -281,14 +318,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns>
         /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
         /// </returns>
-        public int CompareTo(IMeasurement<TSelf> that) {
-            if (that == null) {
-                return 1;
-            }
-
-            return this.ToDouble(this.MeasurementProvider.DefaultUnit).CompareTo(that.ToDouble(this.MeasurementProvider.DefaultUnit));
-        }
-
+        public int CompareTo(IMeasurement<TSelf> that) => Compare(this, that);
         /// <summary>
         /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
         /// </summary>
@@ -333,14 +363,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns>
         ///   <c>true</c> if the specified measurement> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(IMeasurement<TSelf> that) {
-            if (object.ReferenceEquals(that, null)) {
-                return false;
-            }
-            else {
-                return this.ToDouble(this.MeasurementProvider.DefaultUnit).Equals(that.ToDouble(this.MeasurementProvider.DefaultUnit));
-            }
-        }
+        public bool Equals(IMeasurement<TSelf> that) => Equals(this, that);
 
         public Ratio<DoubleMeasurement, TSelf> Reciprocal() {
             return new Ratio<DoubleMeasurement, TSelf>(new DoubleMeasurement(1), this);
