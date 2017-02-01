@@ -83,6 +83,14 @@ namespace JoshuaKearney.Measurements {
 
         public override MeasurementProvider<Angle> MeasurementProvider => Provider;
 
+        public Distance GetArcLength(Distance radius) {
+            return radius.Multiply(this.ToDouble(Units.Radian));
+        }
+
+        public Distance GetRadiusLength(Distance arcLength) {
+            return arcLength.Multiply(1 / this.ToDouble(Units.Radian));
+        }
+
         public class Units {
             private static Lazy<PrefixableUnit<Angle>> radian = new Lazy<PrefixableUnit<Angle>>(() => new PrefixableUnit<Angle>("rad", Provider));
 
@@ -92,9 +100,9 @@ namespace JoshuaKearney.Measurements {
 
             private static Lazy<Unit<Angle>> revolution = new Lazy<Unit<Angle>>(() => Radian.Multiply(2 * Math.PI).ToUnit("rev"));
 
-            private static Lazy<Unit<Angle>> arcMinute = new Lazy<Unit<Angle>>(() => Degree.Divide(60).ToUnit("'"));
+            private static Lazy<Unit<Angle>> arcMinute = new Lazy<Unit<Angle>>(() => Degree.Divide(60).ToUnit("arcmin"));
 
-            private static Lazy<PrefixableUnit<Angle>> arcSecond = new Lazy<PrefixableUnit<Angle>>(() => ArcMinute.Divide(60).ToPrefixableUnit("\""));
+            private static Lazy<PrefixableUnit<Angle>> arcSecond = new Lazy<PrefixableUnit<Angle>>(() => ArcMinute.Divide(60).ToPrefixableUnit("arcsec"));
 
             public static Unit<Angle> Degree => degree.Value;
 
@@ -110,7 +118,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class AngleProvider : MeasurementProvider<Angle> {
-            protected override IEnumerable<Unit<Angle>> GetParsableUnits() => new[] { Radian, Degree, Revolution, Gradian };
+            protected override IEnumerable<Unit<Angle>> GetParsableUnits() => new[] { Radian, Degree, Revolution, Gradian, ArcMinute, ArcSecond };
 
             public override Angle CreateMeasurement(double value, Unit<Angle> unit) => new Angle(value, unit);
 

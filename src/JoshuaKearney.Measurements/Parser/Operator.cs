@@ -189,6 +189,19 @@ namespace JoshuaKearney.Measurements.Parser {
             this.InputType1 = input1;
             this.InputType2 = input2;
         }
+
+        public override string ToString() {
+            char c = '&';
+            switch (this.Type) {
+                case BinaryOperatorType.Multiplication: c = '*'; break;
+                case BinaryOperatorType.Division:       c = '/'; break;
+                case BinaryOperatorType.Addition:       c = '+'; break;
+                case BinaryOperatorType.Subtraction:    c = '-'; break;
+                case BinaryOperatorType.Exponation:     c = '^'; break;
+            }
+
+            return $"Operator[{InputType1.Name} {c.ToString()} {InputType2.Name} -> IMeasurement]";
+        }
     }
 
     internal class UrnaryOperator : Operator {
@@ -201,6 +214,15 @@ namespace JoshuaKearney.Measurements.Parser {
             this.Type = type;
             this.InputType = input;
         }
-    }
 
+        public override string ToString() {
+            char c = '&';
+            switch (this.Type) {
+                case UrnaryOperatorType.Negation: c = '-'; break;
+                case UrnaryOperatorType.Positation: c = '/'; break;
+            }
+
+            return $"Operator[{InputType.Name} {c.ToString()} -> IMeasurement]";
+        }
+    }
 }

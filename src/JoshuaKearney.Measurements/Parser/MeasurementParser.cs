@@ -30,6 +30,7 @@ namespace JoshuaKearney.Measurements.Parser {
                     { "PositiveInfinity", provider.PositiveInfinity },
                     { "NegativeInfinity", provider.PositiveInfinity }
                 })
+                .Concat(DoubleMeasurement.Provider.ParsableUnits.Select(x => new KeyValuePair<string, IMeasurement>(x.ToString(), x.ToMeasurement())))
                 .ToDictionary(x => x.Key, x => x.Value);
 
             this.Operators = info.Item2.Concat(ops).Concat(DoubleMeasurement.Provider.ParseOperators).Distinct();

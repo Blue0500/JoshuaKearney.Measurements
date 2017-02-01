@@ -46,7 +46,8 @@ namespace JoshuaKearney.Measurements {
             public override Mass CreateMeasurement(double value, Unit<Mass> unit) => new Mass(value, unit);
 
             protected override IEnumerable<Operator> GetOperators() => new[] {
-                Operator.CreateDivision<Mass, Volume, Density>((x, y) => x.Divide(y))
+                Operator.CreateDivision<Mass, Volume, Density>((x, y) => x.Divide(y)),
+                Operator.CreateDivision<Mass, Amount, MolarMass>((x, y) => x.Divide(y))
             };
 
             protected override IEnumerable<Unit<Mass>> GetParsableUnits() => new[] { Units.Kilogram, Units.Gram, Units.MetricTon, Units.Milligram, Units.Ounce, Units.Pound };
@@ -59,6 +60,13 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(volume, nameof(volume));
 
             return new Density(mass, volume);
+        }
+
+        public static MolarMass Divide(this IMeasurement<Mass> mass, IMeasurement<Amount> amount) {
+            Validate.NonNull(mass, nameof(mass));
+            Validate.NonNull(amount, nameof(amount));
+
+            return new MolarMass(mass, amount);
         }
     }
 }

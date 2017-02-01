@@ -61,7 +61,7 @@ namespace JoshuaKearney.Measurements {
         public DoubleMeasurement(double d) : base(d, Units.DefaultUnit) {
         }
 
-        private DoubleMeasurement(double amount, Unit<DoubleMeasurement> unit) : base(amount, unit) {
+        public DoubleMeasurement(double amount, Unit<DoubleMeasurement> unit) : base(amount, unit) {
         }
 
         public static MeasurementProvider<DoubleMeasurement> Provider { get; } = new DoubleMeasurementProvider();
@@ -81,11 +81,27 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static class Units {
-            public static Unit<DoubleMeasurement> DefaultUnit { get; } = new Unit<DoubleMeasurement>("", Provider);
+            private static readonly Lazy<Unit<DoubleMeasurement>> percent = new Lazy<Unit<DoubleMeasurement>>(() => DefaultUnit.Divide(100).ToUnit("%"));
+
+            private static readonly Lazy<Unit<DoubleMeasurement>> permil = new Lazy<Unit<DoubleMeasurement>>(() => DefaultUnit.Divide(1000).ToUnit("‰"));
+
+            private static readonly Lazy<Unit<DoubleMeasurement>> ppm = new Lazy<Unit<DoubleMeasurement>>(() => DefaultUnit.Divide(1e6).ToUnit("ppm"));
+
+            private static readonly Lazy<Unit<DoubleMeasurement>> ppb = new Lazy<Unit<DoubleMeasurement>>(() => DefaultUnit.Divide(1e9).ToUnit("ppb"));
+
+            public static Unit<DoubleMeasurement> DefaultUnit => Provider.DefaultUnit;
+
+            public static Unit<DoubleMeasurement> Percent => percent.Value;
+
+            public static Unit<DoubleMeasurement> Permil => permil.Value;
+
+            public static Unit<DoubleMeasurement> PartsPerMillion => ppm.Value;
+
+            public static Unit<DoubleMeasurement> PartsPerBillion => ppb.Value;
         }
 
         private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {
-            protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit };
+            protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit, Units.Percent, Units.Permil, Units.PartsPerMillion, Units.PartsPerBillion };
 
             protected override IEnumerable<Operator> GetOperators() => new[] {
                 Operator.CreateExponation<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>((x, y) => Math.Pow(x, y))

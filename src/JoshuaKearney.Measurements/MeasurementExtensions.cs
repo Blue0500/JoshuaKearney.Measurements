@@ -11,11 +11,13 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(measurement, nameof(measurement));
             Validate.NonNull(symbol, nameof(symbol));
 
-            return new Unit<T>(
+            var ret = new Unit<T>(
                 symbol, 
                 measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit), 
                 measurement.MeasurementProvider
             );
+
+            return ret;
         }
 
         public static PrefixableUnit<T> ToPrefixableUnit<T>(this IMeasurement<T> measurement, string symbol) where T : IMeasurement<T> {
