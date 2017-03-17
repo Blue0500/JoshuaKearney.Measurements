@@ -101,9 +101,9 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class DoubleMeasurementProvider : MeasurementProvider<DoubleMeasurement> {
-            protected override IEnumerable<Unit<DoubleMeasurement>> GetParsableUnits() => new[] { Units.DefaultUnit, Units.Percent, Units.Permil, Units.PartsPerMillion, Units.PartsPerBillion };
+            public override IEnumerable<Unit<DoubleMeasurement>> ParsableUnits => new[] { Units.DefaultUnit, Units.Percent, Units.Permil, Units.PartsPerMillion, Units.PartsPerBillion };
 
-            protected override IEnumerable<Operator> GetOperators() => new[] {
+            public override IEnumerable<Operator> ParseOperators => new[] {
                 Operator.CreateExponation<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>((x, y) => Math.Pow(x, y))
             };
 

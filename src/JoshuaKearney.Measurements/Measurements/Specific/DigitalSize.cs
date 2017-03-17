@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JoshuaKearney.Measurements.Parser;
 using static JoshuaKearney.Measurements.DigitalSize.Units;
+using System.Linq;
 
 namespace JoshuaKearney.Measurements {
 
@@ -43,9 +44,13 @@ namespace JoshuaKearney.Measurements {
         private class DigitalSizeProvider : MeasurementProvider<DigitalSize> {
             public override DigitalSize CreateMeasurement(double value, Unit<DigitalSize> unit) => new DigitalSize(value, unit);
 
-            protected override IEnumerable<Unit<DigitalSize>> GetParsableUnits() => new[] { Octet, Bit };
+            public override IEnumerable<Unit<DigitalSize>> ParsableUnits { get {
+                    yield return Units.Octet;
+                    yield return Units.Bit;
+                }
+            }
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            public override IEnumerable<Operator> ParseOperators => Enumerable.Empty<Operator>();
         }
     }
 }

@@ -29,9 +29,9 @@ namespace JoshuaKearney.Measurements {
             return this.createMeasurement(value, unit);
         }
 
-        protected override IEnumerable<Unit<T>> GetParsableUnits() => this.getParsableUnits();
+        public override IEnumerable<Unit<T>> ParsableUnits => this.getParsableUnits();
 
-        protected override IEnumerable<Operator> GetOperators() => this.getOperators();
+        public override IEnumerable<Operator> ParseOperators => this.getOperators();
     }
 
     internal class ExtendedComplexMeasurementProvider<T, TComp1, TComp2> : CompoundMeasurementProvider<T, TComp1, TComp2>
@@ -69,8 +69,8 @@ namespace JoshuaKearney.Measurements {
             return this.createMeasurement(value, unit);
         }
 
-        protected override IEnumerable<Unit<T>> GetParsableUnits() => this.getParsableUnits();
+        public override IEnumerable<Unit<T>> ParsableUnits => this.getParsableUnits();
 
-        protected override IEnumerable<Operator> GetOperators() => this.getOperators();
+        public override IEnumerable<Operator> ParseOperators => this.getOperators();
     }
 }

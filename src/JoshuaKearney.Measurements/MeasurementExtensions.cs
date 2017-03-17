@@ -7,6 +7,16 @@ using System.Threading.Tasks;
 namespace JoshuaKearney.Measurements {
     public static partial class MeasurementExtensions {
 
+        //public static TResult Subtract<T, TResult>(this IAddableMeasurement<T, TResult> measurement, IMeasurement<T> other)
+        //    where T : IMeasurement<T>
+        //    where TResult : IMeasurement<TResult> {
+
+        //    Validate.NonNull(measurement, nameof(measurement));
+        //    Validate.NonNull(other, nameof(other));
+
+        //    return measurement.Add(other.Negate());
+        //}
+
         public static Unit<T> ToUnit<T>(this IMeasurement<T> measurement, string symbol) where T : IMeasurement<T> {
             Validate.NonNull(measurement, nameof(measurement));
             Validate.NonNull(symbol, nameof(symbol));
@@ -62,7 +72,7 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="that">The other measurement.</param>
         /// <returns></returns>
-        public static T Add<T>(this IMeasurement<T> measurement, IMeasurement<T> that) where T : IMeasurement<T> {
+        public static T Add<T>(this IMeasurement<T> measurement, IMeasurement<T> that) where T : IAddableMeasurement<T> {
             Validate.NonNull(measurement, nameof(measurement));
             Validate.NonNull(that, nameof(that));
 
@@ -182,10 +192,7 @@ namespace JoshuaKearney.Measurements {
         public static T Negate<T>(this IMeasurement<T> measurement) where T : IMeasurement<T> {
             Validate.NonNull(measurement, nameof(measurement));
 
-            return measurement.MeasurementProvider.CreateMeasurement(
-                -measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit),
-                measurement.MeasurementProvider.DefaultUnit
-            );
+            return measurement.Multiply(-1);
         }
 
         /// <summary>
@@ -193,13 +200,12 @@ namespace JoshuaKearney.Measurements {
         /// </summary>
         /// <param name="that">The other measurement.</param>
         /// <returns></returns>
-        public static T Subtract<T>(this IMeasurement<T> measurement, IMeasurement<T> that) where T : IMeasurement<T> {
+        public static T Subtract<T>(this IMeasurement<T> measurement, IMeasurement<T> that) where T : IAddableMeasurement<T> {
             Validate.NonNull(measurement, nameof(measurement));
             Validate.NonNull(that, nameof(that));
 
             return measurement.MeasurementProvider.CreateMeasurement(
-                measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit) - 
-                    that.ToDouble(measurement.MeasurementProvider.DefaultUnit),
+                measurement.ToDouble(measurement.MeasurementProvider.DefaultUnit) - that.ToDouble(measurement.MeasurementProvider.DefaultUnit),
                 measurement.MeasurementProvider.DefaultUnit
             );
         }

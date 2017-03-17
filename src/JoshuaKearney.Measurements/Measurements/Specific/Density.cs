@@ -37,11 +37,13 @@ namespace JoshuaKearney.Measurements {
 
             public override Density CreateMeasurement(double value, Unit<Density> unit) => new Density(value, unit);
 
-            protected override IEnumerable<Unit<Density>> GetParsableUnits() => new[] { KilogramPerMeterCubed, GramPerMilliliter };
+            public override IEnumerable<Unit<Density>> ParsableUnits => Enumerable.Empty<Unit<Density>>();
 
-            protected override IEnumerable<Operator> GetOperators() => new[] {
-                Operator.CreateMultiplication<Density, Volume, Mass>((x, y) => x.Multiply(y))
-            };
+            public override IEnumerable<Operator> ParseOperators {
+                get {
+                    yield return Operator.CreateMultiplication<Density, Volume, Mass>((x, y) => x.Multiply(y));
+                }
+            }
         }
     }
 }

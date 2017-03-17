@@ -10,7 +10,7 @@ namespace JoshuaKearney.Measurements.Parser {
     public class MeasurementParser<T> where T : IMeasurement<T> {
         private MeasurementProvider<T> Provider { get; }
         private IEnumerable<Operator> Operators { get; }
-        private IReadOnlyDictionary<string, IMeasurement> Units { get; }
+        private IReadOnlyDictionary<string, object> Units { get; }
 
         private static Lexer Lexer { get; } = new Lexer();
         private static EvaluationParser EvalParser { get; } = new EvaluationParser();
@@ -24,13 +24,13 @@ namespace JoshuaKearney.Measurements.Parser {
             this.Provider = provider;
             var info = GetProviderInfo(provider);
             this.Units = info.Item1
-                .Concat(new Dictionary<string, IMeasurement>() {
+                .Concat(new Dictionary<string, object>() {
                     { "NaN", provider.NaN },
                     { "Infinity", provider.PositiveInfinity },
                     { "PositiveInfinity", provider.PositiveInfinity },
                     { "NegativeInfinity", provider.PositiveInfinity }
                 })
-                .Concat(DoubleMeasurement.Provider.ParsableUnits.Select(x => new KeyValuePair<string, IMeasurement>(x.ToString(), x.ToMeasurement())))
+                .Concat(DoubleMeasurement.Provider.ParsableUnits.Select(x => new KeyValuePair<string, object>(x.ToString(), x.ToMeasurement())))
                 .ToDictionary(x => x.Key, x => x.Value);
 
             this.Operators = info.Item2.Concat(ops).Concat(DoubleMeasurement.Provider.ParseOperators).Distinct();
@@ -39,10 +39,7 @@ namespace JoshuaKearney.Measurements.Parser {
         public T Parse(string str) {
             Validate.NonNull(str, nameof(str));
 
-            T result;
-            ParseException exp;
-
-            if (this.Parse(str, out result, out exp)) {
+            if (this.Parse(str, out T result, out ParseException exp)) {
                 return result;
             }
             else {
@@ -53,9 +50,8 @@ namespace JoshuaKearney.Measurements.Parser {
         public bool TryParse(string str, out T success) {
             Validate.NonNull(str, nameof(str));
 
-            ParseException exp;
 
-            if (this.Parse(str, out success, out exp)) {
+            if (this.Parse(str, out success, out ParseException exp)) {
                 return true;
             }
             else {
@@ -66,11 +62,9 @@ namespace JoshuaKearney.Measurements.Parser {
         private bool Parse(string str, out T success, out ParseException failure) {
             Validate.NonNull(str, nameof(str));
 
-            IEnumerable<Token> toks;
-            IMeasurement result;
 
-            if (Lexer.TryGetTokens(str, out toks, out failure)) {
-                if (EvalParser.TryParse(toks, this.Operators, this.Units, out result, out failure)) {
+            if (Lexer.TryGetTokens(str, out IEnumerable<Token> toks, out failure)) {
+                if (EvalParser.TryParse(toks, this.Operators, this.Units, out object result, out failure)) {
                     if (result is T) {
                         success = (T)result;
                         failure = null;
@@ -87,13 +81,12 @@ namespace JoshuaKearney.Measurements.Parser {
             return false;
         }
 
-        private static Tuple<Dictionary<string, IMeasurement>, IEnumerable<Operator>> GetProviderInfo<E>(MeasurementProvider<E> provider) where E : IMeasurement<E> {
+        private static Tuple<Dictionary<string, object>, IEnumerable<Operator>> GetProviderInfo<E>(MeasurementProvider<E> provider) where E : IMeasurement<E> {
             Validate.NonNull(provider, nameof(provider));
 
-            Dictionary<string, IMeasurement> ret =
+            Dictionary<string, object> ret =
                 provider
-                .ParsableUnits
-                .SelectMany(x => {
+                .ParsableUnits                .SelectMany(x => {
                     if (x is PrefixableUnit<E>) {
                         return Prefix.All(x as PrefixableUnit<E>).Concat(new[] { x });
                     }
@@ -103,7 +96,7 @@ namespace JoshuaKearney.Measurements.Parser {
                 })
                 .Distinct()
                 .Select(
-                    x => Tuple.Create(x.ToString(), (IMeasurement)x.ToMeasurement())
+                    x => Tuple.Create(x.ToString(), (object)x.ToMeasurement())
                 )
                 .ToDictionary(x => x.Item1, y => y.Item2);
 
@@ -131,8 +124,8 @@ namespace JoshuaKearney.Measurements.Parser {
                     .GenericTypeArguments[0]
                 });
 
-                var prov1Ret = (Tuple<Dictionary<string, IMeasurement>, IEnumerable<Operator>>)prov1Info.Invoke(null, new[] { provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider) });
-                foreach (var item in prov1Ret.Item1.Keys) {
+                var prov1Ret = (Tuple<Dictionary<string, object>, IEnumerable<Operator>>)prov1Info.Invoke(null, new[] { provider.GetType().GetRuntimeProperty("Component1Provider").GetValue(provider) });
+                foreach (string item in prov1Ret.Item1.Keys) {
                     if (!ret.ContainsKey(item)) {
                         ret.Add(item, prov1Ret.Item1[item]);
                     }
@@ -140,8 +133,8 @@ namespace JoshuaKearney.Measurements.Parser {
 
                 ops = ops.Concat(prov1Ret.Item2).Distinct();
 
-                var prov2Ret = (Tuple<Dictionary<string, IMeasurement>, IEnumerable<Operator>>)prov2Info.Invoke(null, new[] { provider.GetType().GetRuntimeProperty("Component2Provider").GetValue(provider) });
-                foreach (var item in prov2Ret.Item1.Keys) {
+                var prov2Ret = (Tuple<Dictionary<string, object>, IEnumerable<Operator>>)prov2Info.Invoke(null, new[] { provider.GetType().GetRuntimeProperty("Component2Provider").GetValue(provider) });
+                foreach (string item in prov2Ret.Item1.Keys) {
                     if (!ret.ContainsKey(item)) {
                         ret.Add(item, prov2Ret.Item1[item]);
                     }

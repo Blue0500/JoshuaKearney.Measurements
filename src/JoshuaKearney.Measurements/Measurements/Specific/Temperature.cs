@@ -42,11 +42,16 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class TemperatureInvervalProvider : MeasurementProvider<Temperature> {
-            protected override IEnumerable<Unit<Temperature>> GetParsableUnits() => new[] { Units.Kelvin, Units.Rankine };
+            public override IEnumerable<Unit<Temperature>> ParsableUnits {
+                get {
+                    yield return Units.Kelvin;
+                    yield return Units.Rankine;
+                }
+            }
 
             public override Temperature CreateMeasurement(double value, Unit<Temperature> unit) => new Temperature(value, unit);
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            public override IEnumerable<Operator> ParseOperators => Enumerable.Empty<Operator>();
         }
     }
 }

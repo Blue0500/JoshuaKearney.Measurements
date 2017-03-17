@@ -65,16 +65,17 @@ namespace JoshuaKearney.Measurements {
 
             public override Area CreateMeasurement(double value, Unit<Area> unit) => new Area(value, unit);
 
-            protected override IEnumerable<Unit<Area>> GetParsableUnits() => new[] { MeterSquared, Acre };
+            public override IEnumerable<Unit<Area>> ParsableUnits => new[] { Acre };
 
-            protected override IEnumerable<Operator> GetOperators() => new[] {
-                Operator.CreateMultiplication<Area, DoubleMeasurement, Area>((x, y) => x.Multiply(y)),
-                Operator.CreateMultiplication<Area, Distance, Volume>((x, y) => x.Multiply(y)),
-
-                Operator.CreateDivision<Area, DoubleMeasurement, Area>((x, y) => x.Divide(y)),
-                Operator.CreateDivision<Area, Area, DoubleMeasurement>((x, y) => x.Divide(y)),
-                Operator.CreateDivision<Area, Distance, Distance>((x, y) => x.Divide(y))
-            };
+            public override IEnumerable<Operator> ParseOperators {
+                get {
+                    yield return Operator.CreateMultiplication<Area, DoubleMeasurement, Area>((x, y) => x.Multiply(y));
+                    yield return Operator.CreateMultiplication<Area, Distance, Volume>((x, y) => x.Multiply(y));
+                    yield return Operator.CreateDivision<Area, DoubleMeasurement, Area>((x, y) => x.Divide(y));
+                    yield return Operator.CreateDivision<Area, Area, DoubleMeasurement>((x, y) => x.Divide(y));
+                    yield return Operator.CreateDivision<Area, Distance, Distance>((x, y) => x.Divide(y));
+                }
+            }
         }
     }
 

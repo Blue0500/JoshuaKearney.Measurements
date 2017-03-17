@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
-    public sealed class Distance : Measurement<Distance> {
+    public sealed class Distance : Measurement<Distance>, IAddableMeasurement<Distance> {
 
         public Distance() {
         }
@@ -53,17 +53,28 @@ namespace JoshuaKearney.Measurements {
 
             public override Distance CreateMeasurement(double value, Unit<Distance> unit) => new Distance(value, unit);
 
-            protected override IEnumerable<Unit<Distance>> GetParsableUnits() => new[] {
-                Units.Meter, Units.Centimeter, Units.Kilometer, Units.Meter, Units.Foot, Units.Inch, Units.Mile, Units.Yard, Units.Millimeter
-            };
+            public override IEnumerable<Unit<Distance>> ParsableUnits {
+                get {
+                    yield return Units.Meter;
+                    yield return Units.Centimeter;
+                    yield return Units.Kilometer;
+                    yield return Units.Meter;
+                    yield return Units.Foot;
+                    yield return Units.Inch;
+                    yield return Units.Mile;
+                    yield return Units.Yard;
+                    yield return Units.Millimeter;
+                }
+            }
 
-            protected override IEnumerable<Operator> GetOperators() => new[] {
-                Operator.CreateMultiplication<Distance, Distance, Area>((x, y) => x.Multiply(y)),
-                Operator.CreateMultiplication<Distance, Area, Volume>((x, y) => x.Multiply(y)),
-
-                Operator.CreateExponation<Distance, DoubleMeasurement, Area>((x, y) => y == 2 ? x.Square() : null),
-                Operator.CreateExponation<Distance, DoubleMeasurement, Volume>((x, y) => y == 3 ? x.Cube() : null)
-            };
+            public override IEnumerable<Operator> ParseOperators {
+                get {
+                    yield return Operator.CreateMultiplication<Distance, Distance, Area>((x, y) => x.Multiply(y));
+                    yield return Operator.CreateMultiplication<Distance, Area, Volume>((x, y) => x.Multiply(y));
+                    yield return Operator.CreateExponation<Distance, DoubleMeasurement, Area>((x, y) => y == 2 ? x.Square() : null);
+                    yield return Operator.CreateExponation<Distance, DoubleMeasurement, Volume>((x, y) => y == 3 ? x.Cube() : null);
+                }
+            }
         }
     }
 

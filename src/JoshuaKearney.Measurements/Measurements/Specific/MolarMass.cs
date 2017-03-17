@@ -27,12 +27,20 @@ namespace JoshuaKearney.Measurements {
             public static Unit<MolarMass> GramPerMole => gramPerMole.Value;
         }
 
-        private class MolarMassProvider : MeasurementProvider<MolarMass> {
+        private class MolarMassProvider : CompoundMeasurementProvider<MolarMass, Mass, Amount> {
             public override MolarMass CreateMeasurement(double value, Unit<MolarMass> unit) => new MolarMass(value, unit);
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[] { };
+            public override IEnumerable<Operator> ParseOperators => Enumerable.Empty<Operator>();
 
-            protected override IEnumerable<Unit<MolarMass>> GetParsableUnits() => new[] { Units.GramPerMole };
+            public override IEnumerable<Unit<MolarMass>> ParsableUnits {
+                get {
+                    yield return Units.GramPerMole;
+                }
+            }
+
+            public override MeasurementProvider<Mass> Component1Provider => Mass.Provider;
+
+            public override MeasurementProvider<Amount> Component2Provider => Amount.Provider;
         }
     }
 }

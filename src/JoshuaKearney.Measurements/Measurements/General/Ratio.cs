@@ -54,7 +54,7 @@ namespace JoshuaKearney.Measurements {
 
             return this.DenominatorProvider.CreateMeasurement(
                 this.Value / that.Value,
-                DenominatorProvider.DefaultUnit
+                this.DenominatorProvider.DefaultUnit
             );
         }
 
@@ -66,27 +66,6 @@ namespace JoshuaKearney.Measurements {
 
             var provider = Ratio<TThatDenom, TDenominator>.GetProvider(that.DenominatorProvider, this.DenominatorProvider);
             return provider.CreateMeasurement(this.Value / that.Value, provider.DefaultUnit);
-
-            //var toMult = that.Reciprocal();
-
-            //return provider.CreateMeasurement(
-            //    this.ToDouble(this.MeasurementProvider.ReferenceUnit) / this.NumeratorProvider.ReferenceUnit.DefaultsPerUnit / that.ToDouble(that.MeasurementProvider.ReferenceUnit) * that.NumeratorProvider.ReferenceUnit.DefaultsPerUnit,
-            //    new Unit<Ratio<TThatDenom, TDenominator>>(
-            //        "",
-            //        that.DenominatorProvider.ReferenceUnit.DefaultsPerUnit / this.DenominatorProvider.ReferenceUnit.DefaultsPerUnit,
-            //        provider
-            //    )
-            //);
-
-            //return that.DenominatorProvider.CreateMeasurement(
-            //    this.ToDouble(this.MeasurementProvider.ReferenceUnit) * this.NumeratorProvider.ReferenceUnit.DefaultsPerUnit / that.ToDouble(that.MeasurementProvider.ReferenceUnit) / that.,
-            //    new Unit<TThatDenom>(
-            //        "",
-            //        this.MeasurementProvider.ReferenceUnit.DefaultsPerUnit / that.MeasurementProvider.ReferenceUnit.DefaultsPerUnit,
-            //        that.DenominatorProvider
-            //    )
-            //)
-            //.DivideToRatio(this.DenominatorProvider.ReferenceUnit);
         }
 
         public double Multiply<E>(Ratio<E, TDenominator, TNumerator> that)
@@ -104,15 +83,6 @@ namespace JoshuaKearney.Measurements {
                 this.Value * denominator.ToDouble(denominator.MeasurementProvider.DefaultUnit),
                 this.NumeratorProvider.DefaultUnit    
             );
-
-            //return NumeratorProvider.CreateMeasurement(
-            //    this.ToDouble(this.MeasurementProvider.ReferenceUnit) * denominator.ToDouble(denominator.MeasurementProvider.ReferenceUnit),
-            //    new Unit<TNumerator>(
-            //        "",
-            //        this.MeasurementProvider.ReferenceUnit.DefaultsPerUnit * denominator.MeasurementProvider.ReferenceUnit.DefaultsPerUnit / NumeratorProvider.ReferenceUnit.DefaultsPerUnit,
-            //        NumeratorProvider    
-            //    )
-            //);
         }
 
         public new Ratio<TDenominator, TNumerator> Reciprocal() {
@@ -129,14 +99,14 @@ namespace JoshuaKearney.Measurements {
         public Ratio<TNumerator, TDenominator> ToRatio() => new Ratio<TNumerator, TDenominator>(
             this.Value,
             this.MeasurementProvider.DefaultUnit.ToRatioUnit<TSelf, TNumerator, TDenominator>(),
-            NumeratorProvider,
-            DenominatorProvider
+            this.NumeratorProvider,
+            this.DenominatorProvider
         );
 
         public TNew Select<TNew>(Func<TNumerator, TDenominator, TNew> selector) {
             Validate.NonNull(selector, nameof(selector));
 
-            return selector(this.Multiply(DenominatorProvider.DefaultUnit), DenominatorProvider.DefaultUnit);
+            return selector(this.Multiply(this.DenominatorProvider.DefaultUnit), this.DenominatorProvider.DefaultUnit);
         }
 
         public Ratio<T, E> Select<T, E>(Func<TNumerator, T> numSelector, Func<TDenominator, E> denomSelector)
@@ -146,7 +116,7 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(denomSelector, nameof(denomSelector));
 
             T ret1 = numSelector(this.Multiply(this.DenominatorProvider.DefaultUnit));
-            E ret2 = denomSelector(DenominatorProvider.DefaultUnit);
+            E ret2 = denomSelector(this.DenominatorProvider.DefaultUnit);
 
             return new Ratio<T, E>(ret1, ret2);
         }
@@ -209,29 +179,32 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class RatioProvider : CompoundMeasurementProvider<Ratio<TNumerator, TDenominator>, TNumerator, TDenominator> {
+            private readonly Lazy<IEnumerable<Unit<Ratio<TNumerator, TDenominator>>>> parsableUnits;
+
             public RatioProvider(MeasurementProvider<TNumerator> t1Prov, MeasurementProvider<TDenominator> t2Prov) {
                 Validate.NonNull(t1Prov, nameof(t1Prov));
                 Validate.NonNull(t2Prov, nameof(t2Prov));
 
                 this.Component1Provider = t1Prov;
                 this.Component2Provider = t2Prov;
+                this.parsableUnits = new Lazy<IEnumerable<Unit<Ratio<TNumerator, TDenominator>>>>(() => new[] {
+                    this.Component1Provider.ParsableUnits.First().DivideToRatioUnit(this.Component2Provider.ParsableUnits.First())
+                });
             }
 
             public override MeasurementProvider<TNumerator> Component1Provider { get; }
 
             public override MeasurementProvider<TDenominator> Component2Provider { get; }
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            public override IEnumerable<Operator> ParseOperators => new Operator[0];
 
             public override Ratio<TNumerator, TDenominator> CreateMeasurement(double value, Unit<Ratio<TNumerator, TDenominator>> unit) {
                 Validate.NonNull(unit, nameof(unit));
 
-                return new Ratio<TNumerator, TDenominator>(value, unit, Component1Provider, Component2Provider);
+                return new Ratio<TNumerator, TDenominator>(value, unit, this.Component1Provider, this.Component2Provider);
             }
 
-            protected override IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> GetParsableUnits() => new[] {
-                this.Component1Provider.ParsableUnits.First().DivideToRatioUnit(this.Component2Provider.ParsableUnits.First())
-            };
+            public override IEnumerable<Unit<Ratio<TNumerator, TDenominator>>> ParsableUnits => this.parsableUnits.Value;
         }
     }
 }

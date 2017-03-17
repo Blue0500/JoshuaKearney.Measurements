@@ -118,11 +118,21 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class AngleProvider : MeasurementProvider<Angle> {
-            protected override IEnumerable<Unit<Angle>> GetParsableUnits() => new[] { Radian, Degree, Revolution, Gradian, ArcMinute, ArcSecond };
+            public override IEnumerable<Unit<Angle>> ParsableUnits {
+                get {
+                    // Radian, Degree, Revolution, Gradian, ArcMinute, ArcSecond
+                    yield return Units.Radian;
+                    yield return Units.Degree;
+                    yield return Units.Revolution;
+                    yield return Units.Gradian;
+                    yield return Units.ArcMinute;
+                    yield return Units.ArcSecond;
+                }
+            }
 
             public override Angle CreateMeasurement(double value, Unit<Angle> unit) => new Angle(value, unit);
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[0];
+            public override IEnumerable<Operator> ParseOperators => Enumerable.Empty<Operator>();
         }
     }
 }

@@ -36,14 +36,24 @@ namespace JoshuaKearney.Measurements {
 
         }
 
-        private class AmountConcentrationProvider : MeasurementProvider<Molarity> {
+        private class AmountConcentrationProvider : CompoundMeasurementProvider<Molarity, Amount, Volume> {
             public override Molarity CreateMeasurement(double value, Unit<Molarity> unit) => new Molarity(value, unit);
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[] {
-                Operator.CreateMultiplication<Molarity, Volume, Amount>((x, y) => x.Multiply(y))
-            };
+            public override IEnumerable<Operator> ParseOperators {
+                get {
+                    yield return Operator.CreateMultiplication<Molarity, Volume, Amount>((x, y) => x.Multiply(y));
+                }
+            }          
 
-            protected override IEnumerable<Unit<Molarity>> GetParsableUnits() => new[] { Units.Molar };
+            public override IEnumerable<Unit<Molarity>> ParsableUnits {
+                get {
+                    yield return Units.Molar;
+                }
+            }
+
+            public override MeasurementProvider<Amount> Component1Provider => Amount.Provider;
+
+            public override MeasurementProvider<Volume> Component2Provider => Volume.Provider;
         }
     }
 }

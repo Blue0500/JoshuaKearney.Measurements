@@ -36,12 +36,18 @@ namespace JoshuaKearney.Measurements {
         private class AmountProvider : MeasurementProvider<Amount> {
             public override Amount CreateMeasurement(double value, Unit<Amount> unit) => new Amount(value, unit);
 
-            protected override IEnumerable<Operator> GetOperators() => new Operator[] {
-                Operator.CreateDivision<Amount, Volume, Molarity>((x, y) => x.Divide(y)),
-                Operator.CreateDivision<Amount, Mass, Molality>((x, y) => x.Divide(y))
-            };
+            public override IEnumerable<Operator> ParseOperators {
+                get {
+                    yield return Operator.CreateDivision<Amount, Volume, Molarity>((x, y) => x.Divide(y));
+                    yield return Operator.CreateDivision<Amount, Mass, Molality>((x, y) => x.Divide(y));
+                }
+            }            
 
-            protected override IEnumerable<Unit<Amount>> GetParsableUnits() => new[] { Units.Mole };
+            public override IEnumerable<Unit<Amount>> ParsableUnits {
+                get {
+                    yield return Units.Mole;
+                }
+            }
         }
     }
 

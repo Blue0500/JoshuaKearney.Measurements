@@ -93,12 +93,25 @@ namespace JoshuaKearney.Measurements {
 
             public override Volume CreateMeasurement(double value, Unit<Volume> unit) => new Volume(value, unit);
 
-            protected override IEnumerable<Unit<Volume>> GetParsableUnits() => new[] { MeterCubed, CentimeterCubed, FootCubed, InchCubed, KilometerCubed, Liter, MileCubed, MillimeterCubed };
+            public override IEnumerable<Unit<Volume>> ParsableUnits {
+                get {
+                    yield return MeterCubed;
+                    yield return CentimeterCubed;
+                    yield return FootCubed;
+                    yield return InchCubed;
+                    yield return KilometerCubed;
+                    yield return Liter;
+                    yield return MileCubed;
+                    yield return MillimeterCubed;
+                }
+            }
 
-            protected override IEnumerable<Operator> GetOperators() => new[] {
-                Operator.CreateDivision((Volume x, Distance y, out Area result) => { result = x.Divide(y); return true; }),
-                Operator.CreateDivision((Volume x, Area y, out Distance result) => { result = x.Divide(y); return true; })
-            };
+            public override IEnumerable<Operator> ParseOperators {
+                get {
+                    yield return Operator.CreateDivision((Volume x, Distance y, out Area result) => { result = x.Divide(y); return true; });
+                    yield return Operator.CreateDivision((Volume x, Area y, out Distance result) => { result = x.Divide(y); return true; });
+                }
+            }
         }
     }
 

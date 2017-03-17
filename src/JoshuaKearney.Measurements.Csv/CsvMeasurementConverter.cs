@@ -18,7 +18,7 @@ namespace JoshuaKearney.Measurements.CsvConverters {
             Validate.NonNull(provider, nameof(provider));
             Validate.NonNull(operators, nameof(operators));
 
-            Parser = new MeasurementParser<T>(provider, operators);
+            this.Parser = new MeasurementParser<T>(provider, operators);
         }
 
         public override bool CanConvertTo(Type type) {
@@ -53,7 +53,7 @@ namespace JoshuaKearney.Measurements.CsvConverters {
             Validate.NonNull(options, nameof(options));
             Validate.NonNull(text, nameof(text));
 
-            return Parser.Parse(text);
+            return this.Parser.Parse(text);
         }
     }
 }

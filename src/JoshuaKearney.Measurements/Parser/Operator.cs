@@ -13,12 +13,12 @@ namespace JoshuaKearney.Measurements.Parser {
     public abstract class Operator {
         protected internal Operator() { }
 
-        private static IMeasurement InvokeBinaryOperator<TIn1, TIn2, TResult>(IMeasurement x, IMeasurement y, BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
+        private static object InvokeBinaryOperator<TIn1, TIn2, TResult>(object x, object y, BinaryOperatorTryCallback<TIn1, TIn2, TResult> eval)
             where TIn1 : IMeasurement<TIn1> where TIn2 : IMeasurement<TIn2> where TResult : IMeasurement<TResult> {
 
             if (x is TIn1 && y is TIn2) {
-                TResult res;
-                if (eval((TIn1)x, (TIn2)y, out res)) {
+                if (eval((TIn1)x, (TIn2)y, out TResult res))
+                {
                     return res;
                 }
             }
@@ -26,12 +26,12 @@ namespace JoshuaKearney.Measurements.Parser {
             return null;
         }
 
-        private static IMeasurement InvokeUrnaryOperator<TIn1, TResult>(IMeasurement x, UrnaryOperatorTryCallback<TIn1, TResult> eval)
+        private static object InvokeUrnaryOperator<TIn1, TResult>(object x, UrnaryOperatorTryCallback<TIn1, TResult> eval)
            where TIn1 : IMeasurement<TIn1> where TResult : IMeasurement<TResult> {
 
             if (x is TIn1) {
-                TResult res;
-                if (eval((TIn1)x, out res)) {
+                if (eval((TIn1)x, out TResult res))
+                {
                     return res;
                 }
             }
@@ -179,11 +179,11 @@ namespace JoshuaKearney.Measurements.Parser {
 
     internal class BinaryOperator : Operator {
         public BinaryOperatorType Type { get; }
-        public Func<IMeasurement, IMeasurement, IMeasurement> Evaluate { get; }
+        public Func<object, object, object> Evaluate { get; }
         public Type InputType1 { get; }
         public Type InputType2 { get; }
 
-        public BinaryOperator(Type input1, Type input2, BinaryOperatorType type, Func<IMeasurement, IMeasurement, IMeasurement> eval) {
+        public BinaryOperator(Type input1, Type input2, BinaryOperatorType type, Func<object, object, object> eval) {
             this.Evaluate = eval;
             this.Type = type;
             this.InputType1 = input1;
@@ -206,10 +206,10 @@ namespace JoshuaKearney.Measurements.Parser {
 
     internal class UrnaryOperator : Operator {
         public UrnaryOperatorType Type { get; }
-        public Func<IMeasurement, IMeasurement> Evaluate { get; }
+        public Func<object, object> Evaluate { get; }
         public Type InputType { get; }
 
-        public UrnaryOperator(Type input, UrnaryOperatorType type, Func<IMeasurement, IMeasurement> eval) {
+        public UrnaryOperator(Type input, UrnaryOperatorType type, Func<object, object> eval) {
             this.Evaluate = eval;
             this.Type = type;
             this.InputType = input;

@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace JoshuaKearney.Measurements {
-    public interface IMeasurement { }
-
-    public interface IMeasurement<T> : IComparable<IMeasurement<T>>, IEquatable<IMeasurement<T>>, IMeasurement where T : IMeasurement<T> {
+    public interface IMeasurement<T> : IComparable<IMeasurement<T>>, IEquatable<IMeasurement<T>> where T : IMeasurement<T> {
         MeasurementProvider<T> MeasurementProvider { get; }
         double ToDouble(Unit<T> unit);
         bool Equals(object other);
         string ToString();
     }
+
+    public interface IAddableMeasurement<T> : IMeasurement<T> where T : IMeasurement<T> { }
+
+    public interface IAddableMeasurement<T, TResult> : IMeasurement<T> where T : IMeasurement<T> where TResult : IMeasurement<TResult> {
+        TResult Add(IMeasurement<T> other);
+        TResult Subtract(IMeasurement<T> other);
+    } 
 
     public abstract class Measurement {
         internal Measurement() { }
@@ -147,7 +153,7 @@ namespace JoshuaKearney.Measurements {
     /// <seealso cref="System.IEquatable{TSelf}" />
     /// <seealso cref="System.IComparable{TSelf}" />
     /// <seealso cref="System.IComparable" />
-    public abstract class Measurement<TSelf> : Measurement, IEquatable<IMeasurement<TSelf>>, IComparable<IMeasurement<TSelf>>, IComparable, IMeasurement, IMeasurement<TSelf>
+    public abstract class Measurement<TSelf> : Measurement, IEquatable<IMeasurement<TSelf>>, IComparable<IMeasurement<TSelf>>, IComparable, IMeasurement<TSelf>
         where TSelf : IMeasurement<TSelf> {
 
         // For unit
@@ -160,8 +166,6 @@ namespace JoshuaKearney.Measurements {
 
             this.Value = amount * unit.Value;
         }
-
-        private static bool hasUnit = false;
 
         protected Measurement() {
             this.Value = 0;
@@ -195,13 +199,13 @@ namespace JoshuaKearney.Measurements {
             return measurement.Negate();
         }
 
-        public static TSelf operator -(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
-            if (measurement == null || measurement2 == null) {
-                return default(TSelf);
-            }
+        //public static TSelf operator -(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        //    if (measurement == null || measurement2 == null) {
+        //        return default(TSelf);
+        //    }
 
-            return measurement.Subtract(measurement2);
-        }
+        //    return measurement.Subtract(measurement2);
+        //}
 
         public static bool operator !=(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
             if (object.ReferenceEquals(measurement, null)) {
@@ -240,13 +244,13 @@ namespace JoshuaKearney.Measurements {
             return measurement.Divide(factor);
         }
 
-        public static TSelf operator +(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
-            if (measurement == null || measurement2 == null) {
-                return default(TSelf);
-            }
+        //public static TSelf operator +(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
+        //    if (measurement == null || measurement2 == null) {
+        //        return default(TSelf);
+        //    }
 
-            return measurement.Add(measurement2);
-        }
+        //    return measurement.Add(measurement2);
+        //}
 
         public static TSelf operator +(Measurement<TSelf> measurement) {
             if (measurement == null) {
@@ -319,6 +323,7 @@ namespace JoshuaKearney.Measurements {
         /// A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj" /> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj" />. Greater than zero This instance follows <paramref name="obj" /> in the sort order.
         /// </returns>
         public int CompareTo(IMeasurement<TSelf> that) => Compare(this, that);
+
         /// <summary>
         /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
         /// </summary>

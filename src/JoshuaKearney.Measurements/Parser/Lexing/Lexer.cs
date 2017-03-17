@@ -10,15 +10,15 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
         private int position = 0;
         private object lockObj = new object();
 
-        private char CurrentChar => text.ElementAtOrDefault(this.position);
+        private char CurrentChar => this.text.ElementAtOrDefault(this.position);
 
         private bool Advance() {
-            position++;
+            this.position++;
             return this.CurrentChar != '\0';
         }
 
         private bool Retract() {
-            position--;
+            this.position--;
             return this.CurrentChar != '\0';
         }
 
@@ -32,25 +32,26 @@ namespace JoshuaKearney.Measurements.Parser.Lexing {
                 List<Token> allToks = new List<Token>();
 
                 do {
-                    if (char.IsDigit(CurrentChar) || this.CurrentChar == '.') {
+                    if (char.IsDigit(this.CurrentChar) || this.CurrentChar == '.') {
                         char start = this.CurrentChar;
-                        double ret;
 
-                        if (numParser.Parse(this.text, this.position, out ret, out this.position)) {
+                        if (numParser.Parse(this.text, this.position, out double ret, out this.position))
+                        {
                             allToks.Add(new NumberToken(ret));
                             this.Retract();
                         }
-                        else {
+                        else
+                        {
                             success = null;
                             failure = ParseException.NumberParseFailed(start);
                             return false;
                         }
                     }
-                    else if (char.IsLetter(CurrentChar)) {
-                        string numStr = CurrentChar.ToString();
+                    else if (char.IsLetter(this.CurrentChar)) {
+                        string numStr = this.CurrentChar.ToString();
 
-                        while (Advance() && char.IsLetter(CurrentChar)) {
-                            numStr = numStr + CurrentChar;
+                        while (Advance() && char.IsLetter(this.CurrentChar)) {
+                            numStr = numStr + this.CurrentChar;
                         }
 
                         // Found the first non letter char, back step to process it on the next go
