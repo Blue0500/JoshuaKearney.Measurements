@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>JoshuaKearney.Measurements</AssemblyName>
+    <RootNamespace>JoshuaKearney.Measurements</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Parser\Grammar.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JoshuaKearney.Core" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

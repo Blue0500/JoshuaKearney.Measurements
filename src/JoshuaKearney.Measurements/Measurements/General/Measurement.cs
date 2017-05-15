@@ -146,13 +146,6 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    /// <summary>
-    /// The base class to represent all measurements within JoshuaKearney.Measurements
-    /// </summary>
-    /// <typeparam name="TSelf">The type of the derived class</typeparam>
-    /// <seealso cref="System.IEquatable{TSelf}" />
-    /// <seealso cref="System.IComparable{TSelf}" />
-    /// <seealso cref="System.IComparable" />
     public abstract class Measurement<TSelf> : Measurement, IEquatable<IMeasurement<TSelf>>, IComparable<IMeasurement<TSelf>>, IComparable, IMeasurement<TSelf>
         where TSelf : IMeasurement<TSelf> {
 
@@ -199,14 +192,6 @@ namespace JoshuaKearney.Measurements {
             return measurement.Negate();
         }
 
-        //public static TSelf operator -(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
-        //    if (measurement == null || measurement2 == null) {
-        //        return default(TSelf);
-        //    }
-
-        //    return measurement.Subtract(measurement2);
-        //}
-
         public static bool operator !=(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
             if (object.ReferenceEquals(measurement, null)) {
                 if (object.ReferenceEquals(measurement2, null)) {
@@ -243,14 +228,6 @@ namespace JoshuaKearney.Measurements {
 
             return measurement.Divide(factor);
         }
-
-        //public static TSelf operator +(Measurement<TSelf> measurement, IMeasurement<TSelf> measurement2) {
-        //    if (measurement == null || measurement2 == null) {
-        //        return default(TSelf);
-        //    }
-
-        //    return measurement.Add(measurement2);
-        //}
 
         public static TSelf operator +(Measurement<TSelf> measurement) {
             if (measurement == null) {
