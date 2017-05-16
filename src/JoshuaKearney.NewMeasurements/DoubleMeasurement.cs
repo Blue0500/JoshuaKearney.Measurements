@@ -6,7 +6,8 @@ namespace JoshuaKearney.Measurements {
     public sealed class DoubleMeasurement : Measurement<DoubleMeasurement>, 
         IMultipliableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>,
         IDivisableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>,
-        IAddableMeasurement<DoubleMeasurement, DoubleMeasurement> { 
+        IAddableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>,
+        ISubtractableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement> { 
 
         public DoubleMeasurement() {
         }
@@ -21,7 +22,7 @@ namespace JoshuaKearney.Measurements {
 
         public override MeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
 
-        DoubleMeasurement IAddableMeasurement<DoubleMeasurement, DoubleMeasurement>.Add(IMeasurement<DoubleMeasurement> other) {
+        DoubleMeasurement IAddableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>.Add(IMeasurement<DoubleMeasurement> other) {
             return this + other.ToDouble();
         }
 
@@ -33,7 +34,7 @@ namespace JoshuaKearney.Measurements {
             return this * other.ToDouble();
         }
 
-        DoubleMeasurement IAddableMeasurement<DoubleMeasurement, DoubleMeasurement>.Subtract(IMeasurement<DoubleMeasurement> other) {
+        DoubleMeasurement ISubtractableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>.Subtract(IMeasurement<DoubleMeasurement> other) {
             return this - other.ToDouble();
         }
 
@@ -94,6 +95,16 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(measurement2, nameof(measurement2));
 
             IDivisableMeasurement<T, DoubleMeasurement, T> multi = measurement1.ToMeasurement();
+            return multi.Divide(measurement2);
+        }
+
+        public static DoubleMeasurement Divide<T>(this IMeasurement<T> measurement1, IMeasurement<T> measurement2)
+            where T : IMeasurement<T>, IDivisableMeasurement<T, T, DoubleMeasurement> {
+
+            Validate.NonNull(measurement1, nameof(measurement1));
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            IDivisableMeasurement<T, T, DoubleMeasurement> multi = measurement1.ToMeasurement();
             return multi.Divide(measurement2);
         }
 

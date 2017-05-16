@@ -91,5 +91,12 @@ namespace JoshuaKearney.Measurements {
 
             return new Term<T1, T2>(measurement1, measurement2);
         }
+
+        public static Ratio<T1, T2> DivideToRatio<T1, T2>(this IMeasurement<T1> measurement1, IMeasurement<T2> measurement2)
+            where T1 : IMeasurement<T1>
+            where T2 : IMeasurement<T2> {
+
+            return new Ratio<T1, T2>(measurement1, measurement2);
+        }
     }
 }

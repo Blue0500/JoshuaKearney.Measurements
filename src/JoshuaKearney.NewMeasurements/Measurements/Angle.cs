@@ -11,7 +11,8 @@ namespace JoshuaKearney.Measurements {
     public class Angle : Measurement<Angle>, 
         IMultipliableMeasurement<Angle, DoubleMeasurement, Angle>,
         IDivisableMeasurement<Angle, DoubleMeasurement, Angle>,
-        IAddableMeasurement<Angle, Angle> {
+        IAddableMeasurement<Angle, Angle, Angle>,
+        ISubtractableMeasurement<Angle, Angle, Angle> {
         public static double Sin(Angle a) {
             Validate.NonNull(a, nameof(a));
 
@@ -86,13 +87,13 @@ namespace JoshuaKearney.Measurements {
             return new Angle(d, this.MeasurementProvider.DefaultUnit);
         }
 
-        Angle IAddableMeasurement<Angle, Angle>.Add(IMeasurement<Angle> other) {
+        Angle IAddableMeasurement<Angle, Angle, Angle>.Add(IMeasurement<Angle> other) {
             double d1 = this.ToDouble(this.MeasurementProvider.DefaultUnit);
             double d2 = other.ToDouble(this.MeasurementProvider.DefaultUnit);
             return new Angle(d1 + d2, this.MeasurementProvider.DefaultUnit);
         }
 
-        Angle IAddableMeasurement<Angle, Angle>.Subtract(IMeasurement<Angle> other) {
+        Angle ISubtractableMeasurement<Angle, Angle, Angle>.Subtract(IMeasurement<Angle> other) {
             double d1 = this.ToDouble(this.MeasurementProvider.DefaultUnit);
             double d2 = other.ToDouble(this.MeasurementProvider.DefaultUnit);
             return new Angle(d1 - d2, this.MeasurementProvider.DefaultUnit);

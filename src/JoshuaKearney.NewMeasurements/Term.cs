@@ -20,7 +20,7 @@ namespace JoshuaKearney.Measurements {
 
         protected Term(IMeasurement<T1> item1, IMeasurement<T2> item2, MeasurementProvider<TSelf> provider) : base(
             item1.ToDouble(item1.MeasurementProvider.DefaultUnit) * item2.ToDouble(item2.MeasurementProvider.DefaultUnit),
-            CreateUnit(item1.MeasurementProvider.DefaultUnit, item2.MeasurementProvider.DefaultUnit, provider)
+            ConvertUnit(item1.MeasurementProvider.DefaultUnit.MultiplyToTermUnit(item2.MeasurementProvider.DefaultUnit), provider)
         ) { }
 
         protected Term(double amount, Unit<TSelf> unit) : base(amount, unit) {
@@ -52,26 +52,26 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(item1Def, nameof(item1Def));
             Validate.NonNull(item2Def, nameof(item2Def));
 
-            return this.ToDouble(CreateUnit(item1Def, item2Def, this.MeasurementProvider));
+            return this.ToDouble(ConvertUnit(item1Def.MultiplyToTermUnit(item2Def), this.MeasurementProvider));
         }
 
         public double ToDouble(Unit<Term<T1, T2>> unit) {
             Validate.NonNull(unit, nameof(unit));
 
-            return this.ToDouble(CreateUnit(unit, this.MeasurementProvider));
+            return this.ToDouble(ConvertUnit(unit, this.MeasurementProvider));
         }
         
         public string ToString(Unit<T1> item1Def, Unit<T2> item2Def) {
             Validate.NonNull(item1Def, nameof(item1Def));
             Validate.NonNull(item1Def, nameof(item2Def));
 
-            return this.ToString(CreateUnit(item1Def, item2Def, this.MeasurementProvider));
+            return this.ToString(ConvertUnit(item1Def.MultiplyToTermUnit(item2Def), this.MeasurementProvider));
         }
 
         public string ToString(Unit<Term<T1, T2>> unit) {
             Validate.NonNull(unit, nameof(unit));
 
-            return this.ToString(CreateUnit(unit, this.MeasurementProvider));
+            return this.ToString(ConvertUnit(unit, this.MeasurementProvider));
         }
 
         public Term<T1, T2> ToTerm() => this.Select((num1, num2) => num1.MultiplyToTerm(num2));
@@ -102,15 +102,11 @@ namespace JoshuaKearney.Measurements {
             );
         }
 
-        private static Unit<TSelf> CreateUnit(Unit<T1> unit1, Unit<T2> unit2, MeasurementProvider<TSelf> provider) {
-            return new Unit<TSelf>(unit1.Symbol + "*" + unit2.Symbol, unit1.DefaultsPerUnit * unit2.DefaultsPerUnit, provider);
-        }
-
-        private static Unit<Term<T1, T2>> CreateUnit(Unit<TSelf> unit, MeasurementProvider<T1> provider1, MeasurementProvider<T2> provider2) {
+        private static Unit<Term<T1, T2>> ConvertUnit(Unit<TSelf> unit, MeasurementProvider<T1> provider1, MeasurementProvider<T2> provider2) {
             return new Unit<Term<T1, T2>>(unit.Symbol, unit.DefaultsPerUnit, Term<T1, T2>.GetProvider(provider1, provider2));
         }
 
-        private static Unit<TSelf> CreateUnit(Unit<Term<T1, T2>> unit, MeasurementProvider<TSelf> provider) {
+        private static Unit<TSelf> ConvertUnit(Unit<Term<T1, T2>> unit, MeasurementProvider<TSelf> provider) {
             return new Unit<TSelf>(unit.Symbol, unit.DefaultsPerUnit, provider);
         }
     }
@@ -178,7 +174,8 @@ namespace JoshuaKearney.Measurements {
                     () => new[] {
                         this.Component1Provider.ParsableUnits
                         .First()
-                        .MultiplyToTermUnit(this.Component2Provider.ParsableUnits.First()) }
+                        .MultiplyToTermUnit(this.Component2Provider.ParsableUnits.First())
+                    }
                 );
             }
 
