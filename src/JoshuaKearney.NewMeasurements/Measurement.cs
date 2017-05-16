@@ -4,13 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace JoshuaKearney.Measurements {
-    //public interface IAddableMeasurement<T> : IMeasurement<T> where T : IMeasurement<T> { }
-
-    public interface IAddableMeasurement<T, TResult> : IMeasurement<T> where T : IMeasurement<T> where TResult : IMeasurement<TResult> {
-        TResult Add(IMeasurement<T> other);
-        TResult Subtract(IMeasurement<T> other);
-    } 
-
     public static class Measurement {
         public static bool IsInfinity<T>(IMeasurement<T> measurement) where T : IMeasurement<T> {
             Validate.NonNull(measurement, nameof(measurement));

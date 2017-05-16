@@ -7,8 +7,6 @@ namespace JoshuaKearney.Measurements {
     public interface IMeasurement<T> : IComparable<IMeasurement<T>>, IEquatable<IMeasurement<T>> where T : IMeasurement<T> {
         MeasurementProvider<T> MeasurementProvider { get; }
         double ToDouble(Unit<T> unit);
-        bool Equals(object other);
-        string ToString();
     }
 
     public static partial class MeasurementExtensions {
@@ -85,6 +83,13 @@ namespace JoshuaKearney.Measurements {
             var unit = units.FirstOrDefault(x => measurement.ToDouble(x) >= 1) ?? units.FirstOrDefault() ?? measurement.MeasurementProvider.ParsableUnits.FirstOrDefault();
 
             return measurement.ToString(unit, "0.##");
+        }
+
+        public static Term<T1, T2> MultiplyToTerm<T1, T2>(this IMeasurement<T1> measurement1, IMeasurement<T2> measurement2)
+            where T1 : IMeasurement<T1>
+            where T2 : IMeasurement<T2> {
+
+            return new Term<T1, T2>(measurement1, measurement2);
         }
     }
 }

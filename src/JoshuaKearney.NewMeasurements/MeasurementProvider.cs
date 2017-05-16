@@ -7,10 +7,10 @@ using JoshuaKearney.Measurements.Parser;
 namespace JoshuaKearney.Measurements {
 
     public abstract class MeasurementProvider<T> where T : IMeasurement<T> {
-        private static readonly IEnumerable<Operator> defaultOperators = new[] {
-            Operator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
-            Operator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Divide(y)),
-            Operator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
+        private static readonly IEnumerable<Operator> defaultOperators = new Operator[] {
+            //Operator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
+            //Operator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Divide(y)),
+            //Operator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
             //Operator.CreateAddition<T, T, T>((x, y) => x.Add(y)),
             //Operator.CreateSubtraction<T, T, T>((x, y) => x.Subtract(y))
         };

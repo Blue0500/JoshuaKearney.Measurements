@@ -60,9 +60,9 @@
       <Project>{84b1912c-e0af-44ee-a80d-723e491c1841}</Project>
       <Name>JoshuaKearney.Measurements.CsvConverters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JoshuaKearney.Measurements\JoshuaKearney.Measurements.csproj">
-      <Project>{9b98820d-4b85-46a2-9ed0-8fa071f2ec8b}</Project>
-      <Name>JoshuaKearney.Measurements</Name>
+    <ProjectReference Include="..\JoshuaKearney.NewMeasurements\JoshuaKearney.NewMeasurements.csproj">
+      <Project>{6834b118-e99b-487d-b8bc-722293faa521}</Project>
+      <Name>JoshuaKearney.NewMeasurements</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
