@@ -9,7 +9,7 @@ namespace JoshuaKearney.Measurements.Parser {
     internal class EvaluationParser {
         private IEnumerable<Token> Tokens;
         private IEnumerable<Operator> AllOperators;
-        private IReadOnlyDictionary<string, IMeasurement> Units;
+        private Dictionary<string, IMeasurement> Units;
         private int pos = 0;
         private object lockObj = new object();
 
@@ -34,7 +34,7 @@ namespace JoshuaKearney.Measurements.Parser {
         public bool TryParse(
             IEnumerable<Token> tokens,
             IEnumerable<Operator> ops,
-            IReadOnlyDictionary<string, IMeasurement> units,
+            Dictionary<string, IMeasurement> units,
             out IMeasurement success, 
             out ParseException failure) {
 

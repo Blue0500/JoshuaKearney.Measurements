@@ -10,7 +10,7 @@ namespace JoshuaKearney.Measurements.Parser {
     public class MeasurementParser<T> where T : Measurement<T> {
         private MeasurementProvider<T> Provider { get; }
         private IEnumerable<Operator> Operators { get; }
-        private IReadOnlyDictionary<string, IMeasurement> Units { get; }
+        private Dictionary<string, IMeasurement> Units { get; }
 
         private static Lexer Lexer { get; } = new Lexer();
         private static EvaluationParser EvalParser { get; } = new EvaluationParser();

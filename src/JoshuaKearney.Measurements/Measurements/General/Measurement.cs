@@ -18,14 +18,12 @@ namespace JoshuaKearney.Measurements {
         internal Measurement(double amount) {
             this.Value = amount;
         }
-
+      
         protected Measurement(double amount, Unit<TSelf> unit) {
             Validate.NonNull(unit, nameof(unit));
 
             this.Value = amount * unit.Value;
         }
-
-        private static bool hasUnit = false;
 
         protected Measurement() {
             this.Value = 0;
