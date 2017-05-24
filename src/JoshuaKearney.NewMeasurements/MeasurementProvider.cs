@@ -7,19 +7,23 @@ using JoshuaKearney.Measurements.Parser;
 namespace JoshuaKearney.Measurements {
 
     public abstract class MeasurementProvider<T> where T : IMeasurement<T> {
-        private static readonly IEnumerable<Operator> defaultOperators = new Operator[] {
-            //Operator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
-            //Operator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Divide(y)),
-            //Operator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
-            //Operator.CreateAddition<T, T, T>((x, y) => x.Add(y)),
-            //Operator.CreateSubtraction<T, T, T>((x, y) => x.Subtract(y))
+        private readonly Lazy<Unit<T>> defaultUnit;
+        private readonly IEnumerable<Operator> defaultOperators = new Operator[] {
+            Operator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
+            Operator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Divide(y)),
+            Operator.CreateDivision<T, T, DoubleMeasurement>((x, y) => x.Divide(y)),
+            Operator.CreateAddition<T, T, T>((x, y) => x.Add(y)),
+            Operator.CreateSubtraction<T, T, T>((x, y) => x.Subtract(y))
         };
+        private Lazy<T> nan, posInf, negInf, max, min, zero;
 
         public abstract T CreateMeasurement(double value, Unit<T> unit);
 
-        public abstract IEnumerable<Unit<T>> ParsableUnits { get; }
+        public virtual IEnumerable<Unit<T>> ParsableUnits { get; } = Enumerable.Empty<Unit<T>>();
 
-        public abstract IEnumerable<Operator> ParseOperators { get; }
+        public virtual IEnumerable<Operator> ParseOperators => this.defaultOperators;
+
+        public Unit<T> DefaultUnit => this.defaultUnit.Value;
 
         public MeasurementProvider<T> AppendParsableUnits(params Unit<T>[] units) {
             Validate.NonNull(units, nameof(units));
@@ -42,19 +46,14 @@ namespace JoshuaKearney.Measurements {
         }
 
         public MeasurementProvider() {
-            this.defUnit = new Lazy<Unit<T>>(() => new Unit<T>("", 1, this));
-            this.nan = new Lazy<T>(() => this.CreateMeasurement(double.NaN, this.DefaultUnit));
-            this.posInf = new Lazy<T>(() => this.CreateMeasurement(double.PositiveInfinity, this.DefaultUnit));
-            this.negInf = new Lazy<T>(() => this.CreateMeasurement(double.NegativeInfinity, this.DefaultUnit));
-            this.minVal = new Lazy<T>(() => this.CreateMeasurement(double.MinValue, this.DefaultUnit));
-            this.maxVal = new Lazy<T>(() => this.CreateMeasurement(double.MaxValue, this.DefaultUnit));
-            this.zero = new Lazy<T>(() => this.CreateMeasurement(0d, this.DefaultUnit));
+            this.defaultUnit = new Lazy<Unit<T>>(() => new Unit<T>($"DefaultUnit<{typeof(T).Name}>", 1, this));
+            this.nan = new Lazy<T>(() => this.CreateMeasurement(double.NaN, this.defaultUnit.Value));
+            this.posInf = new Lazy<T>(() => this.CreateMeasurement(double.PositiveInfinity, this.defaultUnit.Value));
+            this.negInf = new Lazy<T>(() => this.CreateMeasurement(double.NegativeInfinity, this.defaultUnit.Value));
+            this.max = new Lazy<T>(() => this.CreateMeasurement(double.MinValue, this.defaultUnit.Value));
+            this.min = new Lazy<T>(() => this.CreateMeasurement(double.MaxValue, this.defaultUnit.Value));
+            this.zero = new Lazy<T>(() => this.CreateMeasurement(0d, this.defaultUnit.Value));
         }
-
-        private readonly Lazy<T> nan, posInf, negInf, maxVal, minVal, zero;
-        private readonly Lazy<Unit<T>> defUnit;
-
-        public Unit<T> DefaultUnit => this.defUnit.Value;
 
         public T NaN => this.nan.Value;
 
@@ -62,9 +61,9 @@ namespace JoshuaKearney.Measurements {
 
         public T NegativeInfinity => this.negInf.Value;
 
-        public T MaxValue => this.maxVal.Value;
+        public T MaxValue => this.max.Value;
 
-        public T MinValue => this.minVal.Value;
+        public T MinValue => this.min.Value;
 
         public T Zero => this.zero.Value;
     }

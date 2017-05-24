@@ -8,11 +8,7 @@ using static JoshuaKearney.Measurements.Angle.Units;
 
 namespace JoshuaKearney.Measurements {
 
-    public class Angle : Measurement<Angle>, 
-        IMultipliableMeasurement<Angle, DoubleMeasurement, Angle>,
-        IDivisableMeasurement<Angle, DoubleMeasurement, Angle>,
-        IAddableMeasurement<Angle, Angle, Angle>,
-        ISubtractableMeasurement<Angle, Angle, Angle> {
+    public class Angle : Measurement<Angle> {
         public static double Sin(Angle a) {
             Validate.NonNull(a, nameof(a));
 
@@ -77,28 +73,6 @@ namespace JoshuaKearney.Measurements {
             return Atan(1 / d);
         }
 
-        Angle IMultipliableMeasurement<Angle, DoubleMeasurement, Angle>.Multiply(IMeasurement<DoubleMeasurement> other) {
-            double d = this.ToDouble(this.MeasurementProvider.DefaultUnit) * other.ToDouble();
-            return new Angle(d, this.MeasurementProvider.DefaultUnit);
-        }
-
-        Angle IDivisableMeasurement<Angle, DoubleMeasurement, Angle>.Divide(IMeasurement<DoubleMeasurement> other) {
-            double d = this.ToDouble(this.MeasurementProvider.DefaultUnit) / other.ToDouble();
-            return new Angle(d, this.MeasurementProvider.DefaultUnit);
-        }
-
-        Angle IAddableMeasurement<Angle, Angle, Angle>.Add(IMeasurement<Angle> other) {
-            double d1 = this.ToDouble(this.MeasurementProvider.DefaultUnit);
-            double d2 = other.ToDouble(this.MeasurementProvider.DefaultUnit);
-            return new Angle(d1 + d2, this.MeasurementProvider.DefaultUnit);
-        }
-
-        Angle ISubtractableMeasurement<Angle, Angle, Angle>.Subtract(IMeasurement<Angle> other) {
-            double d1 = this.ToDouble(this.MeasurementProvider.DefaultUnit);
-            double d2 = other.ToDouble(this.MeasurementProvider.DefaultUnit);
-            return new Angle(d1 - d2, this.MeasurementProvider.DefaultUnit);
-        }
-
         public Angle() {
         }
 
@@ -109,14 +83,13 @@ namespace JoshuaKearney.Measurements {
 
         public override MeasurementProvider<Angle> MeasurementProvider => Provider;
 
-        /*
         public Distance GetArcLength(Distance radius) {
             return radius.Multiply(this.ToDouble(Units.Radian));
         }
 
         public Distance GetRadiusLength(Distance arcLength) {
             return arcLength.Multiply(1 / this.ToDouble(Units.Radian));
-        }*/
+        }
 
         public class Units {
             private static Lazy<PrefixableUnit<Angle>> radian = new Lazy<PrefixableUnit<Angle>>(() => new PrefixableUnit<Angle>("rad", Provider));
@@ -157,8 +130,6 @@ namespace JoshuaKearney.Measurements {
             }
 
             public override Angle CreateMeasurement(double value, Unit<Angle> unit) => new Angle(value, unit);
-
-            public override IEnumerable<Operator> ParseOperators => Enumerable.Empty<Operator>();
         }
     }
 }

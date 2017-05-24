@@ -74,15 +74,18 @@ namespace JoshuaKearney.Measurements {
         /// <returns>
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public static string ToString<T>(this IMeasurement<T> measurement, Unit<T> unit1, params Unit<T>[] units) where T : IMeasurement<T> {
+        public static string ToString<T>(this IMeasurement<T> measurement, params Unit<T>[] units) where T : IMeasurement<T> {
             Validate.NonNull(measurement, nameof(measurement));
-            Validate.NonNull(unit1, nameof(unit1));
             Validate.NonNull(units, nameof(units));
 
-            units = units.Concat(new[] { unit1 }).OrderBy(x => measurement.ToDouble(x)).ToArray();
-            var unit = units.FirstOrDefault(x => measurement.ToDouble(x) >= 1) ?? units.FirstOrDefault() ?? measurement.MeasurementProvider.ParsableUnits.FirstOrDefault();
+            units = units.OrderBy(x => measurement.ToDouble(x)).ToArray();
 
-            return measurement.ToString(unit, "0.##");
+            var unit = units.FirstOrDefault(x => measurement.ToDouble(x) >= 1) ?? 
+                units.FirstOrDefault() ?? 
+                measurement.MeasurementProvider.ParsableUnits.FirstOrDefault() ?? 
+                measurement.MeasurementProvider.DefaultUnit;
+
+            return measurement.ToString(unit, "0.###");
         }
 
         public static Term<T1, T2> MultiplyToTerm<T1, T2>(this IMeasurement<T1> measurement1, IMeasurement<T2> measurement2)
@@ -97,6 +100,34 @@ namespace JoshuaKearney.Measurements {
             where T2 : IMeasurement<T2> {
 
             return new Ratio<T1, T2>(measurement1, measurement2);
+        }
+
+        public static T Add<T>(this IMeasurement<T> measurement1, IMeasurement<T> measurement2)
+            where T : IMeasurement<T> {
+
+            Validate.NonNull(measurement1, nameof(measurement1));
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            double val1 = measurement1.ToDouble(measurement1.MeasurementProvider.DefaultUnit);
+            double val2 = measurement2.ToDouble(measurement1.MeasurementProvider.DefaultUnit);
+            return measurement1.MeasurementProvider.CreateMeasurement(
+                val1 + val2,
+                measurement1.MeasurementProvider.DefaultUnit
+            );
+        }
+
+        public static T Subtract<T>(this IMeasurement<T> measurement1, IMeasurement<T> measurement2)
+            where T : IMeasurement<T> {
+
+            Validate.NonNull(measurement1, nameof(measurement1));
+            Validate.NonNull(measurement2, nameof(measurement2));
+
+            double val1 = measurement1.ToDouble(measurement1.MeasurementProvider.DefaultUnit);
+            double val2 = measurement2.ToDouble(measurement1.MeasurementProvider.DefaultUnit);
+            return measurement1.MeasurementProvider.CreateMeasurement(
+                val1 - val2,
+                measurement1.MeasurementProvider.DefaultUnit
+            );
         }
     }
 }

@@ -164,7 +164,7 @@ namespace JoshuaKearney.Measurements {
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
         public override string ToString() {
-            return this.ToString(this.MeasurementProvider.ParsableUnits.First());
+            return this.ToString(this.MeasurementProvider.ParsableUnits.ToArray());
         }
 
         /// <summary>

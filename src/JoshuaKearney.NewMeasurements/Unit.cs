@@ -55,8 +55,6 @@ namespace JoshuaKearney.Measurements {
         /// <returns>
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
-
-        // The symbol will always have parenthensis around it
         public override string ToString() => this.Symbol.Substring(1, this.Symbol.Length - 2);
 
         public bool Equals(Unit<T> other) {

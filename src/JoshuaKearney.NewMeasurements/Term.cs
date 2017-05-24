@@ -4,7 +4,7 @@ using System.Linq;
 using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
-    public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>, IDivisableMeasurement<TSelf, T2, T1>
+    public abstract class Term<TSelf, T1, T2> : Measurement<TSelf>
            where TSelf : Term<TSelf, T1, T2>
            where T1 : IMeasurement<T1>
            where T2 : IMeasurement<T2> {
@@ -13,14 +13,9 @@ namespace JoshuaKearney.Measurements {
 
         public abstract MeasurementProvider<T2> Item2Provider { get; }
 
-        T1 IDivisableMeasurement<TSelf, T2, T1>.Divide(IMeasurement<T2> other) {
-            Validate.NonNull(other, nameof(other));
-            return this.DivideToFirst(other);
-        }
-
         protected Term(IMeasurement<T1> item1, IMeasurement<T2> item2, MeasurementProvider<TSelf> provider) : base(
             item1.ToDouble(item1.MeasurementProvider.DefaultUnit) * item2.ToDouble(item2.MeasurementProvider.DefaultUnit),
-            ConvertUnit(item1.MeasurementProvider.DefaultUnit.MultiplyToTermUnit(item2.MeasurementProvider.DefaultUnit), provider)
+            ConvertUnit(item1.MeasurementProvider.DefaultUnit, item2.MeasurementProvider.DefaultUnit, provider)
         ) { }
 
         protected Term(double amount, Unit<TSelf> unit) : base(amount, unit) {
@@ -30,6 +25,15 @@ namespace JoshuaKearney.Measurements {
             Validate.NonNull(selector, nameof(selector));
 
             return selector(this.Divide(this.Item2Provider.DefaultUnit), this.Item2Provider.DefaultUnit);
+        }
+        
+        public T1 Divide(IMeasurement<T2> measurement) {
+
+            return this.Select(
+                (x, y) => x.Multiply(
+                    y.ToDouble(y.MeasurementProvider.DefaultUnit) / measurement.ToDouble(y.MeasurementProvider.DefaultUnit)
+                )
+            );
         }
 
         public Term<T, E> Select<T, E>(Func<T1, T> firstSelect, Func<T2, E> secondSelect)
@@ -109,6 +113,10 @@ namespace JoshuaKearney.Measurements {
         private static Unit<TSelf> ConvertUnit(Unit<Term<T1, T2>> unit, MeasurementProvider<TSelf> provider) {
             return new Unit<TSelf>(unit.Symbol, unit.DefaultsPerUnit, provider);
         }
+
+        private static Unit<TSelf> ConvertUnit(Unit<T1> unit1, Unit<T2> unit2, MeasurementProvider<TSelf> provider) {
+            return new Unit<TSelf>(unit1.Symbol + "*" + unit2.Symbol, unit1.DefaultsPerUnit * unit1.DefaultsPerUnit, provider);
+        }
     }
 
     public sealed class Term<T1, T2> : Term<Term<T1, T2>, T1, T2>
@@ -162,26 +170,20 @@ namespace JoshuaKearney.Measurements {
         }
 
         private class TermProvider : CompoundMeasurementProvider<Term<T1, T2>, T1, T2> {
-            private readonly Lazy<IEnumerable<Unit<Term<T1, T2>>>> parsableUnits;
+            private Lazy<Unit<Term<T1, T2>>> defaultUnit;
+
+            public override MeasurementProvider<T1> Component1Provider { get; }
+            public override MeasurementProvider<T2> Component2Provider { get; }
 
             public TermProvider(MeasurementProvider<T1> t1Prov, MeasurementProvider<T2> t2Prov) {
                 Validate.NonNull(t1Prov, nameof(t1Prov));
                 Validate.NonNull(t2Prov, nameof(t2Prov));
 
+                this.defaultUnit = new Lazy<Unit<Term<T1, T2>>>(() => t1Prov.DefaultUnit.MultiplyToTermUnit(t2Prov.DefaultUnit));
+
                 this.Component1Provider = t1Prov;
                 this.Component2Provider = t2Prov;
-                this.parsableUnits = new Lazy<IEnumerable<Unit<Term<T1, T2>>>>(
-                    () => new[] {
-                        this.Component1Provider.ParsableUnits
-                        .First()
-                        .MultiplyToTermUnit(this.Component2Provider.ParsableUnits.First())
-                    }
-                );
-            }
-
-            public override MeasurementProvider<T1> Component1Provider { get; }
-
-            public override MeasurementProvider<T2> Component2Provider { get; }                
+            }            
 
             public override Term<T1, T2> CreateMeasurement(double value, Unit<Term<T1, T2>> unit) {
                 Validate.NonNull(unit, nameof(unit));
@@ -189,9 +191,9 @@ namespace JoshuaKearney.Measurements {
                 return new Term<T1, T2>(value, unit, this.Component1Provider, this.Component2Provider);
             }
 
-            public override IEnumerable<Operator> ParseOperators => new Operator[0];
+            public override IEnumerable<Unit<Term<T1, T2>>> ParsableUnits => new Unit<Term<T1, T2>>[] { this.defaultUnit.Value };
 
-            public override IEnumerable<Unit<Term<T1, T2>>> ParsableUnits => this.parsableUnits.Value;
+            public override IEnumerable<Operator> ParseOperators => new Operator[0];
         }
     }
 
@@ -208,14 +210,6 @@ namespace JoshuaKearney.Measurements {
                 unit1.DefaultsPerUnit * unit2.DefaultsPerUnit,
                 Term<T1, T2>.GetProvider(unit1.MeasurementProvider, unit2.MeasurementProvider)
             );
-        }
-
-        public static T1 Divide<TSelf, T1, T2>(this Term<TSelf, T1, T2> term, IMeasurement<T2> measurement)
-            where TSelf : Term<TSelf, T1, T2>, IDivisableMeasurement<TSelf, T2, T1>
-            where T1 : IMeasurement<T1>
-            where T2 : IMeasurement<T2> {
-
-            return ((IDivisableMeasurement<TSelf, T2, T1>)term).Divide(measurement);
         }
     }
 }

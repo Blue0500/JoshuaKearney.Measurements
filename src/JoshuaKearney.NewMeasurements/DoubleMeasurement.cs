@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
-    public sealed class DoubleMeasurement : Measurement<DoubleMeasurement>, 
-        IMultipliableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>,
-        IDivisableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>,
-        IAddableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>,
-        ISubtractableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement> { 
+    public sealed class DoubleMeasurement : Measurement<DoubleMeasurement> { 
 
         public DoubleMeasurement() {
         }
@@ -21,22 +17,6 @@ namespace JoshuaKearney.Measurements {
         public static MeasurementProvider<DoubleMeasurement> Provider { get; } = new DoubleMeasurementProvider();
 
         public override MeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
-
-        DoubleMeasurement IAddableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>.Add(IMeasurement<DoubleMeasurement> other) {
-            return this + other.ToDouble();
-        }
-
-        DoubleMeasurement IDivisableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>.Divide(IMeasurement<DoubleMeasurement> other) {
-            return this / other.ToDouble();
-        }
-
-        DoubleMeasurement IMultipliableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>.Multiply(IMeasurement<DoubleMeasurement> other) {
-            return this * other.ToDouble();
-        }
-
-        DoubleMeasurement ISubtractableMeasurement<DoubleMeasurement, DoubleMeasurement, DoubleMeasurement>.Subtract(IMeasurement<DoubleMeasurement> other) {
-            return this - other.ToDouble();
-        }
 
         public static implicit operator DoubleMeasurement(double d) {
             return new DoubleMeasurement(d);
@@ -55,7 +35,9 @@ namespace JoshuaKearney.Measurements {
 
             private static readonly Lazy<Unit<DoubleMeasurement>> ppb = new Lazy<Unit<DoubleMeasurement>>(() => Unity.Divide(1e9).ToUnit("ppb"));
 
-            public static Unit<DoubleMeasurement> Unity => Provider.DefaultUnit;
+            private static readonly Lazy<Unit<DoubleMeasurement>> unity = new Lazy<Unit<DoubleMeasurement>>(() => new Unit<DoubleMeasurement>("unit", Provider));
+
+            public static Unit<DoubleMeasurement> Unity => unity.Value;
 
             public static Unit<DoubleMeasurement> Percent => percent.Value;
 
@@ -78,64 +60,53 @@ namespace JoshuaKearney.Measurements {
     }
 
     public static partial class MeasurementExtensions {
-        public static T Divide<T>(this IMeasurement<T> measurement1, double measurement2)
-            where T : IMeasurement<T>, IDivisableMeasurement<T, DoubleMeasurement, T> {
+
+        public static T Divide<T>(this IMeasurement<T> measurement1, DoubleMeasurement measurement2)
+            where T : IMeasurement<T> {
 
             Validate.NonNull(measurement1, nameof(measurement1));
             Validate.NonNull(measurement2, nameof(measurement2));
 
-            IMeasurement<DoubleMeasurement> d = new DoubleMeasurement(measurement2);
-            return measurement1.Divide(d);
-        }
-
-        public static T Divide<T>(this IMeasurement<T> measurement1, IMeasurement<DoubleMeasurement> measurement2)
-            where T : IMeasurement<T>, IDivisableMeasurement<T, DoubleMeasurement, T> {
-
-            Validate.NonNull(measurement1, nameof(measurement1));
-            Validate.NonNull(measurement2, nameof(measurement2));
-
-            IDivisableMeasurement<T, DoubleMeasurement, T> multi = measurement1.ToMeasurement();
-            return multi.Divide(measurement2);
+            double val = measurement1.ToDouble(measurement1.MeasurementProvider.DefaultUnit);
+            return measurement1.MeasurementProvider.CreateMeasurement(val / measurement2, measurement1.MeasurementProvider.DefaultUnit);
         }
 
         public static DoubleMeasurement Divide<T>(this IMeasurement<T> measurement1, IMeasurement<T> measurement2)
-            where T : IMeasurement<T>, IDivisableMeasurement<T, T, DoubleMeasurement> {
+            where T : IMeasurement<T> {
 
             Validate.NonNull(measurement1, nameof(measurement1));
             Validate.NonNull(measurement2, nameof(measurement2));
 
-            IDivisableMeasurement<T, T, DoubleMeasurement> multi = measurement1.ToMeasurement();
-            return multi.Divide(measurement2);
+            return measurement1.ToDouble(measurement1.MeasurementProvider.DefaultUnit) / measurement2.ToDouble(measurement1.MeasurementProvider.DefaultUnit);
         }
 
-        public static T Multiply<T>(this IMeasurement<T> measurement1, double measurement2)
-            where T : IMeasurement<T>, IMultipliableMeasurement<T, DoubleMeasurement, T> {
+        public static T Multiply<T>(this IMeasurement<T> measurement1, DoubleMeasurement measurement2)
+            where T : IMeasurement<T> {
 
             Validate.NonNull(measurement1, nameof(measurement1));
             Validate.NonNull(measurement2, nameof(measurement2));
 
-            IMeasurement<DoubleMeasurement> d = new DoubleMeasurement(measurement2);
-            return measurement1.Multiply(d);
+            double val = measurement1.ToDouble(measurement1.MeasurementProvider.DefaultUnit);
+            return measurement1.MeasurementProvider.CreateMeasurement(val * measurement2, measurement1.MeasurementProvider.DefaultUnit);
         }
 
-        public static T Multiply<T>(this IMeasurement<T> measurement1, IMeasurement<DoubleMeasurement> measurement2)
-            where T : IMeasurement<T>, IMultipliableMeasurement<T, DoubleMeasurement, T> {
+        public static T Multiply<T>(this IMeasurement<DoubleMeasurement> measurement1, IMeasurement<T> measurement2)
+            where T : IMeasurement<T> {
 
             Validate.NonNull(measurement1, nameof(measurement1));
             Validate.NonNull(measurement2, nameof(measurement2));
 
-            IMultipliableMeasurement<T, DoubleMeasurement, T> multi = measurement1.ToMeasurement();
-            return multi.Multiply(measurement2);
+            return measurement2.Multiply(measurement1.ToMeasurement());
         }
 
         public static T Negate<T>(this IMeasurement<T> measurement1)
-            where T : IMeasurement<T>, IMultipliableMeasurement<T, DoubleMeasurement, T> {
+            where T : IMeasurement<T> {
 
             return measurement1.Multiply(-1);
         }
 
         public static T Abs<T>(this IMeasurement<T> measurement1)
-            where T : IMeasurement<T>, IMultipliableMeasurement<T, DoubleMeasurement, T> {
+            where T : IMeasurement<T> {
 
             if (measurement1.CompareTo(measurement1.MeasurementProvider.Zero) < 0) {
                 return measurement1.Negate();
