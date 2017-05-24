@@ -31,7 +31,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Atto<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e-18, "atto", "a");
+            return PrefixUnit(unit, 1e-18, "atto", "a");
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Centi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, .01, "centi", "c");
+            return PrefixUnit(unit, .01, "centi", "c");
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Deca<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 10, "deca", "da");
+            return PrefixUnit(unit, 10, "deca", "da");
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Deci<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, .1, "deci", "d");
+            return PrefixUnit(unit, .1, "deci", "d");
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Exa<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e18, "exa", "E");
+            return PrefixUnit(unit, 1e18, "exa", "E");
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Exbi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d * 1024d, "exbi", "Ei");
+            return PrefixUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d * 1024d, "exbi", "Ei");
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Femto<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e-15, "femto", "f");
+            return PrefixUnit(unit, 1e-15, "femto", "f");
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Gibi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d * 1024d * 1024d, "gibi", "Gi");
+            return PrefixUnit(unit, 1024d * 1024d * 1024d, "gibi", "Gi");
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Giga<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e9, "giga", "G");
+            return PrefixUnit(unit, 1e9, "giga", "G");
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Hecto<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 100, "hecto", "h");
+            return PrefixUnit(unit, 100, "hecto", "h");
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Kibi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d, "kibi", "Ki");
+            return PrefixUnit(unit, 1024d, "kibi", "Ki");
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Kilo<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1000, "kilo", "k");
+            return PrefixUnit(unit, 1000, "kilo", "k");
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Mebi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d * 1024d, "mebi", "Mi");
+            return PrefixUnit(unit, 1024d * 1024d, "mebi", "Mi");
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Mega<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e6, "mega", "M");
+            return PrefixUnit(unit, 1e6, "mega", "M");
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Micro<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e-6, "micro", "μ");
+            return PrefixUnit(unit, 1e-6, "micro", "μ");
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Milli<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, .001, "milli", "m");
+            return PrefixUnit(unit, .001, "milli", "m");
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Nano<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e-9, "nano", "n");
+            return PrefixUnit(unit, 1e-9, "nano", "n");
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Pebi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d, "pebi", "Pi");
+            return PrefixUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d, "pebi", "Pi");
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Peta<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e15, "peta", "P");
+            return PrefixUnit(unit, 1e15, "peta", "P");
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Pico<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e-12, "pico", "p");
+            return PrefixUnit(unit, 1e-12, "pico", "p");
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Tebi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d * 1024d * 1024d * 1024d, "tebi", "Ti");
+            return PrefixUnit(unit, 1024d * 1024d * 1024d * 1024d, "tebi", "Ti");
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Tera<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1e12, "tera", "T");
+            return PrefixUnit(unit, 1e12, "tera", "T");
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Yobi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d * 1024d * 1024d * 1024d, "yobi", "Yi");
+            return PrefixUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d * 1024d * 1024d * 1024d, "yobi", "Yi");
         }
 
         /// <summary>
@@ -284,10 +284,10 @@ namespace JoshuaKearney.Measurements {
         /// <returns></returns>
         public static Unit<T> Zebi<T>(PrefixableUnit<T> unit) where T : Measurement<T> {
             Validate.NonNull(unit, nameof(unit));
-            return PrefixIUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d * 1024d * 1024d, "zebi", "Zi");
+            return PrefixUnit(unit, 1024d * 1024d * 1024d * 1024d * 1024d * 1024d * 1024d, "zebi", "Zi");
         }
 
-        private static Unit<T> PrefixIUnit<T>(PrefixableUnit<T> unit, double multiplier, string namePrefix, string symbolPrefix) where T : Measurement<T> {
+        private static Unit<T> PrefixUnit<T>(PrefixableUnit<T> unit, double multiplier, string namePrefix, string symbolPrefix) where T : Measurement<T> {
             return new Unit<T>(
                 symbol: symbolPrefix + unit.ToString(),
                 defaultsPerUnit: unit.DefaultsPerUnit * multiplier,

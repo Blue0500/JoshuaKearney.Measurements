@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoshuaKearney.Measurements.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoshuaKearney.Measurements.Testing", "src\JoshuaKearney.Measurements.Testing\JoshuaKearney.Measurements.Testing.csproj", "{300DE7FD-F94E-4CE5-9EA5-4B55DBDB02C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoshuaKearney.Measurements.UnitTests", "JoshuaKearney.Measurements.UnitTests\JoshuaKearney.Measurements.UnitTests.csproj", "{B3CD8269-0734-461D-A454-052A586B15C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{300DE7FD-F94E-4CE5-9EA5-4B55DBDB02C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{300DE7FD-F94E-4CE5-9EA5-4B55DBDB02C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{300DE7FD-F94E-4CE5-9EA5-4B55DBDB02C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3CD8269-0734-461D-A454-052A586B15C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3CD8269-0734-461D-A454-052A586B15C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3CD8269-0734-461D-A454-052A586B15C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3CD8269-0734-461D-A454-052A586B15C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

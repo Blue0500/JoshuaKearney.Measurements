@@ -55,11 +55,9 @@ namespace JoshuaKearney.Measurements {
 
     public sealed class DoubleMeasurement : Measurement<DoubleMeasurement> { 
 
-        public DoubleMeasurement() {
-        }
+        public DoubleMeasurement() { }
 
-        public DoubleMeasurement(double d) : base(d, Units.DefaultUnit) {
-        }
+        public DoubleMeasurement(double d) : base(d, Units.DefaultUnit) { }
 
         private DoubleMeasurement(double amount, Unit<DoubleMeasurement> unit) : base(amount, unit) {
         }
