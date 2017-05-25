@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements.Parser {
     internal static class Evaluation {
-        public static bool ApplyBinaryOperator(IEnumerable<Operator> ops, BinaryOperatorType opType, IMeasurement first, IMeasurement second, out IMeasurement success, out ParseException failure) {
+        public static bool ApplyBinaryOperator(IEnumerable<Operator> ops, BinaryOperatorType opType, object first, object second, out object success, out ParseException failure) {
             Validate.NonNull(ops, nameof(ops));
             Validate.NonNull(opType, nameof(opType));
             Validate.NonNull(first, nameof(first));
@@ -34,7 +34,7 @@ namespace JoshuaKearney.Measurements.Parser {
             }
         }
 
-        public static bool ApplyUrnaryOperator(IEnumerable<Operator> ops, UrnaryOperatorType opType, IMeasurement first,  out IMeasurement success, out ParseException failure) {
+        public static bool ApplyUrnaryOperator(IEnumerable<Operator> ops, UrnaryOperatorType opType, object first,  out object success, out ParseException failure) {
             Validate.NonNull(ops, nameof(ops));
             Validate.NonNull(opType, nameof(opType));
             Validate.NonNull(first, nameof(first));
@@ -59,7 +59,7 @@ namespace JoshuaKearney.Measurements.Parser {
             }
         }
 
-        private static bool ApplyBinaryOperators(IEnumerable<BinaryOperator> ops, IMeasurement first, IMeasurement second, out IMeasurement result) {
+        private static bool ApplyBinaryOperators(IEnumerable<BinaryOperator> ops, object first, object second, out object result) {
             result = null;
 
             foreach (var op in ops) {
@@ -78,7 +78,7 @@ namespace JoshuaKearney.Measurements.Parser {
             return false;
         }
 
-        private static bool ApplyUrnaryOperators(IEnumerable<UrnaryOperator> ops, IMeasurement first, out IMeasurement success) {
+        private static bool ApplyUrnaryOperators(IEnumerable<UrnaryOperator> ops, object first, out object success) {
             Validate.NonNull(ops, nameof(ops));
             Validate.NonNull(first, nameof(first));
 

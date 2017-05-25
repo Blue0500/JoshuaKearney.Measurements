@@ -9,23 +9,23 @@ namespace JoshuaKearney.Measurements.Parser {
     internal class EvaluationParser {
         private IEnumerable<Token> Tokens;
         private IEnumerable<Operator> AllOperators;
-        private Dictionary<string, IMeasurement> Units;
+        private Dictionary<string, object> Units;
         private int pos = 0;
         private object lockObj = new object();
 
-        private Token CurrentToken => Tokens.ElementAtOrDefault(pos) ?? Token.EOF;
+        private Token CurrentToken => this.Tokens.ElementAtOrDefault(this.pos) ?? Token.EOF;
 
         private IEnumerable<TokenType> AtomStartTypes { get; } = new[] { TokenType.OpenParen, TokenType.Number, TokenType.Id };
 
         private bool Advance(TokenType type, out ParseException failure) {
             Validate.NonNull(type, nameof(type));
 
-            if (CurrentToken.Type != type) {
+            if (this.CurrentToken.Type != type) {
                 failure = ParseException.UnexpectedCharactersError(this.CurrentToken.ToString());
                 return false;
             }
             else {
-                pos++;
+                this.pos++;
                 failure = null;
                 return true;
             }
@@ -34,15 +34,15 @@ namespace JoshuaKearney.Measurements.Parser {
         public bool TryParse(
             IEnumerable<Token> tokens,
             IEnumerable<Operator> ops,
-            Dictionary<string, IMeasurement> units,
-            out IMeasurement success, 
+            Dictionary<string, object> units,
+            out object success, 
             out ParseException failure) {
 
             Validate.NonNull(tokens, nameof(tokens));
             Validate.NonNull(ops, nameof(ops));
             Validate.NonNull(units, nameof(units));
 
-            lock (lockObj) {
+            lock (this.lockObj) {
                 this.pos = 0;
                 this.Tokens = tokens;
                 this.AllOperators = ops;
@@ -52,27 +52,25 @@ namespace JoshuaKearney.Measurements.Parser {
             }
         }
 
-        private bool AddExpression(out IMeasurement success, out ParseException failure) {
+        private bool AddExpression(out object success, out ParseException failure) {
             if (!this.MultExpression(out success, out failure)) {
                 return false;
             }
             else {
                 while (this.CurrentToken.Type == TokenType.Plus || this.CurrentToken.Type == TokenType.Minus) {
                     Token prev = this.CurrentToken;
-                    IMeasurement next;
 
                     if (!this.Advance(this.CurrentToken.Type, out failure)) {
                         success = null;
                         return false;
                     }
-                    else if (!this.MultExpression(out next, out failure)) {
+                    else if (!this.MultExpression(out object next, out failure)) {
                         success = null;
                         return false;
                     }
                     else if (prev.Type == TokenType.Plus) {
-                        IMeasurement temp = null;
 
-                        if (!Evaluation.ApplyBinaryOperator(this.AllOperators, BinaryOperatorType.Addition, success, next, out temp, out failure)) {
+                        if (!Evaluation.ApplyBinaryOperator(this.AllOperators, BinaryOperatorType.Addition, success, next, out object temp, out failure)) {
                             if (!Evaluation.ApplyBinaryOperator(this.AllOperators, BinaryOperatorType.Addition, next, success, out temp, out failure)) {
                                 return false;
                             }
@@ -91,14 +89,14 @@ namespace JoshuaKearney.Measurements.Parser {
             }
         }
 
-        private bool MultExpression(out IMeasurement success, out ParseException failure) {
+        private bool MultExpression(out object success, out ParseException failure) {
             if (!this.PowExpression(out success, out failure)) {
                 return false;
             }
             else {
                 while (this.AtomStartTypes.Any(x => this.CurrentToken.Type == x) || this.CurrentToken.Type == TokenType.ForwardSlash || this.CurrentToken.Type == TokenType.Asterisk) {
                     Token prev = this.CurrentToken;
-                    IMeasurement first = success, next;
+                    object first = success;
 
                     if (prev.Type == TokenType.ForwardSlash || prev.Type == TokenType.Asterisk) {
                         if (!this.Advance(this.CurrentToken.Type, out failure)) {
@@ -107,7 +105,7 @@ namespace JoshuaKearney.Measurements.Parser {
                         }
                     }
 
-                    if (!this.PowExpression(out next, out failure)) {
+                    if (!this.PowExpression(out object next, out failure)) {
                         success = null;
                         return false;
                     }
@@ -118,12 +116,11 @@ namespace JoshuaKearney.Measurements.Parser {
                             }
                         }
                         else {
-                            IMeasurement temp;
 
-                            if (!Evaluation.ApplyBinaryOperator(this.AllOperators, BinaryOperatorType.Multiplication, first, next, out temp, out failure)) {
+                            if (!Evaluation.ApplyBinaryOperator(this.AllOperators, BinaryOperatorType.Multiplication, first, next, out object temp, out failure)) {
                                 if (!Evaluation.ApplyBinaryOperator(this.AllOperators, BinaryOperatorType.Multiplication, next, first, out temp, out failure)) {
                                     return false;
-                                }                            
+                                }
                             }
 
                             success = temp;
@@ -135,20 +132,19 @@ namespace JoshuaKearney.Measurements.Parser {
             }
         }
 
-        private bool PowExpression(out IMeasurement success, out ParseException failure) {
+        private bool PowExpression(out object success, out ParseException failure) {
             if (!this.Atom(out success, out failure)) {
                 return false;
             }
             else {
                 while (this.CurrentToken.Type == TokenType.Caret) {
                     Token prev = this.CurrentToken;
-                    IMeasurement next;
 
                     if (!this.Advance(TokenType.Caret, out failure)) {
                         success = null;
                         return false;
                     }
-                    else if (!this.Atom(out next, out failure)) {
+                    else if (!this.Atom(out object next, out failure)) {
                         success = null;
                         return false;
                     }
@@ -163,7 +159,7 @@ namespace JoshuaKearney.Measurements.Parser {
             }
         }
 
-        private bool Atom(out IMeasurement success, out ParseException failure) {
+        private bool Atom(out object success, out ParseException failure) {
             if (this.CurrentToken.Type == TokenType.Number) {
                 NumberToken tok = this.CurrentToken as NumberToken;
 

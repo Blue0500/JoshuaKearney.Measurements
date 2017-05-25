@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 using Xunit;
 
 namespace JoshuaKearney.Measurements.UnitTests {
-    public class MassTests {
+    public class DigitalSizeTests {
         [Fact]
         public void TestInitialization() {
-            var a = Mass.Provider.Zero;
-            a = new Mass();
+            var a = DigitalSize.Provider.Zero;
 
             Assert.NotNull(a.MeasurementProvider);
 
-            var units = Mass.Provider.ParsableUnits.ToList();
+            var units = DigitalSize.Provider.ParsableUnits.ToList();
         }
     }
 }

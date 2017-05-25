@@ -4,8 +4,8 @@ using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
-    public static partial class MeasurementExtensions {
-        public static T Multiply<T>(this Measurement<DoubleMeasurement> d, Measurement<T> measurement) where T : Measurement<T> {
+    public static partial class Measurement {
+        public static T Multiply<T>(this IMeasurement<DoubleMeasurement> d, Measurement<T> measurement) where T : IMeasurement<T> {
             Validate.NonNull(d, nameof(d));
             Validate.NonNull(measurement, nameof(measurement));
 
@@ -14,7 +14,7 @@ namespace JoshuaKearney.Measurements {
 
         public static TNum Simplify<TSelf, TNum>(this Ratio<TSelf, TNum, DoubleMeasurement> measurement)
                 where TSelf : Ratio<TSelf, TNum, DoubleMeasurement>
-                where TNum : Measurement<TNum> {
+                where TNum : IMeasurement<TNum> {
 
             Validate.NonNull(measurement, nameof(measurement));
 
@@ -30,7 +30,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static TFirst Simplify<TSelf, TFirst>(this Term<TSelf, TFirst, DoubleMeasurement> measurement)
-                where TFirst : Measurement<TFirst>
+                where TFirst : IMeasurement<TFirst>
                 where TSelf : Term<TSelf, TFirst, DoubleMeasurement> {
 
             Validate.NonNull(measurement, nameof(measurement));
@@ -39,7 +39,7 @@ namespace JoshuaKearney.Measurements {
         }
 
         public static TSecond Simplify<TSelf, TSecond>(this Term<TSelf, DoubleMeasurement, TSecond> measurement)
-                where TSecond : Measurement<TSecond>
+                where TSecond : IMeasurement<TSecond>
                 where TSelf : Term<TSelf, DoubleMeasurement, TSecond> {
 
             Validate.NonNull(measurement, nameof(measurement));
@@ -47,15 +47,13 @@ namespace JoshuaKearney.Measurements {
             return measurement.Select((x, y) => y.Multiply(x));
         }
 
-        public static double ToDouble(this Measurement<DoubleMeasurement> d) {
+        public static double ToDouble(this IMeasurement<DoubleMeasurement> d) {
             Validate.NonNull(d, nameof(d));
             return d.ToDouble(DoubleMeasurement.Units.DefaultUnit);
         }
     }
 
     public sealed class DoubleMeasurement : Measurement<DoubleMeasurement> { 
-
-        public DoubleMeasurement() { }
 
         public DoubleMeasurement(double d) : base(d, Units.DefaultUnit) { }
 
@@ -66,7 +64,7 @@ namespace JoshuaKearney.Measurements {
 
         public override MeasurementProvider<DoubleMeasurement> MeasurementProvider => Provider;
 
-        public new DoubleMeasurement Reciprocal() {
+        public DoubleMeasurement Reciprocal() {
             return new DoubleMeasurement(1 / this.ToDouble());
         }
 

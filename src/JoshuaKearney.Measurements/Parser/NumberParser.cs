@@ -13,7 +13,7 @@ namespace JoshuaKearney.Measurements.Parser {
         private readonly char[] octNums = "01234567".ToCharArray();
         private readonly char[] binNums = "01".ToCharArray();
 
-        private char CurrentChar => text.ElementAtOrDefault(pos);
+        private char CurrentChar => this.text.ElementAtOrDefault(this.pos);
 
         private void Advance() {
             this.pos++;
@@ -25,8 +25,7 @@ namespace JoshuaKearney.Measurements.Parser {
             this.text = str;
             this.pos = start;
 
-            double ret;
-            bool worked = this.Literal(out ret);
+            bool worked = this.Literal(out double ret);
 
             success = ret;
             newPos = this.pos;
@@ -67,13 +66,12 @@ namespace JoshuaKearney.Measurements.Parser {
                 this.Advance();
             }
 
-            long ret = 0;
             bool worked = long.TryParse(
-                num,
-                NumberStyles.AllowHexSpecifier,
-                CultureInfo.InvariantCulture,
-                out ret
-            );
+    num,
+    NumberStyles.AllowHexSpecifier,
+    CultureInfo.InvariantCulture,
+    out long ret
+);
 
             success = ret;
             return worked;

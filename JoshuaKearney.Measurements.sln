@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoshuaKearney.Measurements.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoshuaKearney.Measurements.Testing", "src\JoshuaKearney.Measurements.Testing\JoshuaKearney.Measurements.Testing.csproj", "{300DE7FD-F94E-4CE5-9EA5-4B55DBDB02C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoshuaKearney.Measurements.UnitTests", "JoshuaKearney.Measurements.UnitTests\JoshuaKearney.Measurements.UnitTests.csproj", "{B3CD8269-0734-461D-A454-052A586B15C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoshuaKearney.Measurements.UnitTests", "src\JoshuaKearney.Measurements.UnitTests\JoshuaKearney.Measurements.UnitTests.csproj", "{B3CD8269-0734-461D-A454-052A586B15C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

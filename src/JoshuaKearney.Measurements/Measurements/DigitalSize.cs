@@ -7,11 +7,7 @@ namespace JoshuaKearney.Measurements {
 
     public sealed class DigitalSize : Measurement<DigitalSize> {
 
-        public DigitalSize() {
-        }
-
-        public DigitalSize(double amount, Unit<DigitalSize> unit) : base(amount, unit) {
-        }
+        public DigitalSize(double amount, Unit<DigitalSize> unit) : base(amount, unit) { }
 
         public static MeasurementProvider<DigitalSize> Provider { get; } = new DigitalSizeProvider();
 

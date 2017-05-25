@@ -10,7 +10,6 @@ namespace JoshuaKearney.Measurements.UnitTests {
         [Fact]
         public void TestInitialization() {
             Angle a = Angle.Provider.Zero;
-            a = new Angle();
 
             Assert.NotNull(a.MeasurementProvider);
 

@@ -73,9 +73,6 @@ namespace JoshuaKearney.Measurements {
             return Atan(1 / d);
         }
 
-        public Angle() {
-        }
-
         public Angle(double amount, Unit<Angle> unit) : base(amount, unit) {
         }
 

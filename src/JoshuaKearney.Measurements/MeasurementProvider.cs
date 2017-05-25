@@ -6,7 +6,7 @@ using JoshuaKearney.Measurements.Parser;
 
 namespace JoshuaKearney.Measurements {
 
-    public abstract class MeasurementProvider<T> where T : Measurement<T> {
+    public abstract class MeasurementProvider<T> where T : IMeasurement<T> {
         private static readonly IEnumerable<Operator> defaultOperators = new[] {
             Operator.CreateMultiplication<T, DoubleMeasurement, T>((x, y) => x.Multiply(y)),
             Operator.CreateDivision<T, DoubleMeasurement, T>((x, y) => x.Divide(y)),
@@ -83,25 +83,25 @@ namespace JoshuaKearney.Measurements {
         private readonly Lazy<T> nan, posInf, negInf, maxVal, minVal, zero;
         private readonly Lazy<Unit<T>> defUnit;
 
-        public Unit<T> DefaultUnit => defUnit.Value;
+        public Unit<T> DefaultUnit => this.defUnit.Value;
 
-        public T NaN => nan.Value;
+        public T NaN => this.nan.Value;
 
-        public T PositiveInfinity => posInf.Value;
+        public T PositiveInfinity => this.posInf.Value;
 
-        public T NegativeInfinity => negInf.Value;
+        public T NegativeInfinity => this.negInf.Value;
 
-        public T MaxValue => maxVal.Value;
+        public T MaxValue => this.maxVal.Value;
 
-        public T MinValue => minVal.Value;
+        public T MinValue => this.minVal.Value;
 
-        public T Zero => zero.Value;
+        public T Zero => this.zero.Value;
     }
 
     public abstract class CompoundMeasurementProvider<T, TComp1, TComp2> : MeasurementProvider<T>
-        where T : Measurement<T>
-        where TComp1 : Measurement<TComp1>
-        where TComp2 : Measurement<TComp2> {
+        where T : IMeasurement<T>
+        where TComp1 : IMeasurement<TComp1>
+        where TComp2 : IMeasurement<TComp2> {
 
         public new CompoundMeasurementProvider<T, TComp1, TComp2> AppendParsableUnits(params Unit<T>[] units) {
             Validate.NonNull(units, nameof(units));

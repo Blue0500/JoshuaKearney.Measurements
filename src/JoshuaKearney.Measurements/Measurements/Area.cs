@@ -6,15 +6,9 @@ using JoshuaKearney.Measurements.Parser;
 namespace JoshuaKearney.Measurements {
 
     public sealed class Area : Term<Area, Distance, Distance> {
+        public Area(double amount, Unit<Area> unit) : base(amount, unit) { }
 
-        public Area() {
-        }
-
-        public Area(double amount, Unit<Area> unit) : base(amount, unit) {
-        }
-
-        public Area(Distance length1, Distance length2) : base(length1, length2, Provider) {
-        }
+        public Area(IMeasurement<Distance> length1, IMeasurement<Distance> length2) : base(length1, length2, Provider) { }
 
         public static MeasurementProvider<Area> Provider { get; } = new AreaProvider();
 
@@ -78,8 +72,8 @@ namespace JoshuaKearney.Measurements {
         }
     }
 
-    public static partial class MeasurementExtensions {
-        public static Volume Multiply(this Measurement<Area> area, Measurement<Distance> distance) {
+    public static partial class Measurement {
+        public static Volume Multiply(this IMeasurement<Area> area, IMeasurement<Distance> distance) {
             Validate.NonNull(area, nameof(area));
             Validate.NonNull(distance, nameof(distance));
 

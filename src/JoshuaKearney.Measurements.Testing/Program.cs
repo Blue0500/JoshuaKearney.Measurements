@@ -6,6 +6,11 @@ using JoshuaKearney.Measurements.CsvConverters;
 namespace JoshuaKearney.Measurements.Testing {
     internal class Program {
         public static void Main(string[] args) {
+            Density d = null;
+            Ratio<Mass, Mass> a = null;
+
+            var q = d.DivideToRatio(a);
+
             var x = new CsvAngleConverter();
             MeasurementParser<Density> parser = new MeasurementParser<Density>(Density.Provider);
 

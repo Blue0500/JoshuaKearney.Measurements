@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JoshuaKearney.Measurements {
-    public static partial class MeasurementExtensions {
+    public static partial class Measurement {
        // Content in other files
     }
 }

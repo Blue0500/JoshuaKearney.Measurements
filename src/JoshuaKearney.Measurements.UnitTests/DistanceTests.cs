@@ -10,7 +10,6 @@ namespace JoshuaKearney.Measurements.UnitTests {
         [Fact]
         public void TestInitialization() {
             Distance a = Distance.Provider.Zero;
-            a = new Distance();
 
             Assert.NotNull(a.MeasurementProvider);
 

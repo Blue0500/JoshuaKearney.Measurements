@@ -10,7 +10,6 @@ namespace JoshuaKearney.Measurements.UnitTests {
         [Fact]
         public void TestInitialization() {
             var a = Volume.Provider.Zero;
-            a = new Volume();
 
             Assert.NotNull(a.MeasurementProvider);
 
